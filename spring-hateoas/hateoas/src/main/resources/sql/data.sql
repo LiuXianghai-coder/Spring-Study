@@ -1,0 +1,9 @@
+INSERT INTO user_info(user_id, user_name, user_gender) VALUES (1, 'Robert', 'Man');
+INSERT INTO user_info(user_id, user_name, user_gender) VALUES (2, 'Knuth', 'Man');
+INSERT INTO user_info(user_id, user_name, user_gender) VALUES (3, 'Batter', '女');
+INSERT INTO user_info(user_id, user_name, user_gender) VALUES (4, 'Red', 'Man');
+INSERT INTO user_info(user_id, user_name, user_gender) VALUES (5, 'Bill', '女');
+INSERT INTO user_info(user_id, user_name, user_gender) VALUES (6, 'Jobs', 'Man');
+INSERT INTO user_info(user_id, user_name, user_gender) VALUES (7, 'Joys', '女');
+INSERT INTO user_info(user_id, user_name, user_gender) VALUES (8, 'Wolf', 'Man');
+INSERT INTO user_info(user_id, user_name, user_gender) VALUES (9, 'Alia', '女');
