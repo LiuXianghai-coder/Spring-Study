@@ -7,9 +7,14 @@ import org.slf4j.LoggerFactory;
 
 import java.nio.charset.StandardCharsets;
 
+/**
+ * ProxyBackendHandler 类是新创建的子 Channel 处理链中的处理节点，
+ * 这个节点的主要的任务是读取远程主机的响应，再将这个响应发送回客户端
+ */
 public class ProxyBackendHandler extends ChannelInboundHandlerAdapter {
     private static final Logger log = LoggerFactory.getLogger(ProxyBackendHandler.class);
 
+    // inBoundChannel 是客户端与当前主机之间的连接
     private final Channel inBoundChannel;
 
     public ProxyBackendHandler(Channel inBoundChannel) {
@@ -27,6 +32,7 @@ public class ProxyBackendHandler extends ChannelInboundHandlerAdapter {
             ByteBuf in = (ByteBuf) msg;
 
             log.info("Proxy Server receive remote's msg: " + in.toString(StandardCharsets.UTF_8));
+            // 得到远程主机的响应之后只要顺着原来的 inBoundChannel 写回即可
             inBoundChannel.writeAndFlush(in)
                     .addListener((ChannelFutureListener) future -> {
                         if (future.isSuccess()) {

@@ -32,6 +32,7 @@ public class ProxyServer {
             serverBootstrap.group(group)
                     .channel(NioServerSocketChannel.class)
                     .localAddress(new InetSocketAddress(port))
+                    // 每个服务端 “主” Channel 创建的一个 Channel 连接，都会进行 ProxyInitializer 对应的处理
                     .childHandler(new ProxyInitializer("127.0.0.1", 8081))
                     .childOption(ChannelOption.AUTO_READ, false);
 
