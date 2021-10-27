@@ -1,0 +1,5 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://39.99.129.90:5432/lxh_db
+    username: postgres
+    password: 17358870357yi
