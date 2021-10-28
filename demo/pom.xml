@@ -18,6 +18,7 @@
     <properties>
         <java.version>1.8</java.version>
         <oracle.jdbc.version>21.1.0.0</oracle.jdbc.version>
+        <junit.version>4.12</junit.version>
     </properties>
 
     <dependencies>
@@ -63,6 +64,7 @@
             <artifactId>ucp</artifactId>
             <version>${oracle.jdbc.version}</version>
         </dependency>
+
         <dependency>
             <groupId>javax.persistence</groupId>
             <artifactId>javax.persistence-api</artifactId>
@@ -73,6 +75,7 @@
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
         </dependency>
+
         <dependency>
             <groupId>org.jsoup</groupId>
             <artifactId>jsoup</artifactId>
@@ -90,6 +93,7 @@
             <artifactId>lombok</artifactId>
             <optional>true</optional>
         </dependency>
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
@@ -102,7 +106,7 @@
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.12</version>
+            <version>${junit.version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

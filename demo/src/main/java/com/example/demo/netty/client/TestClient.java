@@ -9,10 +9,13 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
+import io.netty.util.AttributeKey;
+import lombok.SneakyThrows;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.net.InetSocketAddress;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author xhliu2
@@ -45,6 +48,7 @@ public class TestClient {
 
     public void bootstrap() throws InterruptedException {
         EventLoopGroup group = new NioEventLoopGroup();
+        final AttributeKey<Integer> id = AttributeKey.newInstance("id");
         try {
             Bootstrap b = new Bootstrap();
             b.group(group)
@@ -52,21 +56,39 @@ public class TestClient {
                     .remoteAddress(new InetSocketAddress("127.0.0.1", 8080))
                     .handler(new ChannelInitializer<SocketChannel>() {
                         @Override
-                        public void initChannel(SocketChannel ch)
-                                throws Exception {
+                        public void initChannel(SocketChannel ch) {
+                            Integer integer = ch.attr(id).get();
                             ch.pipeline().addLast(
-                                    new ProxyClientHandler());
+                                    new ProxyClientHandler()
+                            );
                         }
                     });
-            ChannelFuture f = b.connect().sync();
+            ChannelFuture f = b.connect();
+            new Thread(new Tool(f)).start(); // 不应当这样启动一个线程，请使用线程池的方式
+            f.sync();
             f.channel().closeFuture().sync();
         } finally {
             group.shutdownGracefully().sync();
         }
     }
 
+    static class Tool implements Runnable {
+        private final ChannelFuture future;
+
+        Tool(ChannelFuture future) {
+            this.future = future;
+        }
+
+        @SneakyThrows
+        @Override
+        public void run() {
+            TimeUnit.SECONDS.sleep(10);
+            future.channel().close();
+        }
+    }
+
     public static void main(String[] args) throws InterruptedException {
         TestClient client = new TestClient();
-        client.start(8080);
+        client.bootstrap();
     }
 }
