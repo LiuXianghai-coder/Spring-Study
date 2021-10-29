@@ -59,7 +59,8 @@ public class BatchConfiguration {
                 .build();
     }
 
-    /*@Bean(name = "importUserJob")
+    /* 单 Step 处理
+    @Bean(name = "importUserJob")
     public Job importUserJob(JobCompletionNotificationListener listener) {
         return jobBuilderFactory
                 .get("importUserJob")
