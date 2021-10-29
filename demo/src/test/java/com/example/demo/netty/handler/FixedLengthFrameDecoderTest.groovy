@@ -11,50 +11,50 @@ import static org.junit.Assert.*
 class FixedLengthFrameDecoderTest {
     @Test
     void testFramesDecoder1() {
-        ByteBuf buf = Unpooled.buffer();
+        ByteBuf buf = Unpooled.buffer()
         for (int i = 0; i < 9; ++i) {
-            buf.writeByte(i);
+            buf.writeByte(i)
         }
 
-        ByteBuf input = buf.duplicate();
+        ByteBuf input = buf.duplicate()
         EmbeddedChannel channel = new EmbeddedChannel(
                 new FixedLengthFrameDecoder(3)
-        );
+        )
 
-        assertTrue(channel.writeInbound(input.retain()));
-        assertTrue(channel.finish());
+        assertTrue(channel.writeInbound(input.retain()))
+        assertTrue(channel.finish())
 
-        ByteBuf read = channel.readInbound();
-        assertEquals(buf.readSlice(3), read);
-        read.release();
+        ByteBuf read = channel.readInbound()
+        assertEquals(buf.readSlice(3), read)
+        read.release()
 
-        read = channel.readInbound();
-        assertEquals(buf.readSlice(3), read);
-        read.release();
+        read = channel.readInbound()
+        assertEquals(buf.readSlice(3), read)
+        read.release()
 
-        read = channel.readInbound();
-        assertEquals(buf.readSlice(3), read);
-        read.release();
+        read = channel.readInbound()
+        assertEquals(buf.readSlice(3), read)
+        read.release()
 
-        assertNull(channel.readInbound());
-        buf.release();
+        assertNull(channel.readInbound())
+        buf.release()
     }
 
     @Test
     void testFrameDecoder() {
-        ByteBuf buf = Unpooled.buffer();
+        ByteBuf buf = Unpooled.buffer()
         for (int i = 0; i < 9; ++i) {
-            buf.writeByte(i);
+            buf.writeByte(i)
         }
 
-        ByteBuf input = buf.duplicate();
+        ByteBuf input = buf.duplicate()
         EmbeddedChannel channel = new EmbeddedChannel(
                 new FixedLengthFrameDecoder(3)
-        );
+        )
 
-        assertFalse(channel.writeInbound(input.readBytes(2)));
-        assertTrue(channel.writeInbound(input.readBytes(7)));
+        assertFalse(channel.writeInbound(input.readBytes(2)))
+        assertTrue(channel.writeInbound(input.readBytes(7)))
 
-        assertTrue(channel.finish());
+        assertTrue(channel.finish())
     }
 }

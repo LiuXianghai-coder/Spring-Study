@@ -1,0 +1,11 @@
+spring:
+  batch:
+    job:
+      enabled: true
+  datasource:
+    url: jdbc:postgresql://127.0.0.1:5432/db # 请换成你自己的数据库处理 url
+    username: postgres
+    password: 123456
+#    url: jdbc:mysql://127.0.0.1:3306/db?useSSL=false&serverTimezone=UTC
+#    username: root
+#    password: 123456
