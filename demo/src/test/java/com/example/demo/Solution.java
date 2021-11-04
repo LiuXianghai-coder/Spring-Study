@@ -9,28 +9,29 @@ import java.util.Set;
  * @create 2021-10-28 10:31
  **/
 class Solution {
-    static Set<Integer> set = new HashSet<>();
-    static {
-        for (int i = 1; i < (int)1e9+10; i *= 2) set.add(i);
+    public static int findTargetSumWays(int[] nums, int target) {
+        int n = nums.length;
+        int[][] dp = new int[n][3001];
+
+        dp[0][nums[0] + 1000] = 1;
+        dp[0][-nums[0] + 1000] = 1;
+        for (int i = 1; i < n; ++i) {
+            for (int j = 0; j <= 2000; ++j) {
+                dp[i][j] += dp[i - 1][j + nums[i]];
+                if (j >= nums[i]) {
+                    dp[i][j] += dp[i - 1][j - nums[i]];
+                }
+
+                // if (dp[i][j] != 0) {
+                //     System.out.println(dp[i][j] + "\ti=" + i + "\tj=" + j);
+                // }
+            }
+        }
+
+        return dp[n - 1][target + 1000];
     }
-    public boolean reorderedPowerOf2(int n) {
-        int[] cnts = new int[10];
-        while (n != 0) {
-            cnts[n % 10]++;
-            n /= 10;
-        }
-        int[] cur = new int[10];
-        out:for (int x : set) {
-            Arrays.fill(cur, 0);
-            while (x != 0) {
-                cur[x % 10]++;
-                x /= 10;
-            }
-            for (int i = 0; i < 10; i++) {
-                if (cur[i] != cnts[i]) continue out;
-            }
-            return true;
-        }
-        return false;
+
+    public static void main(String[] args) {
+        System.out.println(findTargetSumWays(new int[]{0,0,0,0,0,0,0,0,1}, 1));
     }
 }
