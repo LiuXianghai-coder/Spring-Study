@@ -6,6 +6,8 @@
 
     <bean id="orderService" class="org.xhliu.aop.service.impl.OrderServiceImpl" />
     <bean id="userService" class="org.xhliu.aop.service.impl.UserServiceImpl" />
+
+    <!-- 定义的两个 advice -->
     <bean id="logArgsAdvice" class="org.xhliu.aop.service.impl.LogArgsAdvice" />
     <bean id="logResultAdvice" class="org.xhliu.aop.service.impl.LogResultAdvice" />
 
@@ -20,10 +22,11 @@
     <bean class="org.springframework.aop.framework.autoproxy.BeanNameAutoProxyCreator">
         <property name="interceptorNames">
             <list>
-                <value>logArgsValue</value>
+<!--                <value>logArgsAdvice</value>-->
                 <value>logResultAdvice</value>
             </list>
         </property>
-        <property name="beanNames" value="*ServiceImpl"/>
+        <!-- 这里的 value 指的是在 BeanFactory 中的名字，可以使用正则表达式进行匹配 -->
+        <property name="beanNames" value="*Service"/>
     </bean>
 </beans>

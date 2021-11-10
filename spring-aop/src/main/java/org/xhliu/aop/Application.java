@@ -5,10 +5,6 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.xhliu.aop.service.OrderService;
 import org.xhliu.aop.service.UserService;
 
-/**
- * Hello world!
- *
- */
 public class Application {
     public static void main( String[] args ) {
         ApplicationContext context =
