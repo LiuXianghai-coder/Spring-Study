@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:aop="http://www.springframework.org/schema/aop"
        xsi:schemaLocation="http://www.springframework.org/schema/beans
     http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
     http://www.springframework.org/schema/aop
@@ -9,8 +10,7 @@
     <!-- 开启 @Aspect 配置 -->
     <aop:aspectj-autoproxy/>
 
-    <bean id="orderService" class="org.xhliu.aop.service.impl.OrderServiceImpl" />
-    <bean id="userService" class="org.xhliu.aop.service.impl.UserServiceImpl" />
+    <bean id="personService" class="org.xhliu.service.impl.PersonServiceImpl" />
 
     <bean name="logArgsAspect" class="org.xhliu.aop.aspect.LogArgsAspect" >
     </bean>

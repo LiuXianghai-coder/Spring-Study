@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/aop
+       http://www.springframework.org/schema/aop/spring-aop.xsd">
+
+    <!-- 开启 @Aspect 配置 -->
+    <aop:aspectj-autoproxy/>
+
+    <!-- 通过 XML 的方式来配置织入 Bean -->
+    <aop:config>
+        <!-- 注意，在 XML 中定义全局的 PointCut 时，需要将 <aop:pointcut> 标签放在最顶部 -->
+
+        <!-- 以下两种方式， 在 XML 中配置 PointCut，以下方式定义的 PointCut 是全局共享的 -->
+        <aop:pointcut id="userAspect"
+                      expression="execution(* org.xhliu.aop.service.impl.UserServiceImpl.*(..))"/>
+        <aop:pointcut id="logArgsAspect" expression="org.xhliu.aop.aspect.SystemArchitecture.businessService()" />
+        <!-- ###############  分割线  ################### -->
+
+        <!-- 以下方式定义的 PointCut 则只能是 mineAspect 私有的 -->
+        <aop:aspect id="mineAspect" ref="mineArgAspect">
+            <aop:pointcut id="minePintCut"
+                          expression="execution(* org.xhliu.aop.service.impl.UserServiceImpl.*(..))"/>
+            <aop:before method="logArgs" pointcut-ref="minePintCut" /> <!-- 引用相关的 PointCut，执行对应的操作 -->
+        </aop:aspect>
+
+        <!-- 配置织入 Bean -->
+        <aop:aspect id="argAspect" ref="logArgsAspect"/>
+        <aop:aspect id="resultAspect" ref="logResultAspect"/>
+    </aop:config>
+
+    <bean id="personService" class="org.xhliu.service.impl.PersonServiceImpl"/>
+    <bean id="userService" class="org.xhliu.aop.service.impl.UserServiceImpl"/>
+
+    <bean name="logArgsAspect" class="org.xhliu.aop.aspect.LogArgsAspect"/>
+    <bean name="logResultAspect" class="org.xhliu.aop.aspect.LogResultAspect"/>
+    <bean name="mineArgAspect" class="org.xhliu.aop.aspect.MineArgAdvice"/>
+</beans>
