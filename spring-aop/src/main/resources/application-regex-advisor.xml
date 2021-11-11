@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+
+    <bean id="orderService" class="org.xhliu.aop.service.impl.OrderServiceImpl" />
+    <bean id="userService" class="org.xhliu.aop.service.impl.UserServiceImpl" />
+
+    <!-- 定义的两个 advice -->
+    <bean id="logArgsAdvice" class="org.xhliu.aop.service.impl.LogArgsAdvice" />
+    <bean id="logResultAdvice" class="org.xhliu.aop.service.impl.LogResultAdvice" />
+
+    <!-- 使用正则表达式的方式来匹配来拦截 create.* 的方法 -->
+    <bean id="logArgsAdvisor" class="org.springframework.aop.support.RegexpMethodPointcutAdvisor">
+        <!-- advisor 实例内部只会有一个 advice -->
+        <property name="advice" ref="logArgsAdvice" />
+        <property name="pattern" value="org.xhliu.*.service.impl.*.create.*" />
+    </bean>
+
+    <!--  使用正则表达式的方式来拦截所有 service.impl 目录下所有的 query 方法  -->
+    <bean id="logResultAdvisor" class="org.springframework.aop.support.RegexpMethodPointcutAdvisor">
+        <property name="advice" ref="logResultAdvice" />
+        <property name="pattern" value="org.xhliu.*.service.impl.*.query.*" />
+    </bean>
+</beans>
