@@ -13,18 +13,14 @@ public class Application {
 
     public static void main(String[] args ) {
         ApplicationContext context =
-                new ClassPathXmlApplicationContext("classpath:application-regex-advisor.xml");
-
-//        UserService userService = (UserService) context.getBean("userServiceProxy");
-//        userService.createUser("Xianghai", "Liu");
-//        userService.queryUser();
+                new ClassPathXmlApplicationContext("classpath:application-aspect.xml");
 
         UserService userService =  context.getBean(UserService.class);
         OrderService orderService = context.getBean(OrderService.class);
 
         userService.createUser("Xhanghai", "Liu");
         userService.queryUser();
-
-        orderService.createOrder("Xianghai", "Phone");
+//        log.info(orderService.createOrder("Xianghai", "Phone").toString());
+//        log.info(orderService.queryOrder("Xianghai").toString());
     }
 }

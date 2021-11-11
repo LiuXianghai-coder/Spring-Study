@@ -15,12 +15,15 @@
     <bean id="logArgsAdvisor" class="org.springframework.aop.support.RegexpMethodPointcutAdvisor">
         <!-- advisor 实例内部只会有一个 advice -->
         <property name="advice" ref="logArgsAdvice" />
-        <property name="pattern" value="org.xhliu.*.service.impl.*.create.*" />
+        <property name="pattern" value="org.xhliu.aop.service.impl.*.create.*" />
     </bean>
 
     <!--  使用正则表达式的方式来拦截所有 service.impl 目录下所有的 query 方法  -->
     <bean id="logResultAdvisor" class="org.springframework.aop.support.RegexpMethodPointcutAdvisor">
         <property name="advice" ref="logResultAdvice" />
-        <property name="pattern" value="org.xhliu.*.service.impl.*.query.*" />
+        <property name="pattern" value="org.xhliu.aop.service.impl.*.query.*" />
     </bean>
+
+    <!-- 定义 Advisor 自动代理对象，这个对象会将所有的 Advisor 存入，然后执行每个 Advisor 对应的 Advice -->
+    <bean class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator" />
 </beans>
