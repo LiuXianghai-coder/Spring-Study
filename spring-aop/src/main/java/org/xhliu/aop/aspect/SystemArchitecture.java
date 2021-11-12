@@ -39,7 +39,7 @@ public class SystemArchitecture {
     /**
      * 为 org.xhliu.service 包下的所有类中存在的方法都定义一个 PointCut
      */
-    @Pointcut("within(org.xhliu.service.*)")
+    @Pointcut("within(org.xhliu.service.impl.*)")
     public void inServiceLayer(){
     }
 
@@ -55,7 +55,7 @@ public class SystemArchitecture {
      *
      * 为 org.xhliu.service 类中存在的方法创建 PointCut
      */
-    @Pointcut("within(org.xhliu.service..*)")
+    @Pointcut("within(org.xhliu.service.impl.*)")
     public void businessService(){
     }
 

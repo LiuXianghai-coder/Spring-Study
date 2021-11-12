@@ -24,7 +24,7 @@ public class AdviceExample {
     /**
      * 在执行 org.xhliu.dao.* 的方法之前，执行以下的方法
      */
-    @Before("execution(* org.xhliu.dao.*)")
+    @Before("execution(* org.xhliu.dao.*(..))")
     public void daoExecutionCheck(){
         log.info("AdviceExample's method daoExecutionCheck invoke......");
     }
@@ -33,9 +33,8 @@ public class AdviceExample {
      * 在返回语句执行之后执行 dataAccessOperation()
      */
     @AfterReturning("org.xhliu.aop.aspect.SystemArchitecture.dataAccessOperation()")
-    public int afterReturningCheck() {
+    public void afterReturningCheck() {
         log.info("AdviceExample's method afterReturningCheck invoke......");
-        return Integer.MAX_VALUE;
     }
 
     /**
