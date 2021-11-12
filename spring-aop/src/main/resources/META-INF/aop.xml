@@ -3,9 +3,10 @@
         "http://www.eclipse.org/aspectj/dtd/aspectj.dtd">
 <aspectj>
     <aspects>
-        <aspect name="org.xhliu.aop.entity.AspectApplication"/>
-        <weaver options="-verbose -showWeaveInfo">
-            <include within="com.example.aopshare..*"/>
-        </weaver>
+        <!-- 使用加载时织入的方式只能通过定义具体的 Aspect 类来实现，因为 AspectJ 无法被 javac 编译 -->
+        <aspect name="org.xhliu.aop.entity.UserAspect"/>
+
+        <!-- 要监听的切点所在的包位置，即要执行对应切面方法的位置 -->
+        <include within="org.xhliu.aop.entity..*"/>
     </aspects>
 </aspectj>

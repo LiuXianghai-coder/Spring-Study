@@ -12,13 +12,13 @@ public class AspectApplication {
     private final static Logger log = LoggerFactory.getLogger(AspectApplication.class);
 
     public static void main(String[] args) {
-        UserAccount userAccount = new UserAccount();
+        UserAccount account = new UserAccount();
 //        Account account = new Account();
         log.info("================ 分割线 ==================");
 //        account.withDraw(10);
 //        account.withDraw(100);
-        userAccount.withDraw(10);
-        userAccount.withDraw(100);
+        account.withDraw(10);
+        account.withDraw(100);
         log.info("================ 结束 ==================");
     }
 }

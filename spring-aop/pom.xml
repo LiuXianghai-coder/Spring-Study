@@ -23,7 +23,7 @@
     <dependencies>
         <dependency>
             <groupId>com.example</groupId>
-            <artifactId>aop-share</artifactId>
+            <artifactId>aopshare</artifactId>
             <version>1.0</version>
         </dependency>
 
@@ -71,60 +71,86 @@
                 <version>2.10</version>
                 <configuration>
                     <argLine>
-                        -javaagent:D:/apache-maven-3.8.1/repository/org/aspectj/aspectjweaver/1.9.7/aspectjweaver-1.9.7.jar                    </argLine>
+                        -javaagent:/home/lxh/.m2/repository/org/aspectj/aspectjweaver/1.9.7/aspectjweaver-1.9.7.jar
+                    </argLine>
                     <useSystemClassLoader>true</useSystemClassLoader>
                     <forkMode>always</forkMode>
                 </configuration>
             </plugin>
 
+            <!-- 配置主程序清单 -->
+            <plugin>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <version>2.6</version>
+                <configuration>
+                    <descriptorRefs>
+                        <descriptorRef>jar-with-dependencies</descriptorRef>
+                    </descriptorRefs>
+                    <archive>
+                        <manifest>
+                            <mainClass>org.xhliu.aop.entity.AspectApplication</mainClass>
+                        </manifest>
+                    </archive>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>make-assembly</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
             <!-- 编译时织入插件 -->
-<!--            <plugin>-->
-<!--                <groupId>org.codehaus.mojo</groupId>-->
-<!--                <artifactId>aspectj-maven-plugin</artifactId>-->
-<!--                <version>1.7</version>-->
-<!--                <configuration>-->
-<!--                    <complianceLevel>1.8</complianceLevel>-->
-<!--                    <source>1.8</source>-->
-<!--                    <target>1.8</target>-->
-<!--                    <showWeaveInfo>true</showWeaveInfo>-->
-<!--                    <verbose>true</verbose>-->
-<!--                    <Xlint>ignore</Xlint>-->
-<!--                    <encoding>UTF-8</encoding>-->
-<!--                </configuration>-->
-<!--                <executions>-->
-<!--                    <execution>-->
-<!--                        <goals>-->
-<!--                            &lt;!&ndash; use this goal to weave all your main classes &ndash;&gt;-->
-<!--                            <goal>compile</goal>-->
-<!--                            &lt;!&ndash; use this goal to weave all your test classes &ndash;&gt;-->
-<!--                            <goal>test-compile</goal>-->
-<!--                        </goals>-->
-<!--                    </execution>-->
-<!--                </executions>-->
-<!--            </plugin>-->
+            <!--            <plugin>-->
+            <!--                <groupId>org.codehaus.mojo</groupId>-->
+            <!--                <artifactId>aspectj-maven-plugin</artifactId>-->
+            <!--                <version>1.7</version>-->
+            <!--                <configuration>-->
+            <!--                    <complianceLevel>1.8</complianceLevel>-->
+            <!--                    <source>1.8</source>-->
+            <!--                    <target>1.8</target>-->
+            <!--                    <showWeaveInfo>true</showWeaveInfo>-->
+            <!--                    <verbose>true</verbose>-->
+            <!--                    <Xlint>ignore</Xlint>-->
+            <!--                    <encoding>UTF-8</encoding>-->
+            <!--                </configuration>-->
+            <!--                <executions>-->
+            <!--                    <execution>-->
+            <!--                        <goals>-->
+            <!--                            &lt;!&ndash; use this goal to weave all your main classes &ndash;&gt;-->
+            <!--                            <goal>compile</goal>-->
+            <!--                            &lt;!&ndash; use this goal to weave all your test classes &ndash;&gt;-->
+            <!--                            <goal>test-compile</goal>-->
+            <!--                        </goals>-->
+            <!--                    </execution>-->
+            <!--                </executions>-->
+            <!--            </plugin>-->
 
             <!-- 编译后织入插件 -->
-<!--            <plugin>-->
-<!--                <groupId>org.codehaus.mojo</groupId>-->
-<!--                <artifactId>aspectj-maven-plugin</artifactId>-->
-<!--                <version>1.7</version>-->
-<!--                <configuration>-->
-<!--                    <complianceLevel>1.8</complianceLevel>-->
-<!--                    <weaveDependencies>-->
-<!--                        <weaveDependency>-->
-<!--                            <groupId>com.example</groupId>-->
-<!--                            <artifactId>aop-share</artifactId>-->
-<!--                        </weaveDependency>-->
-<!--                    </weaveDependencies>-->
-<!--                </configuration>-->
-<!--                <executions>-->
-<!--                    <execution>-->
-<!--                        <goals>-->
-<!--                            <goal>compile</goal>-->
-<!--                        </goals>-->
-<!--                    </execution>-->
-<!--                </executions>-->
-<!--            </plugin>-->
+            <!--            <plugin>-->
+            <!--                <groupId>org.codehaus.mojo</groupId>-->
+            <!--                <artifactId>aspectj-maven-plugin</artifactId>-->
+            <!--                <version>1.7</version>-->
+            <!--                <configuration>-->
+            <!--                    <complianceLevel>1.8</complianceLevel>-->
+            <!--                    <weaveDependencies>-->
+            <!--                        <weaveDependency>-->
+            <!--                            <groupId>com.example</groupId>-->
+            <!--                            <artifactId>aop-share</artifactId>-->
+            <!--                        </weaveDependency>-->
+            <!--                    </weaveDependencies>-->
+            <!--                </configuration>-->
+            <!--                <executions>-->
+            <!--                    <execution>-->
+            <!--                        <goals>-->
+            <!--                            <goal>compile</goal>-->
+            <!--                        </goals>-->
+            <!--                    </execution>-->
+            <!--                </executions>-->
+            <!--            </plugin>-->
         </plugins>
     </build>
 
