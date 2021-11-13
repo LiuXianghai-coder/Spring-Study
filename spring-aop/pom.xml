@@ -18,6 +18,7 @@
         <spring.boot.version>2.5.6</spring.boot.version>
         <junit.version>4.13.2</junit.version>
         <aspectj.version>1.9.7</aspectj.version>
+        <cglib.version>3.3.0</cglib.version>
     </properties>
 
     <dependencies>
@@ -25,6 +26,12 @@
             <groupId>com.example</groupId>
             <artifactId>aopshare</artifactId>
             <version>1.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>cglib</groupId>
+            <artifactId>cglib</artifactId>
+            <version>${cglib.version}</version>
         </dependency>
 
         <dependency>

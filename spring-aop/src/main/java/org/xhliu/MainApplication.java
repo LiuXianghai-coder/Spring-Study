@@ -1,25 +1,37 @@
 package org.xhliu;
 
+import net.sf.cglib.proxy.Enhancer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
-import org.xhliu.aop.service.UserService;
-import org.xhliu.service.PersonService;
+import org.xhliu.service.MineSubject;
+import org.xhliu.service.impl.RealMine;
+import org.xhliu.service.impl.RealMineSubject;
+import org.xhliu.service.proxy.CglibProxy;
+import org.xhliu.service.proxy.JdkDynamicProxy;
+
+import java.lang.reflect.Field;
+import java.lang.reflect.Proxy;
 
 public class MainApplication {
     private final static Logger log = LoggerFactory.getLogger(MainApplication.class);
 
     public static void main(String[] args) {
-        ApplicationContext context =
-                new ClassPathXmlApplicationContext("classpath:application-schema-based.xml");
+//        RealMineSubject realMineSubject = new RealMineSubject();
+//        JdkDynamicProxy proxy = new JdkDynamicProxy(realMineSubject);
+//        ClassLoader loader = realMineSubject.getClass().getClassLoader();
+//        MineSubject subject = (MineSubject) Proxy.newProxyInstance(loader, new Class[]{MineSubject.class}, proxy);
+//
+//        subject.getMessage();
 
-//        PersonService service = context.getBean(PersonService.class);
-//        service.createPerson("Xianghai", "Liu", 22);
-//        service.queryPerson("Xianghai");
+        Enhancer enhancer = new Enhancer();
+        Field[] fields = java.lang.ClassLoader.class.getDeclaredFields();
+        for (Field field : fields)
+            field.setAccessible(true);
 
-        UserService userService = context.getBean(UserService.class);
-        userService.createUser("Xianghai", "Liu");
-        userService.queryUser();
+        enhancer.setSuperclass(RealMine.class);
+        enhancer.setCallback(new CglibProxy());
+
+        RealMine realMine = (RealMine) enhancer.create();
+        realMine.sayMessage();
     }
 }
