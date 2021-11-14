@@ -6,6 +6,7 @@
 
     <bean id="orderService" class="org.xhliu.aop.service.impl.OrderServiceImpl" />
     <bean id="userService" class="org.xhliu.aop.service.impl.UserServiceImpl" />
+
     <bean id="logArgsAdvice" class="org.xhliu.aop.service.impl.LogArgsAdvice" />
     <bean id="logResultAdvice" class="org.xhliu.aop.service.impl.LogResultAdvice" />
 
@@ -28,12 +29,12 @@
         <!-- 要代理的接口的具体实现 -->
         <property name="target" ref="userService" />
 
-        <!-- 配置拦截器，可以配置 advice、advisor、interceptor -->
         <property name="interceptorNames">
+            <!-- 配置拦截器列表，可以配置 advice、advisor、interceptor -->
             <list>
-<!--                <value>logArgsAdvice</value>-->
-<!--                <value>logResultAdvice</value>-->
-                <value>logCreateAdvisor</value>
+                <value>logArgsAdvice</value>
+                <value>logResultAdvice</value>
+<!--                <value>logCreateAdvisor</value>-->
             </list>
         </property>
     </bean>

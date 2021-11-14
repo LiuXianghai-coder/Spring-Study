@@ -16,12 +16,12 @@ public class MainApplication {
     private final static Logger log = LoggerFactory.getLogger(MainApplication.class);
 
     public static void main(String[] args) {
-//        RealMineSubject realMineSubject = new RealMineSubject();
-//        JdkDynamicProxy proxy = new JdkDynamicProxy(realMineSubject);
-//        ClassLoader loader = realMineSubject.getClass().getClassLoader();
-//        MineSubject subject = (MineSubject) Proxy.newProxyInstance(loader, new Class[]{MineSubject.class}, proxy);
-//
-//        subject.getMessage();
+        RealMineSubject realMineSubject = new RealMineSubject();
+        JdkDynamicProxy proxy = new JdkDynamicProxy(realMineSubject);
+        ClassLoader loader = realMineSubject.getClass().getClassLoader();
+        MineSubject subject = (MineSubject) Proxy.newProxyInstance(loader, new Class[]{MineSubject.class}, proxy);
+
+        subject.getMessage();
 
         Enhancer enhancer = new Enhancer();
         Field[] fields = java.lang.ClassLoader.class.getDeclaredFields();

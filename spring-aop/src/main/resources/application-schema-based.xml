@@ -31,6 +31,7 @@
         <aop:aspect id="resultAspect" ref="logResultAspect"/>
     </aop:config>
 
+    <bean id="orderService" class="org.xhliu.aop.service.impl.OrderServiceImpl" />
     <bean id="personService" class="org.xhliu.service.impl.PersonServiceImpl"/>
     <bean id="userService" class="org.xhliu.aop.service.impl.UserServiceImpl"/>
 
