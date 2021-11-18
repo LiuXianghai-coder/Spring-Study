@@ -13,14 +13,15 @@ public class Application {
 
     public static void main(String[] args ) {
         ApplicationContext context =
-                new ClassPathXmlApplicationContext("classpath:application-schema-based.xml");
+                new ClassPathXmlApplicationContext("classpath:application-aspect.xml");
 
-        UserService userService = context.getBean(UserService.class);
+//        UserService userService = context.getBean("userServiceProxy", UserService.class);
+        UserService userService = context.getBean("userService", UserService.class);
         OrderService orderService = context.getBean(OrderService.class);
 
         log.info(userService.createUser("Xhanghai", "Liu").toString());
-        log.info(userService.queryUser().toString());
-        log.info(orderService.createOrder("Xianghai", "Phone").toString());
-        log.info(orderService.queryOrder("Xianghai").toString());
+//        log.info(userService.queryUser().toString());
+//        log.info(orderService.createOrder("Xianghai", "Phone").toString());
+//        log.info(orderService.queryOrder("Xianghai").toString());
     }
 }

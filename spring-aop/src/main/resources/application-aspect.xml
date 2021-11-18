@@ -11,6 +11,8 @@
     <aop:aspectj-autoproxy/>
 
     <bean id="personService" class="org.xhliu.service.impl.PersonServiceImpl" />
+    <bean id="orderService" class="org.xhliu.aop.service.impl.OrderServiceImpl" />
+    <bean id="userService" class="org.xhliu.aop.service.impl.UserServiceImpl" />
 
     <bean name="logArgsAspect" class="org.xhliu.aop.aspect.LogArgsAspect" >
     </bean>

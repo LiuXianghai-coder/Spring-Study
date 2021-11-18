@@ -55,7 +55,7 @@ public class SystemArchitecture {
      *
      * 为 org.xhliu.service 类中存在的方法创建 PointCut
      */
-    @Pointcut("within(org.xhliu.service.impl.*)")
+    @Pointcut("within(org.xhliu.aop.service.impl.*)")
     public void businessService(){
     }
 
