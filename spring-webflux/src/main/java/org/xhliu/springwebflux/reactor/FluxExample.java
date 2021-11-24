@@ -5,8 +5,11 @@ import org.reactivestreams.Subscription;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xhliu.springwebflux.reactor.domian.User;
+import reactor.core.publisher.ConnectableFlux;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Scheduler;
+import reactor.core.scheduler.Schedulers;
 import reactor.test.StepVerifier;
 
 import java.time.Duration;
@@ -54,7 +57,6 @@ public class FluxExample {
 
     public static void main(String[] args) throws InterruptedException {
         FluxExample example = new FluxExample();
-        List<Long> elements = new ArrayList<>();
         Flux<Long> counter = example.counter();
 //
 //        StepVerifier.create(counter)
@@ -85,13 +87,115 @@ public class FluxExample {
 //                .expectComplete()
 //                .verify();
 
-        RequestExample requestExample = new RequestExample();
+//        RequestExample requestExample = new RequestExample();
 //        Flux<User> userFlux = Flux.just(User.SKYLER, User.JESSE, User.SAUL, User.WALTER);
 //        requestExample.requestAllExpectFour(userFlux).verify();
 
 //        Flux<User> userFlux = Flux.just(User.JESSE);
 //        requestExample.requestOneExpectSkylerThenRequestOneExpectJesse(userFlux)
 //                .verify();
-        requestExample.fluxWithDoOnPrintln().subscribe();
+//        requestExample.fluxWithDoOnPrintln().subscribe();
+
+        /*Flux.just(1, 2, 3, 4)
+                .log()
+                .map(i -> i * 2)
+                .zipWith(
+                        Flux.range(0, Integer.MAX_VALUE),
+                        (one, two) -> String.format("First Flux: %d, Second Flux: %d\n", one, two)
+                )
+                .subscribe(new Subscriber<String>() {
+                    private Subscription subscription;
+
+                    @Override
+                    public void onSubscribe(Subscription subscription) {
+                        this.subscription = subscription;
+                        subscription.request(1);
+                        System.out.println("onSubscribe.....");
+                    }
+
+                    @Override
+                    public void onNext(String s) {
+                        System.out.println("onNext: " + s);
+                        subscription.request(1);
+                    }
+
+                    @Override
+                    public void onError(Throwable throwable) {
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });*/
+
+//        ConnectableFlux<Object> publisher = Flux.create(fluxSink -> {
+//                    while (true) {
+//                        fluxSink.next(System.currentTimeMillis());
+//                    }
+//                })
+//                .sample(Duration.ofSeconds(1))
+//                .publish();
+//
+//        publisher.subscribe(System.out::println);
+//        publisher.connect();
+
+        /*Flux.just(1, 2, 3, 4, 5)
+                .log()
+                .subscribe(new Subscriber<Integer>() {
+                    private Subscription subscription;
+                    private int amt = 0;
+
+                    @Override
+                    public void onSubscribe(Subscription subscription) {
+                        this.subscription = subscription;
+                        this.subscription.request(2);
+                    }
+
+                    @Override
+                    public void onNext(Integer integer) {
+                        System.out.println("onNext: " + integer);
+                        amt++;
+                        if (amt % 2 == 0) this.subscription.request(2);
+                    }
+
+                    @Override
+                    public void onError(Throwable throwable) {
+                        // nothing should to do....
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        // nothing should to do....
+                    }
+                });*/
+
+//        System.out.println("Main Thread: " + Thread.currentThread().getName());
+//        List<Integer> elements = new ArrayList<>();
+        Flux<Integer> flux = Flux.just(1, 2, 3, 4)
+                .log()
+                .map(i -> i * 2)
+//                .subscribeOn(Schedulers.parallel())
+                .doOnNext(s -> System.out.println("Current Thread: " + Thread.currentThread().getName()));
+        new Thread(flux::subscribe, "subscribe-Thread").start();
+
+//        Flux flux = Flux.generate(sink->{
+//			System.out.println("generate : " + Thread.currentThread().getName());
+//			sink.next("");
+//		})
+//		.doOnNext(any -> System.out.println("1st doOnNext:" + Thread.currentThread().getName()))
+//		.take(3);
+//		new Thread(flux::subscribe, "subscribeThread").start();
+
+//        Thread.sleep(1000);
+//        System.out.println("elements.size(): " + elements.size());
+//
+//        System.out.println("======================================");
+//        Flux.interval(Duration.ofMillis(100))
+//                .take(9)
+//                .doOnNext(System.out::println)
+//                .subscribe();
+//        Thread.sleep(1000);
     }
 }
