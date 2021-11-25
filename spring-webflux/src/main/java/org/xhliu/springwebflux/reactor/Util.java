@@ -9,19 +9,19 @@ public class Util {
 
 	public static String service1() throws InterruptedException {
 		Thread.sleep(1000);
-		return "ret1";
+		return "service-1";
 	}
 	public static String service2(String inputFrom1) throws InterruptedException {
 		Thread.sleep(1500);
-		return "ret2:" + inputFrom1;
+		return "service-2 " + inputFrom1;
 	}
 	public static String service3() throws InterruptedException {
 		Thread.sleep(1200);
-		return "ret3";
+		return "service-3";
 	}
 	public static String service4(String inputFrom2, String inputFrom3) throws InterruptedException {
 		Thread.sleep(500);
-		return "ret4:" + inputFrom2 + ":" + inputFrom3;
+		return "service-4: " + inputFrom2 + " : " + inputFrom3;
 	}
 
 }
