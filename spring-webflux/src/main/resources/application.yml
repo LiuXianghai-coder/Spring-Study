@@ -1,2 +1,7 @@
 server:
   port: 8081
+spring:
+  r2dbc:
+    url: r2dbc:mysql://127.0.0.1:3306/lxh
+    password: 123456
+    username: root
