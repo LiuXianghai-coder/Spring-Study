@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>登录</title>
+    <link th:href="@{/css/index.css}" rel="stylesheet" />
+    <script src="https://unpkg.com/vue@next"></script>
+    <script type="text/javascript" th:src="@{/js/index.js}"></script>
+    <script type="text/javascript" th:src="@{/js/api.js}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios@0.12.0/dist/axios.min.js"></script>
+</head>
+<body>
+<section id="login" v-bind:class="isShake">
+    <form action="#" th:action="@{/login}" th:object="${user}" method="post">
+        <div class="info" v-bind:class="good">
+            <template v-for="item in msg.votes">
+                <pre>{{item}}</pre>
+            </template>
+        </div>
+        <label>
+            <input type="text" v-model="login.userAccount" th:field="*{userAccount}" placeholder="userAccount" />
+        </label>
+        <label>
+            <input type="password" v-model="login.password" th:field="*{password}" placeholder="password" />
+        </label>
+        <button type="submit">{{login.submitButton}}</button>
+    </form>
+</section>
+<script type="text/javascript">
+    Vue.createApp(LOGIN_FORM).mount("#login");
+</script>
+</body>
+</html>
