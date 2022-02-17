@@ -1,0 +1,23 @@
+spring:
+  h2:
+    console:
+      path: /h2-console
+      enabled: true
+      settings:
+        trace: true
+  datasource:
+    username: flowable
+    password: flowable
+    url: jdbc:h2:~/flowable-db/db
+    driver-class-name: org.h2.Driver
+
+management:
+  endpoint:
+    web:
+      exposure:
+        include: health,shutdown,env,info,flowable,mappings
+    flowable:
+      enabled: true
+    enabled-by-default: true
+    health:
+      show-details: always
