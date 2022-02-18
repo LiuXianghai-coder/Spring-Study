@@ -1,4 +1,4 @@
-package org.xhliu.springflowable.service;
+package org.xhliu.springflowable.service.impl;
 
 import org.flowable.engine.RuntimeService;
 import org.flowable.engine.TaskService;
@@ -13,7 +13,7 @@ import java.util.List;
  * @author xhliu
  * @create 2022-02-17-17:20
  **/
-@Service
+@Service(value = "mineFlowService")
 public class MineFlowService {
     @Resource
     private RuntimeService runtimeService;

@@ -3,7 +3,8 @@
     <process id="oneTaskProcess" name="The One Task Process">
         <startEvent id="theStart" />
         <sequenceFlow id="flow1" sourceRef="theStart" targetRef="theTask" />
-        <userTask id="theTask" name="my task" flowable:assignee="kermit" />
+<!--        <userTask id="theTask" name="my task" flowable:assignee="kermit" />-->
+        <userTask id="theTask" name="my task" flowable:assignee="${person.id}"/>
         <sequenceFlow id="flow2" sourceRef="theTask" targetRef="theEnd" />
         <endEvent id="theEnd" />
     </process>

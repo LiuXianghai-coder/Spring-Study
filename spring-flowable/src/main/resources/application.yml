@@ -1,4 +1,8 @@
 spring:
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
   h2:
     console:
       path: /h2-console
@@ -13,17 +17,5 @@ spring:
 
 management:
   endpoint:
-    web:
-      exposure:
-        include: health,shutdown,env,info,flowable,mappings
     flowable:
       enabled: true
-    enabled-by-default: true
-    health:
-      show-details: always
-
-# flowable 配置
-flowable:
-  # 关闭异步，不关闭历史数据的插入就是异步的，会在同一个事物里面，无法回滚
-  # 开发可开启会提高些效率，上线需要关闭
-  async-executor-activate: false

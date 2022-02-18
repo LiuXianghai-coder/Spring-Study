@@ -1,9 +1,11 @@
 package org.xhliu.springflowable.controller;
 
+import lombok.*;
 import org.flowable.task.api.Task;
-import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.xhliu.springflowable.service.MineFlowService;
+import org.xhliu.springflowable.service.FlowableService;
+import org.xhliu.springflowable.service.impl.MineFlowService;
 
 import javax.annotation.Resource;
 
@@ -18,12 +20,16 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
  **/
 @RestController
 public class MineFlowRestController {
-    @Resource
-    private MineFlowService flowService;
+    @Resource(name = "mineService")
+    private FlowableService flowService;
 
-    @PostMapping(path = "/process")
-    public void startProcessInstance() {
-        flowService.startProcess();
+    @PostMapping(path = "/process", consumes = {"application/json"})
+    public ResponseEntity<String> startProcessInstance(
+            @RequestBody StartProcessRepresentation representation
+    ) {
+        flowService.startProcess(representation.getAssignee());
+
+        return ResponseEntity.ok("OK");
     }
 
     @RequestMapping(value="/tasks", method= RequestMethod.GET, produces= APPLICATION_JSON_VALUE)
@@ -36,16 +42,24 @@ public class MineFlowRestController {
         return dtos;
     }
 
+    @Getter
+    @Setter
+    @ToString
+    @AllArgsConstructor(access = AccessLevel.PUBLIC)
     static class TaskRepresentation {
         private String id;
         private String name;
-        public TaskRepresentation(String id, String name) {
-            this.id = id;
-            this.name = name;
+    }
+
+    static class StartProcessRepresentation {
+        private String assignee;
+
+        public String getAssignee() {
+            return assignee;
         }
-        public String getId() { return id; }
-        public void setId(String id) { this.id = id; }
-        public String getName() { return name; }
-        public void setName(String name) { this.name = name; }
+
+        public void setAssignee(String assignee) {
+            this.assignee = assignee;
+        }
     }
 }
