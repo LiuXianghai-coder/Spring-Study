@@ -8,6 +8,7 @@ class SpringFlowableApplicationTests {
 
     @Test
     void contextLoads() {
+        System.out.println("a".length());
     }
 
 }

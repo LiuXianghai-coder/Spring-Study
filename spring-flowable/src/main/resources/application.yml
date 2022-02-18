@@ -6,10 +6,10 @@ spring:
       settings:
         trace: true
   datasource:
-    username: flowable
-    password: flowable
-    url: jdbc:h2:~/flowable-db/db
-    driver-class-name: org.h2.Driver
+    username: root
+    password: 12345678
+    url: jdbc:mysql://127.0.0.1:3306/flowable?useSSL=false
+    driver-class-name: com.mysql.cj.jdbc.Driver
 
 management:
   endpoint:
@@ -21,3 +21,9 @@ management:
     enabled-by-default: true
     health:
       show-details: always
+
+# flowable 配置
+flowable:
+  # 关闭异步，不关闭历史数据的插入就是异步的，会在同一个事物里面，无法回滚
+  # 开发可开启会提高些效率，上线需要关闭
+  async-executor-activate: false
