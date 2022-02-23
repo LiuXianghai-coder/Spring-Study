@@ -20,6 +20,7 @@
         <maven.compiler.version>11</maven.compiler.version>
         <maven.target.version>11</maven.target.version>
         <flowable.version>6.7.2</flowable.version>
+        <guava.version>31.0.1-jre</guava.version>
     </properties>
 
     <dependencies>
@@ -89,6 +90,12 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-configuration-processor</artifactId>
             <optional>true</optional>
+        </dependency>
+
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>${guava.version}</version>
         </dependency>
 
         <dependency>
