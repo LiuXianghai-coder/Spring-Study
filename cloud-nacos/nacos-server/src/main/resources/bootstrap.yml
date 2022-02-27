@@ -1,0 +1,13 @@
+server:
+  port: 9000
+
+spring:
+  application:
+    name: config1.properties
+  cloud:
+    nacos:
+      config:
+        server-addr: 127.0.0.1:8848 # 配置中心地址
+        file-extension: yaml # 配置文件后缀名
+        namespace: aafc34c4-e228-4fba-9610-ee64278fc805 # 命名空间 ID
+        group: DEFAULT_GROUP # 指定要获取配置的组
