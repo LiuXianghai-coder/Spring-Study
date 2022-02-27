@@ -1,0 +1,25 @@
+spring:
+  profiles:
+    active: copied
+
+server:
+  port: 8761 # Eureka 注册中心的端口
+
+eureka:
+  instance:
+    # 设置当前 Eureka 实例的主机名
+    hostname: xhliu-eureka-server
+  client:
+    # 由于当前所在的实例为注册中心，因此不需要向该注册中心注册自己
+    register-with-eureka: false
+    # 注册中心的职责就是维护服务器实例，不需要去检索服务
+    fetch-registry: false
+    service-url:
+      # 暴露给其它 Eureka 客户端的注册地址，Map 结构
+      defaultZone: http://127.0.0.1:8761/eureka/
+logging:
+  level:
+    com:
+      netflix:
+        eureka: OFF
+        discovery: OFF

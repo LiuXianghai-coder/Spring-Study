@@ -1,0 +1,20 @@
+server:
+  port: 8050 # Eureka 注册中心的端口
+
+spring:
+  application:
+    # 同一个集群的应用程序名必须是一样的
+    name: xhliu-server
+
+eureka:
+  instance:
+    # 设置当前 Eureka 实例的主机名
+    hostname: xhliu-eureka-copied
+  client:
+    # 由于当前所在的实例为注册中心，因此不需要向该注册中心注册自己
+    register-with-eureka: false
+    # 注册中心的职责就是维护服务器实例，不需要去检索服务
+    fetch-registry: false
+    service-url:
+      # 将 copied 注册到 master，使得其能够被 master 发现
+      defaultZone: http://127.0.0.1:8040/eureka/

@@ -1,0 +1,12 @@
+server:
+  port: 8000 # 当前服务的端口
+spring:
+  application:
+    # 当前服务的应用程序名称
+    name: "xhliu-app"
+
+eureka:
+  client:
+    service-url:
+      # 该服务注册到 Eureka 注册中心的地址，Map 结构
+      defaultZone: http://127.0.0.1:8761/eureka/
