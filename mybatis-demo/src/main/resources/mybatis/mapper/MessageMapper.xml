@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.xhliu.mybatis.mapper.MessageMapper">
+    <!-- 为当前的 Mapper 开启二级缓存，注意，对应的实体类应当是实现了序列化的 -->
+    <cache />
+
+    <!-- 要查询的数据列名集合 -->
+    <sql id="allColumns">
+        id, msg_id, status, content, deleted, create_time, update_time
+    </sql>
+
+    <!-- 要插入的列名的集合 -->
+    <sql id="insertAllColumns">
+        msg_id, status, content, deleted, create_time
+    </sql>
+
+    <!-- 定义 ORM 映射关系 property 为对象的属性，column 为对应的数据表的列名 -->
+    <resultMap id="messageVoResultMap" type="org.xhliu.mybatis.vo.Message">
+        <id column="id" property="id"/>
+        <result column="msg_id" property="msgId"/>
+        <result column="status" property="status"/>
+        <result column="content" property="content"/>
+        <result column="deleted" property="deleted"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+    </resultMap>
+
+    <!-- 设置对应的 ORM -->
+    <resultMap id="messageAndDetail" type="org.xhliu.mybatis.vo.Message">
+        <id column="id" property="id"/>
+        <result column="msg_id" property="msgId"/>
+        <result column="status" property="status"/>
+        <result column="content" property="content"/>
+        <result column="deleted" property="deleted"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+        <!-- 通过 association 关联到 messageDetail 来实现一对一的级联关系 -->
+        <association property="messageDetail" column="msg_id"
+                     select="mybatis.mapper.MessageDetailMapper.getMessageByMsgId" />
+    </resultMap>
+
+    <!-- parameterType 注意与传入的参数相匹配 -->
+    <!-- 注意这里的 messageVoResultMap 是上文定义的 ORM 关系 -->
+    <select id="getMessageById" parameterType="Long" resultMap="messageVoResultMap">
+        SELECT
+        <include refid="allColumns"/>
+        FROM
+        tb_message
+        WHERE
+        id=#{id} <!-- 这里的 #{id} 就是传入的查询参数 -->
+    </select>
+
+    <!-- 通过 java.util.Map 对象来传入对应的查询参数 -->
+    <select id="getMessageByMap" parameterType="java.util.Map" resultMap="messageVoResultMap">
+        SELECT
+        <include refid="allColumns"/>
+        FROM
+        tb_message
+        WHERE
+        id=#{id} AND msg_id=#{msg_id} <!-- 这里的 id 和 msg_id 都是 map 中的 key -->
+    </select>
+
+    <!-- mybatis.vo.Message 为自定义的实体对象的全路径名 -->
+    <select id="getMessageByEntity" parameterType="org.xhliu.mybatis.vo.Message" resultMap="messageVoResultMap">
+        SELECT
+        <include refid="allColumns"/>
+        FROM
+        tb_message
+        WHERE
+        id=#{id} AND msg_id=#{msgId} <!-- 这里的 id 和 msgId 是实体的属性名 -->
+    </select>
+
+    <!-- 这里使用的传入参数的方式是通过参数实体对象来传递的， 注意定义 keyProperty，这个是主键 -->
+    <insert id="insert" parameterType="org.xhliu.mybatis.vo.Message" keyProperty="id">
+        INSERT INTO
+        tb_message(<include refid="insertAllColumns" />)
+        VALUES (#{msgId}, #{status}, #{content}, #{deleted}, #{createTime})
+    </insert>
+
+    <update id="update" parameterType="org.xhliu.mybatis.vo.Message">
+        UPDATE tb_message SET content=#{content} WHERE id=#{id}
+    </update>
+
+    <delete id="delete" parameterType="org.xhliu.mybatis.vo.Message">
+        DELETE FROM tb_message WHERE id=#{id} <!-- 按照 id 来删除数据 -->
+    </delete>
+
+    <!-- 关联之后，只需要使用一般的方法进行数据操作即可 -->
+    <select id="getMessageAndMessageDetail" parameterType="long" resultMap="messageAndDetail">
+        SELECT
+        <include refid="allColumns" />
+        FROM
+        tb_message
+        WHERE
+        id=#{id}
+    </select>
+</mapper>

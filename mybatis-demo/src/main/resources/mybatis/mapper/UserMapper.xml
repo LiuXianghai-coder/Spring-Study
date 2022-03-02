@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!-- namespace 对应相关的 DAO 接口，Mybatis 会根据这个接口通过代理的方式生成对应的数据访问对象 -->
+<mapper namespace="org.xhliu.mybatis.mapper.UserMapper" >
+    <!-- 定义一些列名集合，之后可以通过引用的方式直接添加到对应的位置 -->
+    <sql id="allColumn">
+        id, name, age
+    </sql>
+
+    <!-- 一个简单的查询，这里没有配置 ORM 关系，因此会直接将列名映射为对象的属性名 -->
+    <select id="getUserById" parameterType="long" resultType="org.xhliu.mybatis.vo.User">
+        SELECT
+        <include refid="allColumn"/> <!-- 引入之前的列名集合 -->
+        FROM
+        tb_user
+        WHERE
+        id=#{id}
+    </select>
+
+    <resultMap id="userResult" type="org.xhliu.mybatis.vo.User">
+        <id column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="age" property="age"/>
+        <!-- 使用 collection 表示这是一个一对多的级联关系，注意这里的 column 表示的是关联到另一个表的列，但是列名是当前表的列名 -->
+        <collection property="userContacts" column="id"
+                    select="mybatis.mapper.UserContactMapper.getUserContactByUserId" />
+    </resultMap>
+</mapper>

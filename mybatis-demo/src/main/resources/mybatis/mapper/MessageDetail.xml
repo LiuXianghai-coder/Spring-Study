@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.xhliu.mybatis.mapper.MessageDetailMapper">
+    <sql id="allColumns">
+        id, msg_id, detail_content, create_time, update_time
+    </sql>
+
+    <!-- 由于是一对一的关系，因此只需要将在查询 Message 时指定对应的主键来查询对应的对象即可 -->
+    <select id="getMessageByMsgId" parameterType="string" resultType="org.xhliu.mybatis.vo.MessageDetail">
+        SELECT
+        <include refid="allColumns"/>
+        FROM
+        tb_message_detail
+        WHERE
+        msg_id = #{msgId}
+    </select>
+</mapper>
