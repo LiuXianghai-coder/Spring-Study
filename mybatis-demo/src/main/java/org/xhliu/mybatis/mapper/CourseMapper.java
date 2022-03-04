@@ -1,9 +1,6 @@
 package org.xhliu.mybatis.mapper;
 
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.ResultMap;
-import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.*;
 import org.xhliu.mybatis.vo.Course;
 
 /**
@@ -12,6 +9,10 @@ import org.xhliu.mybatis.vo.Course;
  */
 @Mapper
 public interface CourseMapper {
+    @Results({
+            @Result(column = "course_name", property = "courseName"),
+            @Result(column = "course_id", property = "courseId")
+    })
     @Select("SELECT * FROM course WHERE course_id=#{courseId}")
     Course getCourse(@Param("courseId") long courseId);
 }
