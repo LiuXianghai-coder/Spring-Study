@@ -1,6 +1,0 @@
-server:
-  port: 9000
-
-spring:
-  application:
-    name: config1.properties
