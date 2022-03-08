@@ -16,6 +16,18 @@ public class SimpleController {
     @GetMapping(path = "/say")
     public String say() {
         log.info("[spring-cloud-gateway-service] say Hello");
-        return "[spring-cloud-gateway-service] say Hello";
+        try {
+            Thread.sleep(500);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        return "[spring-cloud-gateway-service] say Hello\n";
+    }
+
+    @GetMapping("/retryRoute")
+    public String error() throws Throwable {
+        System.out.println("------------------HelloController.retryRoute!------------------");
+        throw new RuntimeException();
     }
 }
