@@ -1,0 +1,17 @@
+server:
+  port: 8000
+
+spring:
+  cloud:
+    gateway:
+      routes:
+        - id: path_route
+          uri: http://127.0.0.1:8000 # 访问地址
+          filters:
+            - name: StripPrefix
+              args:
+                parts: 1
+          predicates:
+            - name: Path
+              args:
+                xhliu: /gateway/**
