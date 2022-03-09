@@ -8,13 +8,11 @@
         <version>2.6.3</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
-
     <groupId>org.xhliu</groupId>
-    <artifactId>spring-gateway</artifactId>
+    <artifactId>gateway-sentinel</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>spring-gateway</name>
-    <description>spring-gateway</description>
-
+    <name>gateway-sentinel</name>
+    <description>gateway-sentinel</description>
     <properties>
         <java.version>11</java.version>
         <maven.compile.version>11</maven.compile.version>
@@ -22,29 +20,44 @@
         <gateway.version>3.1.1</gateway.version>
         <spring.cloud.version>3.1.1</spring.cloud.version>
         <nacos.version>2.2.7.RELEASE</nacos.version>
+        <sentinel.version>1.8.3</sentinel.version>
     </properties>
 
     <dependencies>
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-gateway</artifactId>
-            <version>${gateway.version}</version>
+            <version>${spring.cloud.version}</version>
         </dependency>
 
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-redis-reactive</artifactId>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter</artifactId>
+            <version>${spring.cloud.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-loadbalancer</artifactId>
+            <version>${spring.cloud.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.alibaba.csp</groupId>
+            <artifactId>sentinel-core</artifactId>
+            <version>${sentinel.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.alibaba.csp</groupId>
+            <artifactId>sentinel-spring-cloud-gateway-adapter</artifactId>
+            <version>${sentinel.version}</version>
         </dependency>
 
         <dependency>
             <groupId>com.alibaba.cloud</groupId>
             <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
             <version>${nacos.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
 
         <dependency>

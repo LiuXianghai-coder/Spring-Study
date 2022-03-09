@@ -36,6 +36,9 @@ spring:
               args:
                 retries: 3 #请求重试次数，默认值是3
                 status: 500 #HTTP请求返回的状态码，针对指定状态码进行重试
+            - name: Xhliu
+              args:
+                name: Make it simple
           predicates:
             - name: Path
               args:

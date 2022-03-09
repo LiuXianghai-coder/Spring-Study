@@ -1,0 +1,26 @@
+server:
+  port: 8010
+
+spring:
+  application:
+    name: gateway-nacos-consumer
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 127.0.0.1:8848
+    gateway:
+      discovery:
+        locator:
+          enabled: true # 开启从注册中心到动态创建路由的功能
+          lower-case-service-id: true # 是否使用 service-id 的小写，默认采用大写
+      routes:
+        - id: gateway-nacos-provider
+          uri: lb://gateway-nacos-provider # lb 表示从注册中心获取服务，gateway-nacos-provider 表示目标服务在注册中心上的服务名
+          predicates:
+            - name: Path
+              args:
+                path: /nacos/**
+          filters:
+            - name: StripPrefix
+              args:
+                parts: 1

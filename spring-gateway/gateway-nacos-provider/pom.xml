@@ -10,10 +10,10 @@
     </parent>
 
     <groupId>org.xhliu</groupId>
-    <artifactId>spring-gateway</artifactId>
+    <artifactId>gateway-nacos-provider</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>spring-gateway</name>
-    <description>spring-gateway</description>
+    <name>gateway-nacos-provider</name>
+    <description>gateway-nacos-provider</description>
 
     <properties>
         <java.version>11</java.version>
@@ -26,25 +26,26 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-gateway</artifactId>
-            <version>${gateway.version}</version>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-webflux</artifactId>
         </dependency>
 
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-redis-reactive</artifactId>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-loadbalancer</artifactId>
+            <version>${spring.cloud.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter</artifactId>
+            <version>${spring.cloud.version}</version>
         </dependency>
 
         <dependency>
             <groupId>com.alibaba.cloud</groupId>
             <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
             <version>${nacos.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
 
         <dependency>
