@@ -1,0 +1,48 @@
+server:
+  port: 8000
+
+management:
+  endpoint:
+    gateway:
+      enabled: true # 网关指标监控
+  endpoints:
+    web:
+      exposure:
+        include: "*" # 将所有端点都暴露出来
+
+spring:
+  cloud:
+    gateway:
+      routes:
+        - id: path_route
+          uri: http://127.0.0.1:8000 # 访问地址
+          filters:
+            - name: StripPrefix
+              args:
+                parts: 1
+            - name: AddRequestParameter
+              args:
+                .name: name
+                .value: xhliu
+            - name: AddResponseHeader
+              args:
+                .name: X-Response-Name
+                .value: xhliu
+#            - name: RequestRateLimiter
+#              args:
+#                redis-rate-limiter.replenishRate: 1 # 令牌桶中令牌的填充速度
+#                redis-rate-limiter.burstCapacity: 1 # 令牌桶中的最大令牌容量，表示每秒用户最大能够执行的请求数量
+            - name: Retry
+              args:
+                retries: 3 #请求重试次数，默认值是3
+                status: 500 #HTTP请求返回的状态码，针对指定状态码进行重试
+            - name: Xhliu
+              args:
+                name: Make it simple
+          predicates:
+            - name: Path
+              args:
+                xhliu: /gateway/**
+  redis:
+    port: 6379
+    host: 127.0.0.1

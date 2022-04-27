@@ -1,13 +1,13 @@
-package org.xhliu.nacosserver;
+package org.xhliu.sentinel;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class NacosServerApplication {
+public class GatewaySentinelApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(NacosServerApplication.class, args);
+        SpringApplication.run(GatewaySentinelApplication.class, args);
     }
 
 }

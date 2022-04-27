@@ -1,0 +1,56 @@
+server:
+  port: 8020
+
+spring:
+  application:
+    name: gateway-sentinel-demo
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 127.0.0.1:8848
+    gateway:
+      discovery:
+        locator:
+          enabled: false
+          lower-case-service-id: false
+      routes:
+        - id: gateway-nacos-provider
+          uri: lb://gateway-nacos-provider
+          predicates:
+            - name: Path
+              args:
+                path: /nacos/**
+          filters:
+            - name: StripPrefix
+              args:
+                parts: 1
+        - id: foo_route
+          uri: lb://gateway-nacos-provider
+          predicates:
+            - name: Path
+              args:
+                path: /foo/**
+          filters:
+            - name: StripPrefix
+              args:
+                parts: 1
+        - id: bar_route
+          uri: lb://gateway-nacos-provider
+          predicates:
+            - name: Path
+              args:
+                path: /bar/**
+          filters:
+            - name: StripPrefix
+              args:
+                parts: 1
+        - id: check_route
+          uri: lb://gateway-nacos-provider
+          predicates:
+            - name: Path
+              args:
+                path: /check/**
+          filters:
+            - name: StripPrefix
+              args:
+                parts: 1

@@ -1,13 +1,13 @@
-package org.xhliu.nacosserver;
+package org.xhliu.gateway;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class NacosServerApplication {
+public class SpringGatewayApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(NacosServerApplication.class, args);
+        SpringApplication.run(SpringGatewayApplication.class, args);
     }
 
 }

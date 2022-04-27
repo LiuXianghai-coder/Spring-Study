@@ -3,11 +3,30 @@ server:
 
 spring:
   application:
-    name: config1.properties
+    name: nacos_config_example
   cloud:
     nacos:
       config:
         server-addr: 127.0.0.1:8848 # 配置中心地址
         file-extension: yaml # 配置文件后缀名
-        namespace: aafc34c4-e228-4fba-9610-ee64278fc805 # 命名空间 ID
+        namespace: 0af1887f-37e9-4a33-af1b-e874a0f26377 # 命名空间 ID
         group: DEFAULT_GROUP # 指定要获取配置的组
+        name: nacos_config_example # 对应的配置文件的 DataId
+        refresh-enabled: true
+        username: nacos
+        password: nacos
+
+        # 多配置组示例，这里有个坑，data-id 必须是是 *.文件名后缀 的形式才能获取到对应的属性
+        extension-configs:
+          -
+            data-id: config2.yaml
+            group: XHLIU
+            refresh: true
+          -
+            data-id: config3.yaml
+            group: DEFAULT_GROUP
+            refresh: true
+          -
+            data-id: config4.yaml
+            group: DEFAULT_GROUP
+            refresh: true

@@ -5,47 +5,46 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.6.4</version>
+        <version>2.6.3</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
 
     <groupId>org.xhliu</groupId>
-    <artifactId>mybatis-demo</artifactId>
+    <artifactId>spring-gateway</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>mybatis-demo</name>
-    <description>mybatis-demo</description>
+    <name>spring-gateway</name>
+    <description>spring-gateway</description>
 
     <properties>
         <java.version>11</java.version>
-        <maven.compiler.target>11</maven.compiler.target>
-        <maven.compiler.source>11</maven.compiler.source>
-        <mybatis.version>3.5.9</mybatis.version>
-        <mysql.version>8.0.28</mysql.version>
-        <mybatis.starter.version>2.2.2</mybatis.starter.version>
+        <maven.compile.version>11</maven.compile.version>
+        <maven.compile.target>11</maven.compile.target>
+        <gateway.version>3.1.1</gateway.version>
+        <spring.cloud.version>3.1.1</spring.cloud.version>
+        <nacos.version>2.2.7.RELEASE</nacos.version>
     </properties>
 
     <dependencies>
         <dependency>
-            <groupId>org.mybatis.spring.boot</groupId>
-            <artifactId>mybatis-spring-boot-starter</artifactId>
-            <version>${mybatis.starter.version}</version>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-gateway</artifactId>
+            <version>${gateway.version}</version>
         </dependency>
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-jdbc</artifactId>
+            <artifactId>spring-boot-starter-data-redis-reactive</artifactId>
         </dependency>
 
         <dependency>
-            <groupId>org.mybatis</groupId>
-            <artifactId>mybatis</artifactId>
-            <version>${mybatis.version}</version>
+            <groupId>com.alibaba.cloud</groupId>
+            <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
+            <version>${nacos.version}</version>
         </dependency>
 
         <dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
-            <version>${mysql.version}</version>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
 
         <dependency>
