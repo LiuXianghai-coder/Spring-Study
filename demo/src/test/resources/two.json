@@ -1,0 +1,66 @@
+{
+  "response": {
+    "code": "1000",
+    "message": "成功"
+  },
+  "projectView": {
+    "projId": "0000010",
+    "proj": {
+      "id": "jokan1al",
+      "name": "Project 2",
+      "industryType": "soccer",
+      "createdDate": "2022-04-27T09:04:05.018+00:00",
+      "delFlag": 1,
+      "investScale": 10,
+      "stock": 300
+    },
+    "productViewList": [
+      {
+        "id": null,
+        "projId": "ee78b61",
+        "name": "Example 3",
+        "periodViewList": [
+          {
+            "id": "ab41ea8",
+            "projId": "572c716",
+            "add": false
+          },
+          {
+            "id": "b5bccee",
+            "projId": "23b8348",
+            "add": null
+          },
+          {
+            "id": "d274838",
+            "projId": "87349b1",
+            "add": true
+          }
+        ],
+        "period": true
+      },
+      {
+        "id": null,
+        "projId": "c525286",
+        "name": "Example 2",
+        "periodViewList": [
+          {
+            "id": "d274838",
+            "projId": "87349b1",
+            "add": true
+          },
+          {
+            "id": "b5bccee",
+            "projId": "23b8348",
+            "add": null
+          },
+          {
+            "id": "f053fd0",
+            "projId": "a2b8e13",
+            "add": true
+          }
+        ],
+        "period": true
+      }
+    ]
+  }
+}

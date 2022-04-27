@@ -1,0 +1,66 @@
+{
+  "response": {
+    "code": "404",
+    "message": "失败"
+  },
+  "projectView": {
+    "projId": "0000899",
+    "proj": {
+      "id": "jklai1l",
+      "name": "Project 3",
+      "industryType": "math",
+      "createdDate": "2022-04-27T09:04:36.626+00:00",
+      "delFlag": 1,
+      "investScale": 300,
+      "stock": 300
+    },
+    "productViewList": [
+      {
+        "id": null,
+        "projId": "ee78b61",
+        "name": "Example 3",
+        "periodViewList": [
+          {
+            "id": "ab41ea8",
+            "projId": "572c716",
+            "add": false
+          },
+          {
+            "id": "b5bccee",
+            "projId": "23b8348",
+            "add": null
+          },
+          {
+            "id": "d274838",
+            "projId": "87349b1",
+            "add": true
+          }
+        ],
+        "period": true
+      },
+      {
+        "id": null,
+        "projId": "7da8f4e",
+        "name": "Example 1",
+        "periodViewList": [
+          {
+            "id": "0x3f3f3f3f",
+            "projId": "eaa8a53",
+            "add": false
+          },
+          {
+            "id": "b5bccee",
+            "projId": "23b8348",
+            "add": null
+          },
+          {
+            "id": "afec75e",
+            "projId": "d274838",
+            "add": true
+          }
+        ],
+        "period": false
+      }
+    ]
+  }
+}
