@@ -1,65 +1,63 @@
 {
-  "response": {
-    "code": "1000",
-    "message": "成功"
+  "indexList#1.page": {
+    "oldVal": 2,
+    "newVal": 100
   },
-  "projectView": {
-    "projId": "0000010",
-    "proj": {
-      "id": "jokan1al",
-      "name": "Project 2",
-      "industryType": "soccer",
-      "createdDate": "2022-04-27T09:04:05.018+00:00",
-      "delFlag": 1,
-      "investScale": 10,
-      "stock": 300
-    },
-    "productViewList": [
+  "indexList#0.chapterName": {
+    "oldVal": "comics",
+    "newVal": "algorithm"
+  },
+  "bookName": {
+    "oldVal": "APUE",
+    "newVal": "CSAPP"
+  },
+  "indexList#1.chapterName": {
+    "oldVal": "introduction",
+    "newVal": "performance"
+  },
+  "indexList#0.page": {
+    "oldVal": 10,
+    "newVal": 50
+  },
+  "authors": {
+    "oldVal": [
       {
-        "id": null,
-        "projId": "ee78b61",
-        "name": "Example 3",
-        "periodViewList": [
-          {
-            "id": "ab41ea8",
-            "projId": "572c716",
-            "add": false
-          },
-          {
-            "id": "b5bccee",
-            "projId": "23b8348",
-            "add": null
-          },
-          {
-            "id": "d274838",
-            "projId": "87349b1",
-            "add": true
-          }
-        ],
-        "period": true
+        "name": "Ken Thomson",
+        "age": 65,
+        "describe": "Unix Invented",
+        "education": {
+          "name": "BSD",
+          "level": "PHD"
+        }
       },
       {
-        "id": null,
-        "projId": "c525286",
-        "name": "Example 2",
-        "periodViewList": [
-          {
-            "id": "d274838",
-            "projId": "87349b1",
-            "add": true
-          },
-          {
-            "id": "b5bccee",
-            "projId": "23b8348",
-            "add": null
-          },
-          {
-            "id": "f053fd0",
-            "projId": "a2b8e13",
-            "add": true
-          }
-        ],
-        "period": true
+        "name": "Richard",
+        "age": 44,
+        "describe": "Unix Professor",
+        "education": {
+          "name": "MIT",
+          "level": "MASTER"
+        }
+      }
+    ],
+    "newVal": [
+      {
+        "name": "Ritchie Denis",
+        "age": 44,
+        "describe": "C Programmer",
+        "education": {
+          "name": "MIT",
+          "level": "PHD"
+        }
+      },
+      {
+        "name": "Brain Kenihan",
+        "age": 55,
+        "describe": "Awk Programmer",
+        "education": {
+          "name": "CMU",
+          "level": "PHD"
+        }
       }
     ]
   }
