@@ -16,6 +16,7 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static java.util.concurrent.ThreadLocalRandom.current;
 
@@ -176,7 +177,7 @@ public class Solution {
             String curFiled, Map<String, Node<Object>> map
     ) {
         if (isCollection(fieldClass))
-            return equalsCollect((Collection<?>) v1, (Collection<?>) v2, curFiled, map) ? EQUALS : NO_EQUALS;
+            return equalsCollect(v1, v2, curFiled, map) ? EQUALS : NO_EQUALS;
         return DISABLE;
     }
 
@@ -241,38 +242,40 @@ public class Solution {
      * 判断两个集合（Collection）中的元素是否相同，这里的实现只针对 Set 和 List <br />
      * 对于 Set : 如果存在不同的元素，则直接将两个集合作为比较对象保存到 differMap 中 <br />
      * 对于 List : 如果相同的索引位置的元素不同，那么会记录当前元素的索引位置的新旧值到 differMap，
-     * 如果两个列表的长度不一致，则会使用 null 来代替不存在的元素
-     * 对于元素的比较同样基于 {@code dfs}
+     * 如果两个列表的长度不一致，则会使用 null 来代替不存在的元素，对于元素的比较同样基于 {@code dfs}<br />
+     * 对于数组 : 首先将数组转换为对应的 {@code List}，再使用 List 的比较方法进行比较 <br />
+     *
      * <br />
      * <br />
      * 对于其它的集合类型，将会抛出一个 {@code RuntimeException}
      * <br />
      * <br />
      *
-     * @param c1        : 旧集合数据对象
-     * @param c2        : 新集合数据对象
+     * @param o1        : 旧集合数据对象
+     * @param o2        : 新集合数据对象
      * @param prefix    : 当前集合属性所在的级别的前缀字符串表现形式
      * @param differMap : 存储不同属性字段的 Map
      */
     static boolean equalsCollect(
-            Collection<?> c1, Collection<?> c2,
+            Object o1, Object o2,
             String prefix, Map<String, Node<Object>> differMap
     ) {
-        checkParams(c1.getClass() != c2.getClass(), "集合 c1 和 c2 的类型不一致.");
+        Class<?> c1 = o1.getClass(), c2 = o2.getClass();
+        checkParams(c1 != c2, "集合 o1 和 o2 的类型不一致.");
 
         /*
             对于集合来讲，只能大致判断一下两个集合的元素是否是一致的，
             这是由于集合本身不具备随机访问的特性，因此如果两个集合存在不相等的元素，
             那么将会直接将两个集合存储的不同节点中
          */
-        if (c1 instanceof Set) {
+        if (o1 instanceof Set) {
             // 分别计算两个集合的信息指纹
             long h1 = 0, h2 = 0;
             long hash = BigInteger
                     .probablePrime(32, current())
                     .longValue(); // 随机的大质数用于随机化信息指纹
 
-            Set<?> s1 = (Set<?>) c1, s2 = (Set<?>) c2;
+            Set<?> s1 = (Set<?>) o1, s2 = (Set<?>) o2;
 
             for (Object obj : s1) h1 += genHash(obj) * hash;
             for (Object obj : s2) h2 += genHash(obj) * hash;
@@ -289,36 +292,55 @@ public class Solution {
             对于列表来讲，由于列表的元素存在顺序，
             因此可以针对不同的索引位置的元素进行对应的比较
          */
-        if (c1 instanceof List) {
-            boolean res = true;
-            List<?> list1 = (List<?>) c1, list2 = (List<?>) c2;
-            Map<String, Node<Object>> tmpMap = new HashMap<>(); // 记录相同索引位置的索引元素的不同
-
-            int i;
-            for (i = 0; i < list1.size() && i < list2.size(); ++i) {
-                res &= dfs(list1.get(i), list2.get(i), prefix + "#" + i, tmpMap);
-            }
-
-            differMap.putAll(tmpMap); // 添加到原有的不同 differMap 中
-
-            // 后续如果集合存在多余的元素，那么肯定这两个位置的索引元素不同
-            while (i < list1.size()) {
-                res = false;
-                differMap.put(prefix + "#" + i, new Node<>(list1.get(i), null));
-                i++;
-            }
-            while (i < list2.size()) {
-                res = false;
-                differMap.put(prefix + "#" + i, new Node<>(null, list2.get(i)));
-                i++;
-            }
-            // 后续元素处理结束
-
-            return res;
+        if (o1 instanceof List) {
+            List<?> list1 = (List<?>) o1, list2 = (List<?>) o2;
+            return differList(list1, list2, prefix, differMap);
         }
 
-        log.debug("type={}", c1.getClass());
+        /*
+            对于数组类型的处理，可以转换为 List 进行类似的处理
+         */
+        if (c1.isArray()) {
+            List<?> list1 = Arrays.stream((Object[]) o1).collect(Collectors.toList());
+            List<?> list2 = Arrays.stream((Object[]) o2).collect(Collectors.toList());
+            return differList(list1, list2, prefix, differMap);
+        }
+
+        log.debug("type={}", o1.getClass());
         throw new RuntimeException("未能处理的集合类型异常");
+    }
+
+    /**
+     * 比较两个 {@code List} 对象之间的不同元素
+     */
+    static boolean differList(
+            List<?> list1, List<?> list2,
+            String prefix, Map<String, Node<Object>> differMap
+    ) {
+        boolean res = true;
+        Map<String, Node<Object>> tmpMap = new HashMap<>(); // 记录相同索引位置的索引元素的不同
+
+        int i;
+        for (i = 0; i < list1.size() && i < list2.size(); ++i) {
+            res &= dfs(list1.get(i), list2.get(i), prefix + "#" + i, tmpMap);
+        }
+
+        differMap.putAll(tmpMap); // 添加到原有的不同 differMap 中
+
+        // 后续如果集合存在多余的元素，那么肯定这两个位置的索引元素不同
+        while (i < list1.size()) {
+            res = false;
+            differMap.put(prefix + "#" + i, new Node<>(list1.get(i), null));
+            i++;
+        }
+        while (i < list2.size()) {
+            res = false;
+            differMap.put(prefix + "#" + i, new Node<>(null, list2.get(i)));
+            i++;
+        }
+        // 后续元素处理结束
+
+        return res;
     }
 
     /**
@@ -374,7 +396,7 @@ public class Solution {
      * <br />
      * 对于基本数据类型来讲，将会将其强制转换为 {@code long} 类型的整数参与计算
      * <br />
-     * 而对于集合类型 {@code Collection} 来讲，将会将整个集合整体视为一个字段，
+     * 而对于集合类型 {@code Collection} 和数组类型来讲，将会将整个集合整体视为一个字段，
      * 将集合中所有元素按照相同的方式计算 hash 值，最后相加即为该集合的 hash 值
      * <br />
      * 对于其它已经自定义 hashCode 方法的对象（如 {@code BigInteger}、{@code Date} 等），
@@ -390,14 +412,25 @@ public class Solution {
         Class<?> c = obj.getClass();
         long ans = 0L;
 
-        if (Collection.class.isAssignableFrom(c)) {
+        // 能够自行产生 hashcode 的类型
+        if (c.isPrimitive() || isBasicType(c) || isEnum(c) || isMap(c)) {
+            return Objects.hashCode(obj);
+        }
+
+        if (c.isArray()) { // 针对数组类型
+            Iterator<?> iterator = Arrays.stream(((Object[]) obj)).iterator();
+            while (iterator.hasNext())
+                ans = ans * PRIME + genHash(iterator.next());
+            return ans;
+        }
+
+        if (Collection.class.isAssignableFrom(c)) { // 针对集合类型
             for (Object tmp : (Collection<?>) obj)
-                ans += genHash(tmp);
+                ans = ans * PRIME + genHash(tmp);
             return ans;
         }
 
         Field[] fields = obj.getClass().getDeclaredFields();
-
         for (Field field : fields) {
             int modifier = field.getModifiers();
             if ((modifier & Modifier.STATIC) != 0) continue;
@@ -406,12 +439,6 @@ public class Solution {
                 Object tmp = field.get(obj);
                 if (field.getType().isPrimitive()) { // 对于基本数据类型需要进行特殊的处理
                     ans = ans * PRIME + ((Number) tmp).longValue();
-                    continue;
-                }
-
-                // 计算集合类型的 hashcode
-                if (Collection.class.isAssignableFrom(field.getType())) {
-                    ans = ans * PRIME + genHash(tmp);
                     continue;
                 }
 
