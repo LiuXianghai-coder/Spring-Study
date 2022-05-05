@@ -1,12 +1,12 @@
 package com.example.demo.inter;
 
 import com.example.demo.domain.data.*;
+import com.google.common.base.Objects;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.boot.test.context.SpringBootTest;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
@@ -23,7 +23,7 @@ import static java.util.concurrent.ThreadLocalRandom.current;
  * @author xhliu
  * @create 2022-03-18-15:00
  **/
-@SpringBootTest
+//@SpringBootTest
 public class Solution {
     static final Set<Class<?>> BASIC_CLASS_SET = new HashSet<>();
 
@@ -73,18 +73,25 @@ public class Solution {
      * @return : 如果两个对象的属性完全一致，返回 true，否则，返回 false
      */
     boolean compObject(Object o1, Object o2) {
-        Map<String, Node<Object>> map = new HashMap<>();
-        boolean res = dfs(o1, o2, "", map);
-
-        GsonBuilder builder = new GsonBuilder();
-        Gson gson = builder.setPrettyPrinting().create();
-
-        System.out.println(gson.toJson(map));
-
-        return res;
+        Map<String, Node<Object>> map = compare(o1, o2);
+        return map.size() == 0;
     }
 
-    boolean dfs(Object o1, Object o2, String prefix, Map<String, Node<Object>> map) {
+    /**
+     * 比较两个对象，通过反射的方式递归地对每个字段进行比较，对于不同的字段，将会记录当前的递归字段属性，
+     * 同时通过一个 {@code Node} 对象来记录两者之间该属性的旧值和新值
+     *
+     * @param oldObj : 旧值对象
+     * @param newObj : 新值对象
+     * @return 记录两个对象不同属性的 Map，Map 中存有的 {@code key} 应当是以 {@code .} 的分隔字符串形式
+     */
+    Map<String, Node<Object>> compare(Object oldObj, Object newObj) {
+        Map<String, Node<Object>> map = new HashMap<>();
+        dfs(oldObj, newObj, "", map);
+        return map;
+    }
+
+    static boolean dfs(Object o1, Object o2, String prefix, Map<String, Node<Object>> map) {
         if (o1 == null && o2 == null) return true;
         if (o1 == null) {
             map.put(prefix, new Node<>(null, o2));
@@ -128,15 +135,17 @@ public class Solution {
         return res;
     }
 
-    final static int EQUALS     =   1 << 1;     // 表示比较的对象的当前属性相等
-    final static int NO_EQUALS  =   1 << 2;     // 表示当前对象的类型能够进行处理，但是两个对象值并不相等
-    final static int DISABLE    =   1 << 3;     // 表示当前传入的对象该方法无法进行处理
+    final static int EQUALS = 1 << 1;     // 表示比较的对象的当前属性相等
+    final static int NO_EQUALS = 1 << 2;     // 表示当前对象的类型能够进行处理，但是两个对象值并不相等
+    final static int DISABLE = 1 << 3;     // 表示当前传入的对象该方法无法进行处理
 
-    boolean checkHandle(int handle) {
+    final static int PRIME = 51; // 一个比较正常的质数，这个质数将会作为进位数来计算对象的 hash 值
+
+    private static boolean checkHandle(int handle) {
         return handle == EQUALS || handle == NO_EQUALS;
     }
 
-    int checkBasicType(
+    private static int checkBasicType(
             Object v1, Object v2, Class<?> fieldClass,
             String curFiled, Map<String, Node<Object>> map
     ) {
@@ -162,7 +171,7 @@ public class Solution {
         return DISABLE;
     }
 
-    int checkCollection(
+    private static int checkCollection(
             Object v1, Object v2, Class<?> fieldClass,
             String curFiled, Map<String, Node<Object>> map
     ) {
@@ -171,7 +180,7 @@ public class Solution {
         return DISABLE;
     }
 
-    int checkMap(
+    private static int checkMap(
             Object v1, Object v2, Class<?> fieldClass,
             String curFiled, Map<String, Node<Object>> map
     ) {
@@ -181,7 +190,7 @@ public class Solution {
         return DISABLE;
     }
 
-    int checkEnum(
+    private static int checkEnum(
             Object v1, Object v2, Class<?> fieldClass
     ) {
         if (isEnum(fieldClass)) {
@@ -191,25 +200,25 @@ public class Solution {
         return DISABLE;
     }
 
-    boolean isBasicType(Class<?> c) {
+    static boolean isBasicType(Class<?> c) {
         if (c.isPrimitive()) return true;
         return BASIC_CLASS_SET.contains(c);
     }
 
-    boolean isCollection(Class<?> c) {
+    static boolean isCollection(Class<?> c) {
         return Collection.class.isAssignableFrom(c);
     }
 
-    boolean isMap(Class<?> c) {
+    static boolean isMap(Class<?> c) {
         return Map.class.isAssignableFrom(c);
     }
 
-    boolean isEnum(Class<?> c) {
+    static boolean isEnum(Class<?> c) {
         return c == Enum.class;
     }
 
     // 检查两个枚举类型数据是否相同
-    boolean equalsEnum(Enum<?> o1, Enum<?> o2) {
+    static boolean equalsEnum(Enum<?> o1, Enum<?> o2) {
         checkParams(o1.getClass() != o2.getClass(), "o1 和 o2 不同时为枚举类型");
         return o1 == o2;
     }
@@ -222,7 +231,7 @@ public class Solution {
      * @param o2 : 新值数据对象
      */
     @SuppressWarnings("unchecked")
-    boolean equalsObj(Object o1, Object o2) {
+    static boolean equalsObj(Object o1, Object o2) {
         if (o1 instanceof Comparable)
             return ((Comparable<Object>) o1).compareTo(o2) == 0;
         return o1.equals(o2);
@@ -245,7 +254,7 @@ public class Solution {
      * @param prefix    : 当前集合属性所在的级别的前缀字符串表现形式
      * @param differMap : 存储不同属性字段的 Map
      */
-    boolean equalsCollect(
+    static boolean equalsCollect(
             Collection<?> c1, Collection<?> c2,
             String prefix, Map<String, Node<Object>> differMap
     ) {
@@ -264,8 +273,9 @@ public class Solution {
                     .longValue(); // 随机的大质数用于随机化信息指纹
 
             Set<?> s1 = (Set<?>) c1, s2 = (Set<?>) c2;
-            for (Object obj : s1) h1 += obj.hashCode() * hash;
-            for (Object obj : s2) h2 += obj.hashCode() * hash;
+
+            for (Object obj : s1) h1 += genHash(obj) * hash;
+            for (Object obj : s2) h2 += genHash(obj) * hash;
 
             if (h1 != h2) {
                 differMap.put(prefix, new Node<>(s1, s2));
@@ -320,7 +330,7 @@ public class Solution {
      * @param prefix    : 此时已经处理的对象的字段深度
      * @param differMap : 记录不同的属性值的 Map
      */
-    boolean equalsMap(
+    static boolean equalsMap(
             Map<?, ?> m1, Map<?, ?> m2,
             String prefix, Map<String, Node<Object>> differMap
     ) {
@@ -351,10 +361,61 @@ public class Solution {
         return res;
     }
 
-    private void checkParams(boolean b, String s) {
+    private static void checkParams(boolean b, String s) {
         if (b) {
             throw new RuntimeException(s);
         }
+    }
+
+    /**
+     * 获取传入的参数对象的 hash 值，具体的计算方式为: 遍历当前对象的所有属性字段，将每个字段视为一个
+     * {@code PRIME} 进制数的一个数字，最终得到这个数将被视为当前对象的 hash 值
+     * <br />
+     * <br />
+     * 对于基本数据类型来讲，将会将其强制转换为 {@code long} 类型的整数参与计算; 而对于集合类型 {@code Collection} 来讲，
+     * 将会将整个集合整体视为一个字段，将集合中所有元素按照相同的方式计算 hash 值，最后相加即为该集合的 hash 值; 对于其它类型的
+     * 对象，将使用 {@code com.google.common.base.Objects} 的 hashCode 计算对应的 hash 值
+     * <br />
+     *
+     * @param obj : 待计算 hashcode 的对象
+     * @return : 该对象生成的 hash 值
+     */
+    static long genHash(Object obj) {
+        Class<?> c = obj.getClass();
+        long ans = 0L;
+
+        if (Collection.class.isAssignableFrom(c)) {
+            for (Object tmp : (Collection<?>) obj)
+                ans += genHash(tmp);
+            return ans;
+        }
+
+        Field[] fields = obj.getClass().getDeclaredFields();
+
+        for (Field field : fields) {
+            int modifier = field.getModifiers();
+            if ((modifier & Modifier.STATIC) != 0) continue;
+            try {
+                field.setAccessible(true);
+                Object tmp = field.get(obj);
+                if (field.getType().isPrimitive()) { // 对于基本数据类型需要进行特殊的处理
+                    ans = ans * PRIME + ((Number) tmp).longValue();
+                    continue;
+                }
+
+                // 计算集合类型的 hashcode
+                if (Collection.class.isAssignableFrom(field.getType())) {
+                    ans = ans*PRIME + genHash(tmp);
+                    continue;
+                }
+
+                ans = ans * PRIME + Objects.hashCode(tmp);
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return ans;
     }
 
     private final static Logger log = LoggerFactory.getLogger(Solution.class);
@@ -411,8 +472,11 @@ public class Solution {
         book1.setFlag((short) 10);
         book2.setFlag((short) 10);
 
-        solution.compObject(book1, book2);
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+
+        Map<String, Node<Object>> map = solution.compare(book1, book2);
 //        Gson gson = new GsonBuilder().setPrettyPrinting().create();
 //        System.out.println(gson.toJson(book1));
+        System.out.println(gson.toJson(map));
     }
 }
