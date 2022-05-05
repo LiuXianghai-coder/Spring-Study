@@ -372,9 +372,15 @@ public class Solution {
      * {@code PRIME} 进制数的一个数字，最终得到这个数将被视为当前对象的 hash 值
      * <br />
      * <br />
-     * 对于基本数据类型来讲，将会将其强制转换为 {@code long} 类型的整数参与计算; 而对于集合类型 {@code Collection} 来讲，
-     * 将会将整个集合整体视为一个字段，将集合中所有元素按照相同的方式计算 hash 值，最后相加即为该集合的 hash 值; 对于其它类型的
-     * 对象，将使用 {@code com.google.common.base.Objects} 的 hashCode 计算对应的 hash 值
+     * 对于基本数据类型来讲，将会将其强制转换为 {@code long} 类型的整数参与计算
+     * <br />
+     * 而对于集合类型 {@code Collection} 来讲，将会将整个集合整体视为一个字段，
+     * 将集合中所有元素按照相同的方式计算 hash 值，最后相加即为该集合的 hash 值
+     * <br />
+     * 对于其它已经自定义 hashCode 方法的对象（如 {@code BigInteger}、{@code Date} 等），
+     * 将使用 {@code com.google.common.base.Objects} 的 hashCode 计算对应的 hash 值
+     * <br />
+     * 对于其它类型的属性，由于不存在重写的 hashcode 方法，这些属性字段将被视为独立对象递归进行处理
      * <br />
      *
      * @param obj : 待计算 hashcode 的对象
@@ -405,11 +411,18 @@ public class Solution {
 
                 // 计算集合类型的 hashcode
                 if (Collection.class.isAssignableFrom(field.getType())) {
-                    ans = ans*PRIME + genHash(tmp);
+                    ans = ans * PRIME + genHash(tmp);
                     continue;
                 }
 
-                ans = ans * PRIME + Objects.hashCode(tmp);
+                // 能够使用 Objects 计算 hashCode 的类，需要进行单独的处理
+                if (isBasicType(c) || isEnum(c) || isMap(c)) {
+                    ans = ans * PRIME + Objects.hashCode(tmp);
+                    continue;
+                }
+
+                // 对于其余的情况，说明该属性字段是一个自定义对象，递归对每个字段进行处理
+                ans = ans * PRIME + genHash(obj);
             } catch (IllegalAccessException e) {
                 e.printStackTrace();
             }
