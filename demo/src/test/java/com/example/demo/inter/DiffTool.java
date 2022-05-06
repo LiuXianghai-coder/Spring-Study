@@ -1,6 +1,5 @@
 package com.example.demo.inter;
 
-import com.example.demo.domain.data.*;
 import com.google.common.base.Objects;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -8,6 +7,7 @@ import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.*;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.math.BigDecimal;
@@ -25,12 +25,13 @@ import static java.util.concurrent.ThreadLocalRandom.current;
  * @create 2022-03-18-15:00
  **/
 //@SpringBootTest
-public class Solution {
+public class DiffTool {
     static final Set<Class<?>> BASIC_CLASS_SET = new HashSet<>();
 
     static {
         BASIC_CLASS_SET.add(Number.class);
         BASIC_CLASS_SET.add(Byte.class);
+        BASIC_CLASS_SET.add(Boolean.class);
         BASIC_CLASS_SET.add(Short.class);
         BASIC_CLASS_SET.add(Integer.class);
         BASIC_CLASS_SET.add(Long.class);
@@ -73,7 +74,7 @@ public class Solution {
      * @param o2 : 新的数据对象
      * @return : 如果两个对象的属性完全一致，返回 true，否则，返回 false
      */
-    boolean compObject(Object o1, Object o2) {
+    static boolean compObject(Object o1, Object o2) {
         Map<String, Node<Object>> map = compare(o1, o2);
         return map.size() == 0;
     }
@@ -86,7 +87,7 @@ public class Solution {
      * @param newObj : 新值对象
      * @return 记录两个对象不同属性的 Map，Map 中存有的 {@code key} 应当是以 {@code .} 的分隔字符串形式
      */
-    Map<String, Node<Object>> compare(Object oldObj, Object newObj) {
+    static Map<String, Node<Object>> compare(Object oldObj, Object newObj) {
         Map<String, Node<Object>> map = new HashMap<>();
         dfs(oldObj, newObj, "", map);
         return map;
@@ -104,10 +105,25 @@ public class Solution {
             return false;
         }
 
-        checkParams(o1.getClass() != o2.getClass(), "o1 和 o2 的对象类型不一致");
+        Class<?> c1 = o1.getClass(), c2 = o2.getClass();
+
+        checkParams(c1 != c2, "o1 和 o2 的对象类型不一致");
+
+        if (isBasicType(c1)) {
+            boolean tmp = o1.equals(o2);
+            if (!tmp) map.put(prefix, new Node<>(o1, o2));
+            return false;
+        }
+
+        if (isEnum(c1)) {
+            if (o1 != o2) map.put(prefix, new Node<>(o1, o2));
+            return o1 == o2;
+        }
+
+        if (isMap(c1)) return equalsMap((Map<?, ?>) o1, (Map<?, ?>) o2, prefix, map);
+        if (isCollection(c1)) return equalsCollection(o1, o2, prefix, map);
 
         boolean res = true;
-
         // 检查当前对象的属性以及属性对象的子属性的值是否一致
         Field[] fields = o1.getClass().getDeclaredFields();
         for (Field field : fields) {
@@ -120,11 +136,8 @@ public class Solution {
                 final Class<?> fieldClass = field.getType();
                 Object v1 = field.get(o1), v2 = field.get(o2);
                 if (checkHandle(checkBasicType(v1, v2, fieldClass, curFiled, map))) continue;
-
                 if (checkHandle(checkCollection(v1, v2, fieldClass, curFiled, map))) continue;
-
                 if (checkHandle(checkMap(v1, v2, fieldClass, curFiled, map))) continue;
-
                 if (checkHandle(checkEnum(v1, v2, fieldClass))) continue;
 
                 res &= dfs(v1, v2, curFiled, map);
@@ -177,7 +190,7 @@ public class Solution {
             String curFiled, Map<String, Node<Object>> map
     ) {
         if (isCollection(fieldClass))
-            return equalsCollect(v1, v2, curFiled, map) ? EQUALS : NO_EQUALS;
+            return equalsCollection(v1, v2, curFiled, map) ? EQUALS : NO_EQUALS;
         return DISABLE;
     }
 
@@ -244,7 +257,7 @@ public class Solution {
      * 对于 List : 如果相同的索引位置的元素不同，那么会记录当前元素的索引位置的新旧值到 differMap，
      * 如果两个列表的长度不一致，则会使用 null 来代替不存在的元素，对于元素的比较同样基于 {@code dfs}<br />
      * 对于数组 : 首先将数组转换为对应的 {@code List}，再使用 List 的比较方法进行比较 <br />
-     *
+     * <p>
      * <br />
      * <br />
      * 对于其它的集合类型，将会抛出一个 {@code RuntimeException}
@@ -256,7 +269,7 @@ public class Solution {
      * @param prefix    : 当前集合属性所在的级别的前缀字符串表现形式
      * @param differMap : 存储不同属性字段的 Map
      */
-    static boolean equalsCollect(
+    static boolean equalsCollection(
             Object o1, Object o2,
             String prefix, Map<String, Node<Object>> differMap
     ) {
@@ -322,7 +335,7 @@ public class Solution {
 
         int i;
         for (i = 0; i < list1.size() && i < list2.size(); ++i) {
-            res &= dfs(list1.get(i), list2.get(i), prefix + "#" + i, tmpMap);
+            res &= dfs(list1.get(i), list2.get(i), getListPrefix(prefix, i), tmpMap);
         }
 
         differMap.putAll(tmpMap); // 添加到原有的不同 differMap 中
@@ -330,12 +343,12 @@ public class Solution {
         // 后续如果集合存在多余的元素，那么肯定这两个位置的索引元素不同
         while (i < list1.size()) {
             res = false;
-            differMap.put(prefix + "#" + i, new Node<>(list1.get(i), null));
+            differMap.put(getListPrefix(prefix, i), new Node<>(list1.get(i), null));
             i++;
         }
         while (i < list2.size()) {
             res = false;
-            differMap.put(prefix + "#" + i, new Node<>(null, list2.get(i)));
+            differMap.put(getListPrefix(prefix, i), new Node<>(null, list2.get(i)));
             i++;
         }
         // 后续元素处理结束
@@ -362,7 +375,7 @@ public class Solution {
 
         // 首先比较两个 Map 都存在的 key 对应的 value 对象
         for (Object key : m1.keySet()) {
-            String curPrefix = prefix + "." + key;
+            String curPrefix = getFieldPrefix(prefix, key.toString());
             if (!m2.containsKey(key)) { // 如果 m2 不包含 m1 的 key，此时是一个不同元素值
                 differMap.put(curPrefix, new Node<>(m1.get(key), null));
                 res = false;
@@ -373,7 +386,7 @@ public class Solution {
         }
         // 检查 m1 中存在没有 m2 的 key 的情况
         for (Object key : m2.keySet()) {
-            String curPrefix = prefix + "." + key;
+            String curPrefix = getFieldPrefix(prefix, key.toString());
             if (!m1.containsKey(key)) {
                 differMap.put(curPrefix, new Node<>(null, m2.get(key)));
                 res = false;
@@ -387,6 +400,14 @@ public class Solution {
         if (b) {
             throw new RuntimeException(s);
         }
+    }
+
+    private static String getFieldPrefix(String prefix, String key) {
+        return prefix + (prefix.length() > 0 ? "." : "") + key;
+    }
+
+    private static String getListPrefix(String prefix, int key) {
+        return prefix + (prefix.length() > 0 ? "#" : "") + key;
     }
 
     /**
@@ -458,65 +479,27 @@ public class Solution {
         return ans;
     }
 
-    private final static Logger log = LoggerFactory.getLogger(Solution.class);
+    private final static Logger log = LoggerFactory.getLogger(DiffTool.class);
 
     @Test
     public void compareTest() {
-        Solution solution = new Solution();
+        File rawFile = new File("src/test/resources/one.json");
+        File newFile = new File("src/test/resources/two.json");
+        try (
+                Reader oldReader = new FileReader(rawFile);
+                Reader newReader = new FileReader(newFile)
+        ) {
+            Gson gson = new GsonBuilder().setPrettyPrinting().create();
+            Object oldObj = gson.fromJson(oldReader, Object.class);
+            Object newObj = gson.fromJson(newReader, Object.class);
+            System.out.println(gson.toJson(newObj));
 
-        Author author1 = new Author(
-                "Richard", 44, "Unix Professor",
-                new Education("MIT", Level.MASTER)
-        );
-
-        Author author2 = new Author(
-                "Ken Thomson", 65, "Unix Invented",
-                new Education("BSD", Level.PHD)
-        );
-
-        Author author3 = new Author(
-                "Ritchie Denis", 44, "C Programmer",
-                new Education("MIT", Level.PHD)
-        );
-
-        Author author4 = new Author(
-                "Brain Kenihan", 55, "Awk Programmer",
-                new Education("CMU", Level.PHD)
-        );
-
-        Index index1 = new Index("comics", 10);
-        Index index2 = new Index("introduction", 2);
-        Index index3 = new Index("algorithm", 50);
-        Index index4 = new Index("performance", 100);
-//        Index index5 = new Index("design", 200);
-
-        List<Index> indexList1 = new ArrayList<>();
-        indexList1.add(index1);
-        indexList1.add(index2);
-
-        List<Index> indexList2 = new ArrayList<>();
-        indexList2.add(index3);
-        indexList2.add(index4);
-
-        Set<Author> authors1 = new HashSet<>();
-        authors1.add(author1);
-        authors1.add(author2);
-
-        Set<Author> authors2 = new HashSet<>();
-        authors2.add(author3);
-        authors2.add(author4);
-
-        Book book1 = new Book(indexList1, "APUE", authors1);
-        Book book2 = new Book(indexList2, "CSAPP", authors2);
-
-        book1.setFlag((short) 10);
-        book2.setFlag((short) 10);
-
-        Gson gson = new GsonBuilder().setPrettyPrinting().create();
-
-        Map<String, Node<Object>> map = solution.compare(book1, book2);
-//        Gson gson = new GsonBuilder().setPrettyPrinting().create();
-//        System.out.println(gson.toJson(book1));
-        System.out.println(gson.toJson(map));
+            System.out.println("=====================================");
+            Map<String, Node<Object>> diffMap = compare(oldObj, newObj);
+            System.out.println(gson.toJson(diffMap));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+//        Object obj = mapper.readValue(, Object.class);
     }
 }

@@ -1,5 +1,7 @@
 spring:
   datasource:
-    url: jdbc:mysql://127.0.0.1:3306/lxh_db
+    url: jdbc:mysql://39.99.129.90:3306/lxh
     username: root
     password: 12345678
+server:
+  port: 8080
