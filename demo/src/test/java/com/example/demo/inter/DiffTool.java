@@ -1,12 +1,17 @@
 package com.example.demo.inter;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.PropertyAccessor;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Objects;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.boot.test.context.SpringBootTest;
 
+import javax.annotation.Resource;
 import java.io.*;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
@@ -24,7 +29,7 @@ import static java.util.concurrent.ThreadLocalRandom.current;
  * @author xhliu
  * @create 2022-03-18-15:00
  **/
-//@SpringBootTest
+@SpringBootTest
 public class DiffTool {
     static final Set<Class<?>> BASIC_CLASS_SET = new HashSet<>();
 
@@ -55,6 +60,14 @@ public class DiffTool {
         public Node(T oldVal, T newVal) {
             this.oldVal = oldVal;
             this.newVal = newVal;
+        }
+
+        public T getOldVal() {
+            return oldVal;
+        }
+
+        public T getNewVal() {
+            return newVal;
         }
 
         @Override
@@ -481,6 +494,9 @@ public class DiffTool {
 
     private final static Logger log = LoggerFactory.getLogger(DiffTool.class);
 
+    @Resource
+    private ObjectMapper mapper;
+
     @Test
     public void compareTest() {
         File rawFile = new File("src/test/resources/one.json");
@@ -489,14 +505,29 @@ public class DiffTool {
                 Reader oldReader = new FileReader(rawFile);
                 Reader newReader = new FileReader(newFile)
         ) {
-            Gson gson = new GsonBuilder().setPrettyPrinting().create();
-            Object oldObj = gson.fromJson(oldReader, Object.class);
-            Object newObj = gson.fromJson(newReader, Object.class);
-            System.out.println(gson.toJson(newObj));
+//            ObjectMapper mapper = new ObjectMapper();
+//            mapper.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
 
-            System.out.println("=====================================");
+//            Gson gson = new GsonBuilder().setPrettyPrinting().create();
+//            Object oldObj = gson.fromJson(oldReader, Object.class);
+//            Object newObj = gson.fromJson(newReader, Object.class);
+//            System.out.println(gson.toJson(newObj));
+//
+//            System.out.println("=====================================");
+//            Map<String, Node<Object>> diffMap = compare(oldObj, newObj);
+//            System.out.println(gson.toJson(diffMap));
+            Object oldObj = mapper.readValue(rawFile, Object.class);
+            Object newObj = mapper.readValue(newFile, Object.class);
+            System.out.println(
+                    mapper.writerWithDefaultPrettyPrinter()
+                            .writeValueAsString(oldObj)
+            );
+
             Map<String, Node<Object>> diffMap = compare(oldObj, newObj);
-            System.out.println(gson.toJson(diffMap));
+            System.out.println(
+                    mapper.writerWithDefaultPrettyPrinter()
+                            .writeValueAsString(diffMap)
+            );
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
