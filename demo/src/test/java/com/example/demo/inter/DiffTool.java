@@ -1,18 +1,13 @@
 package com.example.demo.inter;
 
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import com.fasterxml.jackson.annotation.PropertyAccessor;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Objects;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import org.junit.jupiter.api.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.boot.test.context.SpringBootTest;
 
-import javax.annotation.Resource;
-import java.io.*;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.Reader;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.math.BigDecimal;
@@ -392,8 +387,7 @@ public class DiffTool {
             return differList(list1, list2, prefix, differMap);
         }
 
-        log.debug("type={}", o1.getClass());
-        throw new RuntimeException("未能处理的集合类型异常");
+        throw new RuntimeException("未能处理的集合类型异常 " + o1.getClass());
     }
 
     /**
@@ -672,8 +666,6 @@ public class DiffTool {
 
         return ans;
     }
-
-    private final static Logger log = LoggerFactory.getLogger(DiffTool.class);
 
     //    @Test
     public static void main(String[] args) {
