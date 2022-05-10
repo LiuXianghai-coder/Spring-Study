@@ -1,0 +1,26 @@
+{
+  "addOp#1&add": {
+    "oldVal": null,
+    "newVal": {
+      "name": "yfj",
+      "age": 20.0
+    }
+  },
+  "modifyOp#0&modify": {
+    "oldVal": {
+      "name": "xhliu",
+      "age": 22.0
+    },
+    "newVal": {
+      "name": "liuxhanghai",
+      "age": 22.0
+    }
+  },
+  "delOp#0&del": {
+    "oldVal": {
+      "name": "xhliu",
+      "age": 22.0
+    },
+    "newVal": null
+  }
+}

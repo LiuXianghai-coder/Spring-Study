@@ -1,0 +1,32 @@
+{
+  "addOp": [
+    {
+      "name": "xhliu",
+      "age": 22
+    }
+  ],
+  "modifyOp": [
+    {
+      "name": "xhliu",
+      "age": 22
+    },
+    {
+      "name": "yfz",
+      "age": 20
+    }
+  ],
+  "delOp": [
+    {
+      "name": "xhliu",
+      "age": 22
+    },
+    {
+      "name": "yfj",
+      "age": 21
+    },
+    {
+      "name": "aoz",
+      "age": 23
+    }
+  ]
+}

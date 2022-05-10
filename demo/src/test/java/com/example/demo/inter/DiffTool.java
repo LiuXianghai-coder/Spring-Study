@@ -29,7 +29,7 @@ import static java.util.concurrent.ThreadLocalRandom.current;
  * @author xhliu
  * @create 2022-03-18-15:00
  **/
-@SpringBootTest
+//@SpringBootTest
 public class DiffTool {
     static final Set<Class<?>> BASIC_CLASS_SET = new HashSet<>();
 
@@ -79,6 +79,31 @@ public class DiffTool {
         }
     }
 
+    enum Operator {
+        ADD("add", 1 << 1),
+        MODIFY("modify", 1 << 2),
+        DEL("del", 1 << 3);
+
+        final String des;
+        final int code;
+
+        Operator(String des, int code) {
+            this.des = des;
+            this.code = code;
+        }
+    }
+
+    /**
+     * 用于判断是否需要对集合类型的属性进行更进一步的比较，当该值
+     * 为 true 是，会进一步比较集合中的元素属性，如果是 false 的话，
+     * 则会直接比较两个集合是否相等（基于 Hash 算法）
+     */
+    private final boolean deep;
+
+    public DiffTool(boolean deep) {
+        this.deep = deep;
+    }
+
     /**
      * 比较两个对象之间的每个属性是否完全一致，如果不一致，
      * 则使用一个 Map 记录不同的属性位置以及原有旧值和新值
@@ -87,9 +112,53 @@ public class DiffTool {
      * @param o2 : 新的数据对象
      * @return : 如果两个对象的属性完全一致，返回 true，否则，返回 false
      */
-    static boolean compObject(Object o1, Object o2) {
+    boolean compObject(Object o1, Object o2) {
         Map<String, Node<Object>> map = compare(o1, o2);
         return map.size() == 0;
+    }
+
+    /**
+     * 比较两个对象，具体比对结果可以查看 {@code ABS_EQUAL}、
+     * {@code PART_EQUAL}、{@code ABS_NO_EQUAL}
+     */
+    int compareObj(Object o1, Object o2) {
+        Map<String, Node<Object>> map = compare(o1, o2);
+        int filedCnt = countField(o1);
+        int sz = map.size();
+
+        if (sz == 0) return ABS_EQUAL;
+        if (sz == filedCnt) return ABS_NO_EQUAL;
+        return PART_EQUAL;
+    }
+
+    /**
+     * 统计当前处理的类型具有多少个一般属性，一般属性是指：没有被 final、static 修饰的字段
+     */
+    int countField(Object o) {
+        Class<?> c = o.getClass();
+        if (c.isPrimitive() || isBasicType(c)) return 1;
+        if (isMap(c)) return ((Map<?, ?>) o).size();
+        if (isCollection(c)) return ((Collection<?>) o).size();
+
+        Field[] fields = c.getDeclaredFields();
+
+        int cnt = 0;
+        for (Field field : fields) {
+            int modifier = field.getModifiers();
+            if ((modifier & Modifier.FINAL) != 0
+                    || (modifier & Modifier.STATIC) != 0)
+                continue;
+
+            field.setAccessible(true);
+            try {
+                Object obj = field.get(o);
+                if (null == obj) continue;
+                cnt += countField(obj);
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            }
+        }
+        return cnt;
     }
 
     /**
@@ -100,13 +169,13 @@ public class DiffTool {
      * @param newObj : 新值对象
      * @return 记录两个对象不同属性的 Map，Map 中存有的 {@code key} 应当是以 {@code .} 的分隔字符串形式
      */
-    static Map<String, Node<Object>> compare(Object oldObj, Object newObj) {
+    Map<String, Node<Object>> compare(Object oldObj, Object newObj) {
         Map<String, Node<Object>> map = new HashMap<>();
         dfs(oldObj, newObj, "", map);
         return map;
     }
 
-    static boolean dfs(Object o1, Object o2, String prefix, Map<String, Node<Object>> map) {
+    boolean dfs(Object o1, Object o2, String prefix, Map<String, Node<Object>> map) {
         if (o1 == null && o2 == null) return true;
         if (o1 == null) {
             map.put(prefix, new Node<>(null, o2));
@@ -168,11 +237,15 @@ public class DiffTool {
 
     final static int PRIME = 51; // 一个比较正常的质数，这个质数将会作为进位数来计算对象的 hash 值
 
+    final static int ABS_EQUAL = 1 << 1;    // 表示两个对象绝对相等，即所有属性字段都相等
+    final static int PART_EQUAL = 1 << 2;   // 表示两个对象之间有部分属性值相等
+    final static int ABS_NO_EQUAL = 0;      // 表示两个对象没有任何相等的字段
+
     private static boolean checkHandle(int handle) {
         return handle == EQUALS || handle == NO_EQUALS;
     }
 
-    private static int checkBasicType(
+    private int checkBasicType(
             Object v1, Object v2, Class<?> fieldClass,
             String curFiled, Map<String, Node<Object>> map
     ) {
@@ -198,7 +271,7 @@ public class DiffTool {
         return DISABLE;
     }
 
-    private static int checkCollection(
+    private int checkCollection(
             Object v1, Object v2, Class<?> fieldClass,
             String curFiled, Map<String, Node<Object>> map
     ) {
@@ -207,7 +280,7 @@ public class DiffTool {
         return DISABLE;
     }
 
-    private static int checkMap(
+    private int checkMap(
             Object v1, Object v2, Class<?> fieldClass,
             String curFiled, Map<String, Node<Object>> map
     ) {
@@ -282,12 +355,14 @@ public class DiffTool {
      * @param prefix    : 当前集合属性所在的级别的前缀字符串表现形式
      * @param differMap : 存储不同属性字段的 Map
      */
-    static boolean equalsCollection(
+    boolean equalsCollection(
             Object o1, Object o2,
             String prefix, Map<String, Node<Object>> differMap
     ) {
         Class<?> c1 = o1.getClass(), c2 = o2.getClass();
         checkParams(c1 != c2, "集合 o1 和 o2 的类型不一致.");
+
+        if (!deep) return hashCompare(o1, o2, prefix, differMap);
 
         /*
             对于集合来讲，只能大致判断一下两个集合的元素是否是一致的，
@@ -295,23 +370,7 @@ public class DiffTool {
             那么将会直接将两个集合存储的不同节点中
          */
         if (o1 instanceof Set) {
-            // 分别计算两个集合的信息指纹
-            long h1 = 0, h2 = 0;
-            long hash = BigInteger
-                    .probablePrime(32, current())
-                    .longValue(); // 随机的大质数用于随机化信息指纹
-
-            Set<?> s1 = (Set<?>) o1, s2 = (Set<?>) o2;
-
-            for (Object obj : s1) h1 += genHash(obj) * hash;
-            for (Object obj : s2) h2 += genHash(obj) * hash;
-
-            if (h1 != h2) {
-                differMap.put(prefix, new Node<>(s1, s2));
-                return false;
-            }
-
-            return true;
+            return hashCompare(o1, o2, prefix, differMap);
         }
 
         /*
@@ -319,8 +378,9 @@ public class DiffTool {
             因此可以针对不同的索引位置的元素进行对应的比较
          */
         if (o1 instanceof List) {
-            List<?> list1 = (List<?>) o1, list2 = (List<?>) o2;
-            return differList(list1, list2, prefix, differMap);
+//            List<?> list1 = (List<?>) o1, list2 = (List<?>) o2;
+//            return differList(list1, list2, prefix, differMap);
+            return differSet((Collection<?>) o1, (Collection<?>) o2, prefix, differMap);
         }
 
         /*
@@ -337,9 +397,130 @@ public class DiffTool {
     }
 
     /**
+     * 通过计算两个集合对象的 Hash 值来判断两个集合是否相等，对于不相等的两个集合，
+     * 将会直接将这两个集合对象
+     */
+    static boolean
+    hashCompare(
+            Object o1, Object o2,
+            String prefix, Map<String, Node<Object>> diffMap
+    ) {
+        Class<?> c1 = o1.getClass(), c2 = o2.getClass();
+        checkParams(c1 != c2, "o1 和 o2 类型不一致");
+
+        Collection<?> co1, co2;
+        if (o1 instanceof Set || o1 instanceof List) {
+            co1 = (Collection<?>) o1;
+            co2 = (Collection<?>) o2;
+        } else if (c1.isArray()) {
+            co1 = Arrays.stream((Object[]) o1).collect(Collectors.toList());
+            co2 = Arrays.stream((Object[]) o2).collect(Collectors.toList());
+        } else {
+            throw new RuntimeException("不支持的集合类型 " + c1);
+        }
+
+        // 分别计算两个集合的信息指纹
+        long h1 = 0, h2 = 0;
+        long hash = BigInteger
+                .probablePrime(32, current())
+                .longValue(); // 随机的大质数用于随机化信息指纹
+
+        for (Object obj : co1) h1 += genHash(obj) * hash;
+        for (Object obj : co2) h2 += genHash(obj) * hash;
+
+        if (h1 != h2) {
+            diffMap.put(prefix, new Node<>(c1, c2));
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * TODO
+     */
+    private boolean differSet(
+            Collection<?> co1, Collection<?> co2,
+            String prefix, Map<String, Node<Object>> differMap
+    ) {
+        boolean res = true;
+        Map<String, Node<Object>> tmpMap = new HashMap<>();
+
+        List<?> list1 = new ArrayList<>(co1), list2 = new ArrayList<>(co2);
+
+        /*
+         * 以下内容假设两个列表中都不存在重复元素
+         * 新增：如果原有列表中不包含当前处理的列表元素，那么此列表元素的这一行为就被称为 “新增”
+         * 删除：如果原有列表元素中包含有当前列表不含有的元素，那么这一操作就被称为 “删除”
+         * 修改：如果两个列表元素中存在两个部分相同的元素，那么这一操作就被称为 “修改”
+         */
+        int sz1 = list1.size(), sz2 = list2.size();
+
+        Map<int[], Operator> map = new HashMap<>();
+        for (int i = 0; i < sz1; ++i) {
+            int ans = 0, idx = 0;
+            for (int j = 0; j < sz2; ++j) {
+                int tmp = compareObj(list1.get(i), list2.get(j));
+                if (tmp == EQUALS || tmp == PART_EQUAL) {
+                    ans = tmp;
+                    idx = j;
+                    if (tmp == EQUALS) break;
+                }
+            }
+            if (ans == EQUALS) continue; // 两个集合中存在相同的元素对象
+
+            if (ans == ABS_NO_EQUAL) { // 绝对不相等，即集合中存在的元素在集合二中已经被删除
+                map.put(new int[]{i, -1}, Operator.DEL);
+            } else { // 部分相等，在这里被视为元素内容被修改过
+                map.put(new int[]{i, idx}, Operator.MODIFY);
+            }
+        }
+
+        // 寻找集合二中新添加的元素
+        List<Integer> list = new ArrayList<>();
+        label:
+        for (int i = 0; i < sz2; ++i) {
+            for (Object o : list1) {
+                int tmp = compareObj(list2.get(i), o);
+                if (tmp == EQUALS || tmp == PART_EQUAL) continue label;
+            }
+            list.add(i);
+        }
+
+        for (int[] key : map.keySet()) {
+            res = false;
+            Operator op = map.get(key);
+            if (op == Operator.DEL) {
+                differMap.put(
+                        getListPrefix(prefix, key[0]) + "&" + op.des,
+                        new Node<>(list1.get(key[0]), null)
+                );
+                continue;
+            }
+
+            if (op == Operator.MODIFY) {
+                differMap.put(
+                        getListPrefix(prefix, key[0]) + "&" + op.des,
+                        new Node<>(list1.get(key[0]), list2.get(key[1]))
+                );
+            }
+        }
+
+        for (Integer idx : list) {
+            res = false;
+            differMap.put(
+                    getListPrefix(prefix, idx) + "&" + Operator.ADD.des,
+                    new Node<>(null, list2.get(idx))
+            );
+        }
+
+        return res;
+    }
+
+    /**
      * 比较两个 {@code List} 对象之间的不同元素
      */
-    static boolean differList(
+    boolean differList(
             List<?> list1, List<?> list2,
             String prefix, Map<String, Node<Object>> differMap
     ) {
@@ -378,7 +559,7 @@ public class DiffTool {
      * @param prefix    : 此时已经处理的对象的字段深度
      * @param differMap : 记录不同的属性值的 Map
      */
-    static boolean equalsMap(
+    boolean equalsMap(
             Map<?, ?> m1, Map<?, ?> m2,
             String prefix, Map<String, Node<Object>> differMap
     ) {
@@ -494,13 +675,10 @@ public class DiffTool {
 
     private final static Logger log = LoggerFactory.getLogger(DiffTool.class);
 
-    @Resource
-    private ObjectMapper mapper;
-
-    @Test
-    public void compareTest() {
-        File rawFile = new File("src/test/resources/one.json");
-        File newFile = new File("src/test/resources/two.json");
+    //    @Test
+    public static void main(String[] args) {
+        File rawFile = new File("src/test/resources/raw.json");
+        File newFile = new File("src/test/resources/new.json");
         try (
                 Reader oldReader = new FileReader(rawFile);
                 Reader newReader = new FileReader(newFile)
@@ -508,29 +686,34 @@ public class DiffTool {
 //            ObjectMapper mapper = new ObjectMapper();
 //            mapper.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
 
-//            Gson gson = new GsonBuilder().setPrettyPrinting().create();
-//            Object oldObj = gson.fromJson(oldReader, Object.class);
-//            Object newObj = gson.fromJson(newReader, Object.class);
-//            System.out.println(gson.toJson(newObj));
-//
-//            System.out.println("=====================================");
-//            Map<String, Node<Object>> diffMap = compare(oldObj, newObj);
-//            System.out.println(gson.toJson(diffMap));
-            Object oldObj = mapper.readValue(rawFile, Object.class);
-            Object newObj = mapper.readValue(newFile, Object.class);
-            System.out.println(
-                    mapper.writerWithDefaultPrettyPrinter()
-                            .writeValueAsString(oldObj)
-            );
+            Gson gson = new GsonBuilder()
+                    .disableHtmlEscaping()
+                    .serializeNulls()
+                    .setPrettyPrinting()
+                    .create();
 
-            Map<String, Node<Object>> diffMap = compare(oldObj, newObj);
-            System.out.println(
-                    mapper.writerWithDefaultPrettyPrinter()
-                            .writeValueAsString(diffMap)
-            );
+            Object oldObj = gson.fromJson(oldReader, Object.class);
+            Object newObj = gson.fromJson(newReader, Object.class);
+            System.out.println(gson.toJson(newObj));
+
+            System.out.println("=====================================");
+            DiffTool diffTool = new DiffTool(true);
+            Map<String, Node<Object>> diffMap = diffTool.compare(oldObj, newObj);
+            System.out.println(gson.toJson(diffMap));
+//            Object oldObj = mapper.readValue(rawFile, Object.class);
+//            Object newObj = mapper.readValue(newFile, Object.class);
+//            System.out.println(
+//                    mapper.writerWithDefaultPrettyPrinter()
+//                            .writeValueAsString(oldObj)
+//            );
+//
+//            Map<String, Node<Object>> diffMap = compare(oldObj, newObj);
+//            System.out.println(
+//                    mapper.writerWithDefaultPrettyPrinter()
+//                            .writeValueAsString(diffMap)
+//            );
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-//        Object obj = mapper.readValue(, Object.class);
     }
 }
