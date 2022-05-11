@@ -126,7 +126,10 @@ public class DiffTool {
         return map.size() == 0;
     }
 
-    private int desJsonComp(Object o1, Object o2, String prefix) {
+    private int desJsonComp(
+            Object o1, Object o2,
+            String prefix, Map<String, Node<Object>> diffMap
+    ) {
         List<String> idKeys = new ArrayList<>();
         Map<?, ?> map1 = (Map<?, ?>) o1, map2 = (Map<?, ?>) o2;
 
@@ -157,7 +160,9 @@ public class DiffTool {
             }
 
             Object obj1 = map1.get(key), obj2 = map2.get(key);
-            res &= compObject(obj1, obj2);
+            Map<String, Node<Object>> tmpMap = new HashMap<>();
+            res &= dfs(obj1, obj2, prefix, tmpMap);
+            diffMap.putAll(tmpMap);
         }
 
         // 主键属性不同，则说明是完全不同的两个对象
@@ -171,12 +176,15 @@ public class DiffTool {
      * 比较两个对象，具体比对结果可以查看 {@code ABS_EQUAL}、
      * {@code PART_EQUAL}、{@code ABS_NO_EQUAL}
      */
-    int compareObj(Object o1, Object o2, String prefix) {
+    int compareObj(
+            Object o1, Object o2,
+            String prefix, Map<String, Node<Object>> diffMap
+    ) {
         Class<?> c1 = o1.getClass(), c2 = o2.getClass();
         checkParams(c1 != c2, "o1 和 o2 类型不相等");
 
         if (isMap(c1) && idList != null)
-            return desJsonComp(o1, o2, prefix);
+            return desJsonComp(o1, o2, prefix, diffMap);
 
         Map<String, Node<Object>> map = compare(o1, o2);
         int filedCnt = countField(o1);
@@ -499,8 +507,6 @@ public class DiffTool {
             String prefix, Map<String, Node<Object>> differMap
     ) {
         boolean res = true;
-        Map<String, Node<Object>> tmpMap = new HashMap<>();
-
         List<?> list1 = new ArrayList<>(co1), list2 = new ArrayList<>(co2);
 
         /*
@@ -515,7 +521,7 @@ public class DiffTool {
         for (int i = 0; i < sz1; ++i) {
             int ans = 0, idx = 0;
             for (int j = 0; j < sz2; ++j) {
-                int tmp = compareObj(list1.get(i), list2.get(j), prefix);
+                int tmp = compareObj(list1.get(i), list2.get(j), prefix, differMap);
                 if (tmp == EQUALS || tmp == PART_EQUAL) {
                     ans = tmp;
                     idx = j;
@@ -536,7 +542,7 @@ public class DiffTool {
         label:
         for (int i = 0; i < sz2; ++i) {
             for (Object o : list1) {
-                int tmp = compareObj(list2.get(i), o, prefix);
+                int tmp = compareObj(list2.get(i), o, prefix, differMap);
                 if (tmp == EQUALS || tmp == PART_EQUAL) continue label;
             }
             list.add(i);
@@ -561,10 +567,11 @@ public class DiffTool {
             }
         }
 
+        int index = sz1;
         for (Integer idx : list) {
             res = false;
             differMap.put(
-                    getListPrefix(prefix, idx) + "&" + Operator.ADD.des,
+                    getListPrefix(prefix, index++) + "&" + Operator.ADD.des,
                     new Node<>(null, list2.get(idx))
             );
         }
@@ -736,35 +743,20 @@ public class DiffTool {
                 Reader oldReader = new FileReader(rawFile);
                 Reader newReader = new FileReader(newFile)
         ) {
-//            ObjectMapper mapper = new ObjectMapper();
-//            mapper.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
-
             Gson gson = new GsonBuilder()
                     .disableHtmlEscaping()
                     .serializeNulls()
-//                    .setPrettyPrinting()
+                    .setPrettyPrinting()
                     .create();
 
             Object oldObj = gson.fromJson(oldReader, Object.class);
             Object newObj = gson.fromJson(newReader, Object.class);
-            System.out.println(gson.toJson(newObj));
+//            System.out.println(gson.toJson(newObj));
+//            System.out.println("=====================================");
 
-            System.out.println("=====================================");
-            DiffTool diffTool = new DiffTool(true);
+            DiffTool diffTool = new DiffTool(true, Arrays.asList("data.proj.data.id", "data.proj.data.period.id"));
             Map<String, Node<Object>> diffMap = diffTool.compare(oldObj, newObj);
             System.out.println(gson.toJson(diffMap));
-//            Object oldObj = mapper.readValue(rawFile, Object.class);
-//            Object newObj = mapper.readValue(newFile, Object.class);
-//            System.out.println(
-//                    mapper.writerWithDefaultPrettyPrinter()
-//                            .writeValueAsString(oldObj)
-//            );
-//
-//            Map<String, Node<Object>> diffMap = compare(oldObj, newObj);
-//            System.out.println(
-//                    mapper.writerWithDefaultPrettyPrinter()
-//                            .writeValueAsString(diffMap)
-//            );
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
