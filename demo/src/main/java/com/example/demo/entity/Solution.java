@@ -155,12 +155,10 @@ public class Solution {
     }
 
     public static void main(String[] args) {
-        Solution solution = new Solution();
-//        System.out.println(solution.isValid("<A><A>/A></A></A>"));
-//        solution.reorderLogFiles(new String[]{"dig1 8 1 5 1","let1 art can","dig2 3 6","let2 own kit dig","let3 art zero"});
-
-        Node node1 = solution.genNode("dig1 8 1 5 1");
-        Node node2 = solution.genNode("dig2 3 6");
-        System.out.println(node1.compareTo(node2));
+        List<Integer> list = new ArrayList<>();
+        list.add(1);
+        list.add(2);
+        list.add(3);
+        System.out.println("".split(", ").length);
     }
 }
