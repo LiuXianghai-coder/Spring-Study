@@ -1,6 +1,9 @@
 spring:
+#  jackson:
+#    visibility:
+#      field: any
   datasource:
-    url: jdbc:mysql://39.99.129.90:3306/lxh
+    url: jdbc:mysql://127.0.0.1:3306/lxh_db
     username: root
     password: 12345678
 server:

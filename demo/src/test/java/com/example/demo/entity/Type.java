@@ -1,8 +1,9 @@
 package com.example.demo.entity;
 
-import java.lang.reflect.Array;
-import java.util.Arrays;
-import java.util.Collection;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import java.util.List;
 
 /**
  * @author xhliu
@@ -17,6 +18,25 @@ public enum Type {
 
     Type(String des) {
         this.des = des;
+    }
+
+    static class ObjectNode {
+        List<String> idList;
+
+        public List<String> getIdList() {
+            return idList;
+        }
+
+        public void setIdList(List<String> idList) {
+            this.idList = idList;
+        }
+
+        @Override
+        public String toString() {
+            return "ObjectNode{" +
+                    "list=" + idList +
+                    '}';
+        }
     }
 
     public static void main(String[] args) {

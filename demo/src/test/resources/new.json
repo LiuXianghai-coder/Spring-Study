@@ -1,0 +1,22 @@
+{
+  "data": {
+    "proj": {
+      "data": [
+        {
+          "id": "000002",
+          "name": "yfzhao",
+          "version":"version-2",
+          "age": 23
+        },
+        {
+          "id": "000003",
+          "name": "yfjiang",
+          "version":"version-3",
+          "age": 21
+        }
+      ],
+      "type": "人民币",
+      "instId": "a665a45920422f9"
+    }
+  }
+}
