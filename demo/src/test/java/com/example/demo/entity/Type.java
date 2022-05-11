@@ -40,5 +40,21 @@ public enum Type {
     }
 
     public static void main(String[] args) {
+        String str = "data.proj.data";
+        StringBuilder sb = new StringBuilder();
+        char[] arr = str.toCharArray();
+
+        boolean state = false;
+        for (char c : arr) {
+            if (state && c != '.') continue;
+
+            if (c == '.') {
+                sb.append(c);
+                state = false;
+            } else if (c == '#') state = true;
+            else sb.append(c);
+        }
+
+        System.out.println(sb);
     }
 }

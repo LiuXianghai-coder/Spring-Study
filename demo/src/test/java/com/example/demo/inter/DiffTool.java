@@ -50,10 +50,18 @@ public class DiffTool {
 
     final static class Node<T> {
         final T oldVal, newVal;
+        final Operator op;
 
         public Node(T oldVal, T newVal) {
             this.oldVal = oldVal;
             this.newVal = newVal;
+            this.op = Operator.NONE;
+        }
+
+        public Node(T oldVal, T newVal, Operator op) {
+            this.oldVal = oldVal;
+            this.newVal = newVal;
+            this.op = op;
         }
 
         public T getOldVal() {
@@ -64,19 +72,56 @@ public class DiffTool {
             return newVal;
         }
 
+        public Operator getOp() {
+            return op;
+        }
+
         @Override
         public String toString() {
             return "Node{" +
                     "oldVal=" + oldVal +
                     ", newVal=" + newVal +
+                    ", op=" + op +
                     '}';
+        }
+    }
+
+    final static class Knot {
+        final Object o1;
+        final Object o2;
+
+        Knot(Object o1, Object o2) {
+            this.o1 = o1;
+            this.o2 = o2;
+        }
+
+        public Object getO1() {
+            return o1;
+        }
+
+        public Object getO2() {
+            return o2;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            Knot knot = (Knot) o;
+            return Objects.equal(o1, knot.o1) && Objects.equal(o2, knot.o2);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hashCode(o1, o2);
         }
     }
 
     enum Operator {
         ADD("add", 1 << 1),
         MODIFY("modify", 1 << 2),
-        DEL("del", 1 << 3);
+        DEL("del", 1 << 3),
+        NONE("none", 0);
 
         final String des;
         final int code;
@@ -103,14 +148,79 @@ public class DiffTool {
      */
     private final List<String> idList;
 
+    private final boolean useCache; // 是否开启缓存
+
+    private final Map<Knot, Boolean> cache = new HashMap<>(); // 记录对象的比较情况
+
+    private final boolean takeBasic;
+
     public DiffTool(boolean deep) {
         this.deep = deep;
         this.idList = null;
+        this.useCache = true;
+        this.takeBasic = true;
     }
 
     public DiffTool(boolean deep, List<String> idList) {
         this.deep = deep;
         this.idList = idList;
+        this.useCache = true;
+        this.takeBasic = true;
+    }
+
+    public DiffTool(boolean deep, List<String> idList, boolean useCache) {
+        this.deep = deep;
+        this.idList = idList;
+        this.useCache = useCache;
+        this.takeBasic = true;
+    }
+
+    public DiffTool(
+            boolean deep, List<String> idList,
+            boolean useCache, boolean takeBasic
+    ) {
+        this.deep = deep;
+        this.idList = idList;
+        this.useCache = useCache;
+        this.takeBasic = takeBasic;
+    }
+
+    public static final class DiffToolBuilder {
+        private boolean deep;
+        private List<String> idList;
+        private boolean useCache = true;
+        private boolean takeBasic = true;
+
+        private DiffToolBuilder() {
+        }
+
+        public static DiffToolBuilder aDiffTool() {
+            return new DiffToolBuilder();
+        }
+
+        public DiffToolBuilder withDeep(boolean deep) {
+            this.deep = deep;
+            return this;
+        }
+
+        public DiffToolBuilder withIdList(List<String> idList) {
+            this.idList = idList;
+            return this;
+        }
+
+        public DiffToolBuilder withUseCache(boolean useCache) {
+            this.useCache = useCache;
+            return this;
+        }
+
+        public DiffToolBuilder withTakeBasic(boolean takeBasic) {
+            this.takeBasic = takeBasic;
+            return this;
+        }
+
+        public DiffTool build() {
+            return new DiffTool(deep, idList, useCache, takeBasic);
+        }
     }
 
     /**
@@ -126,6 +236,27 @@ public class DiffTool {
         return map.size() == 0;
     }
 
+    /**
+     * 移除当前前缀中含有的数组索引 "#{number}"，否则可能会导致无法和主键属性对应
+     */
+    private static String removePreIdx(String str) {
+        StringBuilder sb = new StringBuilder();
+        char[] arr = str.toCharArray();
+
+        boolean state = false;
+        for (char c : arr) {
+            if (state && c != '.') continue;
+
+            if (c == '.') {
+                sb.append(c);
+                state = false;
+            } else if (c == '#') state = true;
+            else sb.append(c);
+        }
+
+        return sb.toString();
+    }
+
     private int desJsonComp(
             Object o1, Object o2,
             String prefix, Map<String, Node<Object>> diffMap
@@ -135,13 +266,14 @@ public class DiffTool {
 
         assert idList != null; // 调用该方法之前，调用者必须执行一次 null 检查
 
+        String str = removePreIdx(prefix);
         // 检查所有的主键属性，以判断对应最终的列表操作行为
         for (String id : idList) {
             int last = Math.max(id.lastIndexOf("."), 0);
             String pre = id.substring(0, last);
             String filed = id.substring(last + 1);
 
-            if (last > 0 && !prefix.equalsIgnoreCase(pre))
+            if (last > 0 && !str.equalsIgnoreCase(pre))
                 continue; // 非当前处理属性，跳过
 
             for (Object key : map1.keySet()) {
@@ -160,16 +292,19 @@ public class DiffTool {
             }
 
             Object obj1 = map1.get(key), obj2 = map2.get(key);
-            Map<String, Node<Object>> tmpMap = new HashMap<>();
-            res &= dfs(obj1, obj2, prefix, tmpMap);
-            diffMap.putAll(tmpMap);
+            res &= compObject(obj1, obj2);
         }
 
         // 主键属性不同，则说明是完全不同的两个对象
         if (!res) return ABS_NO_EQUAL;
 
         // 如果两个对象的所有属性相同，则是一个对象，否则，说明对象已经被修改过
-        return compObject(o1, o2) ? ABS_EQUAL : PART_EQUAL;
+        Map<String, Node<Object>> tmp = new HashMap<>();
+        boolean ans = dfs(o1, o2, prefix, tmp);
+        if (ans) return ABS_EQUAL;
+
+        diffMap.putAll(tmp);
+        return PART_EQUAL;
     }
 
     /**
@@ -251,23 +386,37 @@ public class DiffTool {
             return false;
         }
 
-        Class<?> c1 = o1.getClass(), c2 = o2.getClass();
+        Knot knot = new Knot(o1, o2);
+        if (useCache && cache.getOrDefault(knot, false))
+            return true;
 
+        Class<?> c1 = o1.getClass(), c2 = o2.getClass();
         checkParams(c1 != c2, "o1 和 o2 的对象类型不一致");
 
         if (isBasicType(c1)) {
             boolean tmp = o1.equals(o2);
-            if (!tmp) map.put(prefix, new Node<>(o1, o2));
-            return false;
+            if (!tmp && takeBasic) map.put(prefix, new Node<>(o1, o2));
+            cache.put(knot, tmp);
+            return tmp;
         }
 
         if (isEnum(c1)) {
             if (o1 != o2) map.put(prefix, new Node<>(o1, o2));
+            cache.put(knot, o1 == o2);
             return o1 == o2;
         }
 
-        if (isMap(c1)) return equalsMap((Map<?, ?>) o1, (Map<?, ?>) o2, prefix, map);
-        if (isCollection(c1)) return equalsCollection(o1, o2, prefix, map);
+        if (isMap(c1)) {
+            boolean tmp = equalsMap((Map<?, ?>) o1, (Map<?, ?>) o2, prefix, map);
+            cache.put(knot, tmp);
+            return tmp;
+        }
+
+        if (isCollection(c1)) {
+            boolean tmp = equalsCollection(o1, o2, prefix, map);
+            cache.put(knot, tmp);
+            return tmp;
+        }
 
         boolean res = true;
         // 检查当前对象的属性以及属性对象的子属性的值是否一致
@@ -291,6 +440,8 @@ public class DiffTool {
                 e.printStackTrace();
             }
         }
+
+        cache.put(knot, res);
 
         return res;
     }
@@ -517,11 +668,12 @@ public class DiffTool {
          */
         int sz1 = list1.size(), sz2 = list2.size();
 
+        // 找到删除和修改的部分
         Map<int[], Operator> map = new HashMap<>();
         for (int i = 0; i < sz1; ++i) {
             int ans = 0, idx = 0;
             for (int j = 0; j < sz2; ++j) {
-                int tmp = compareObj(list1.get(i), list2.get(j), prefix, differMap);
+                int tmp = compareObj(list1.get(i), list2.get(j), getListPrefix(prefix, i), differMap);
                 if (tmp == EQUALS || tmp == PART_EQUAL) {
                     ans = tmp;
                     idx = j;
@@ -542,7 +694,7 @@ public class DiffTool {
         label:
         for (int i = 0; i < sz2; ++i) {
             for (Object o : list1) {
-                int tmp = compareObj(list2.get(i), o, prefix, differMap);
+                int tmp = compareObj(list2.get(i), o, getListPrefix(prefix, i), differMap);
                 if (tmp == EQUALS || tmp == PART_EQUAL) continue label;
             }
             list.add(i);
@@ -552,28 +704,20 @@ public class DiffTool {
             res = false;
             Operator op = map.get(key);
             if (op == Operator.DEL) {
-                differMap.put(
-                        getListPrefix(prefix, key[0]) + "&" + op.des,
-                        new Node<>(list1.get(key[0]), null)
-                );
+                differMap.put(getListPrefix(prefix, key[0]), new Node<>(list1.get(key[0]), null, op));
                 continue;
             }
 
             if (op == Operator.MODIFY) {
-                differMap.put(
-                        getListPrefix(prefix, key[0]) + "&" + op.des,
-                        new Node<>(list1.get(key[0]), list2.get(key[1]))
-                );
+                Object oldObj = list1.get(key[0]), newObj = list2.get(key[1]);
+                differMap.put(getListPrefix(prefix, key[0]), new Node<>(oldObj, newObj, op));
             }
         }
 
         int index = sz1;
         for (Integer idx : list) {
             res = false;
-            differMap.put(
-                    getListPrefix(prefix, index++) + "&" + Operator.ADD.des,
-                    new Node<>(null, list2.get(idx))
-            );
+            differMap.put(getListPrefix(prefix, index++), new Node<>(null, list2.get(idx), Operator.ADD));
         }
 
         return res;
@@ -632,8 +776,10 @@ public class DiffTool {
         // 首先比较两个 Map 都存在的 key 对应的 value 对象
         for (Object key : m1.keySet()) {
             String curPrefix = getFieldPrefix(prefix, key.toString());
+            Class<?> c = m1.get(key).getClass();
             if (!m2.containsKey(key)) { // 如果 m2 不包含 m1 的 key，此时是一个不同元素值
-                differMap.put(curPrefix, new Node<>(m1.get(key), null));
+                if (!isBasicType(c) || takeBasic)
+                    differMap.put(curPrefix, new Node<>(m1.get(key), null));
                 res = false;
                 continue;
             }
@@ -643,8 +789,10 @@ public class DiffTool {
         // 检查 m1 中存在没有 m2 的 key 的情况
         for (Object key : m2.keySet()) {
             String curPrefix = getFieldPrefix(prefix, key.toString());
+            Class<?> c = m1.get(key).getClass();
             if (!m1.containsKey(key)) {
-                differMap.put(curPrefix, new Node<>(null, m2.get(key)));
+                if (!isBasicType(c) || takeBasic)
+                    differMap.put(curPrefix, new Node<>(null, m2.get(key)));
                 res = false;
             }
         }
@@ -754,7 +902,15 @@ public class DiffTool {
 //            System.out.println(gson.toJson(newObj));
 //            System.out.println("=====================================");
 
-            DiffTool diffTool = new DiffTool(true, Arrays.asList("data.proj.data.id", "data.proj.data.period.id"));
+
+            List<String> idList = Arrays.asList("data.proj.data.id", "data.proj.data.period.id");
+            DiffTool diffTool = DiffToolBuilder.aDiffTool()
+                    .withDeep(true)
+                    .withIdList(idList)
+                    .withUseCache(true)
+                    .withTakeBasic(true)
+                    .build();
+
             Map<String, Node<Object>> diffMap = diffTool.compare(oldObj, newObj);
             System.out.println(gson.toJson(diffMap));
         } catch (IOException e) {
