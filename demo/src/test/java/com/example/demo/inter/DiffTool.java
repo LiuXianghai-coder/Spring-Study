@@ -24,7 +24,6 @@ import static java.util.concurrent.ThreadLocalRandom.current;
  * @author xhliu
  * @create 2022-03-18-15:00
  **/
-//@SpringBootTest
 public class DiffTool {
     static final Set<Class<?>> BASIC_CLASS_SET = new HashSet<>();
 
@@ -423,7 +422,7 @@ public class DiffTool {
         for (Object obj : co2) h2 += genHash(obj) * hash;
 
         if (h1 != h2) {
-            diffMap.put(prefix, new Node<>(c1, c2));
+            diffMap.put(prefix, new Node<>(co1, co2));
             return false;
         }
 
@@ -681,7 +680,7 @@ public class DiffTool {
             Gson gson = new GsonBuilder()
                     .disableHtmlEscaping()
                     .serializeNulls()
-                    .setPrettyPrinting()
+//                    .setPrettyPrinting()
                     .create();
 
             Object oldObj = gson.fromJson(oldReader, Object.class);
