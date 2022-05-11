@@ -232,8 +232,7 @@ public class DiffTool {
      * @return : 如果两个对象的属性完全一致，返回 true，否则，返回 false
      */
     boolean compObject(Object o1, Object o2) {
-        Map<String, Node<Object>> map = compare(o1, o2);
-        return map.size() == 0;
+        return dfs(o1, o2, "", new HashMap<>());
     }
 
     /**
@@ -908,7 +907,7 @@ public class DiffTool {
                     .withDeep(true)
                     .withIdList(idList)
                     .withUseCache(true)
-                    .withTakeBasic(true)
+                    .withTakeBasic(false)
                     .build();
 
             Map<String, Node<Object>> diffMap = diffTool.compare(oldObj, newObj);
