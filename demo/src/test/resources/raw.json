@@ -1,32 +1,22 @@
 {
-  "addOp": [
-    {
-      "name": "xhliu",
-      "age": 22
+  "data": {
+    "proj": {
+      "data": [
+        {
+          "id": "000001",
+          "name": "xhliu",
+          "version": "version-1",
+          "age": 22
+        },
+        {
+          "id": "000002",
+          "name": "yfzhao",
+          "version":"version-2",
+          "age": 23
+        }
+      ],
+      "type": "人民币",
+      "instId": "a665a45920422f9"
     }
-  ],
-  "modifyOp": [
-    {
-      "name": "xhliu",
-      "age": 22
-    },
-    {
-      "name": "yfz",
-      "age": 20
-    }
-  ],
-  "delOp": [
-    {
-      "name": "xhliu",
-      "age": 22
-    },
-    {
-      "name": "yfj",
-      "age": 21
-    },
-    {
-      "name": "aoz",
-      "age": 23
-    }
-  ]
+  }
 }

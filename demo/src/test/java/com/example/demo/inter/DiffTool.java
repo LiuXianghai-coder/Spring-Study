@@ -94,8 +94,23 @@ public class DiffTool {
      */
     private final boolean deep;
 
+    /**
+     * 这个字段的目的是用于指示相关的属性是否是 id 标识属性，
+     * 这是由于大部分的实体类都没有重写对应的 equals 方法，因此，
+     * 只能通过预先定义的 id 属性来实现和 equals 方法同样的功能，
+     * 如果没有这样的参数，将会逐一比较每个对象的所有元素，直到对象
+     * 是一个可以比较的标量属性
+     */
+    private final List<String> idList;
+
     public DiffTool(boolean deep) {
         this.deep = deep;
+        this.idList = null;
+    }
+
+    public DiffTool(boolean deep, List<String> idList) {
+        this.deep = deep;
+        this.idList = idList;
     }
 
     /**
@@ -111,11 +126,58 @@ public class DiffTool {
         return map.size() == 0;
     }
 
+    private int desJsonComp(Object o1, Object o2, String prefix) {
+        List<String> idKeys = new ArrayList<>();
+        Map<?, ?> map1 = (Map<?, ?>) o1, map2 = (Map<?, ?>) o2;
+
+        assert idList != null; // 调用该方法之前，调用者必须执行一次 null 检查
+
+        // 检查所有的主键属性，以判断对应最终的列表操作行为
+        for (String id : idList) {
+            int last = Math.max(id.lastIndexOf("."), 0);
+            String pre = id.substring(0, last);
+            String filed = id.substring(last + 1);
+
+            if (last > 0 && !prefix.equalsIgnoreCase(pre))
+                continue; // 非当前处理属性，跳过
+
+            for (Object key : map1.keySet()) {
+                if (key instanceof String) {
+                    String tmp = (String) key;
+                    if (tmp.endsWith(filed)) idKeys.add(tmp);
+                }
+            }
+        }
+
+        // 比较主键属性
+        boolean res = true;
+        for (String key : idKeys) {
+            if (!map2.containsKey(key)) {
+                throw new RuntimeException("o1 和 o2 不含有相同的 id 属性");
+            }
+
+            Object obj1 = map1.get(key), obj2 = map2.get(key);
+            res &= compObject(obj1, obj2);
+        }
+
+        // 主键属性不同，则说明是完全不同的两个对象
+        if (!res) return ABS_NO_EQUAL;
+
+        // 如果两个对象的所有属性相同，则是一个对象，否则，说明对象已经被修改过
+        return compObject(o1, o2) ? ABS_EQUAL : PART_EQUAL;
+    }
+
     /**
      * 比较两个对象，具体比对结果可以查看 {@code ABS_EQUAL}、
      * {@code PART_EQUAL}、{@code ABS_NO_EQUAL}
      */
-    int compareObj(Object o1, Object o2) {
+    int compareObj(Object o1, Object o2, String prefix) {
+        Class<?> c1 = o1.getClass(), c2 = o2.getClass();
+        checkParams(c1 != c2, "o1 和 o2 类型不相等");
+
+        if (isMap(c1) && idList != null)
+            return desJsonComp(o1, o2, prefix);
+
         Map<String, Node<Object>> map = compare(o1, o2);
         int filedCnt = countField(o1);
         int sz = map.size();
@@ -453,7 +515,7 @@ public class DiffTool {
         for (int i = 0; i < sz1; ++i) {
             int ans = 0, idx = 0;
             for (int j = 0; j < sz2; ++j) {
-                int tmp = compareObj(list1.get(i), list2.get(j));
+                int tmp = compareObj(list1.get(i), list2.get(j), prefix);
                 if (tmp == EQUALS || tmp == PART_EQUAL) {
                     ans = tmp;
                     idx = j;
@@ -474,7 +536,7 @@ public class DiffTool {
         label:
         for (int i = 0; i < sz2; ++i) {
             for (Object o : list1) {
-                int tmp = compareObj(list2.get(i), o);
+                int tmp = compareObj(list2.get(i), o, prefix);
                 if (tmp == EQUALS || tmp == PART_EQUAL) continue label;
             }
             list.add(i);
