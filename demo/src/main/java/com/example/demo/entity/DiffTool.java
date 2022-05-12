@@ -693,7 +693,8 @@ public class DiffTool {
         label:
         for (int i = 0; i < sz2; ++i) {
             for (Object o : list1) {
-                int tmp = compareObj(list2.get(i), o, getListPrefix(prefix, i), differMap);
+                // 修复: 比对结果有时会取反的 bug
+                int tmp = compareObj(o, list2.get(i), getListPrefix(prefix, i), differMap);
                 if (tmp == EQUALS || tmp == PART_EQUAL) continue label;
             }
             list.add(i);
