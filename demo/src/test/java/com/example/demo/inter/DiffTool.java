@@ -231,7 +231,7 @@ public class DiffTool {
      * @param o2 : 新的数据对象
      * @return : 如果两个对象的属性完全一致，返回 true，否则，返回 false
      */
-    boolean compObject(Object o1, Object o2) {
+    public boolean compObject(Object o1, Object o2) {
         return dfs(o1, o2, "", new HashMap<>());
     }
 
@@ -367,7 +367,7 @@ public class DiffTool {
      * @param newObj : 新值对象
      * @return 记录两个对象不同属性的 Map，Map 中存有的 {@code key} 应当是以 {@code .} 的分隔字符串形式
      */
-    Map<String, Node<Object>> compare(Object oldObj, Object newObj) {
+    public Map<String, Node<Object>> compare(Object oldObj, Object newObj) {
         Map<String, Node<Object>> map = new HashMap<>();
         dfs(oldObj, newObj, "", map);
         return map;
@@ -880,6 +880,18 @@ public class DiffTool {
         }
 
         return ans;
+    }
+
+    /**
+     * 由于比较对象时会使用到缓存，因此在比较不同的 JSON 对象时，
+     * 务必确保缓存已经被清理过，尽管这并不会影响到程序的功能，但是
+     * 可能会导致一定程度上的内存泄漏 <br />
+     *
+     * 本程序中缓存的目的是为了避免重复比较相同的对象，因此比较完成之后的缓存实际上
+     * 不具备任何其它的功能，因此尽可能在比对完成之后就调用该方法清理这些不必要的缓存
+     */
+    public void clearCache() {
+        this.cache.clear();
     }
 
     //    @Test
