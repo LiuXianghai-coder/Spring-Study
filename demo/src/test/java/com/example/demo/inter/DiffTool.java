@@ -48,7 +48,7 @@ public class DiffTool {
         BASIC_CLASS_SET.add(Instant.class);
     }
 
-    final static class Node<T> {
+    public final static class Node<T> {
         final T oldVal, newVal;
         final Operator op;
 
@@ -775,9 +775,9 @@ public class DiffTool {
         // 首先比较两个 Map 都存在的 key 对应的 value 对象
         for (Object key : m1.keySet()) {
             String curPrefix = getFieldPrefix(prefix, key.toString());
-            Class<?> c = m1.get(key).getClass();
+            Object obj = m1.get(key);
             if (!m2.containsKey(key)) { // 如果 m2 不包含 m1 的 key，此时是一个不同元素值
-                if (!isBasicType(c) || takeBasic)
+                if (takeBasic || (obj != null && !isBasicType(obj.getClass())))
                     differMap.put(curPrefix, new Node<>(m1.get(key), null));
                 res = false;
                 continue;
@@ -788,9 +788,9 @@ public class DiffTool {
         // 检查 m1 中存在没有 m2 的 key 的情况
         for (Object key : m2.keySet()) {
             String curPrefix = getFieldPrefix(prefix, key.toString());
-            Class<?> c = m1.get(key).getClass();
+            Object obj = m1.get(key);
             if (!m1.containsKey(key)) {
-                if (!isBasicType(c) || takeBasic)
+                if (takeBasic || (obj != null && !isBasicType(obj.getClass())))
                     differMap.put(curPrefix, new Node<>(null, m2.get(key)));
                 res = false;
             }

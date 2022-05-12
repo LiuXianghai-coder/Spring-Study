@@ -2,7 +2,6 @@ package com.example.demo.controller;
 
 import com.example.demo.entity.DiffTool;
 import com.example.demo.entity.Person;
-import com.example.demo.entity.Solution;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Mono;
 
 import java.io.*;
-import java.util.Map;
+import java.util.Arrays;
 
 /**
  * @author xhliu2
@@ -36,8 +35,8 @@ public class JustController {
 
     @GetMapping(path = "/diff")
     public Mono<Object> diff() {
-        File rawFile = new File("src/test/resources/one.json");
-        File newFile = new File("src/test/resources/two.json");
+        File rawFile = new File("src/test/resources/raw.json");
+        File newFile = new File("src/test/resources/new.json");
         try (
                 Reader oldReader = new FileReader(rawFile);
                 Reader newReader = new FileReader(newFile)
@@ -46,7 +45,13 @@ public class JustController {
             Object oldObj = gson.fromJson(oldReader, Object.class);
             Object newObj = gson.fromJson(newReader, Object.class);
 
-            return Mono.just(DiffTool.compare(oldObj, newObj));
+            DiffTool tool = DiffTool.DiffToolBuilder.aDiffTool()
+                    .withDeep(true)
+                    .withUseCache(true)
+                    .withIdList(Arrays.asList("data.proj.data.id", "data.proj.data.period.id"))
+                    .build();
+
+            return Mono.just(tool.compare(oldObj, newObj));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
