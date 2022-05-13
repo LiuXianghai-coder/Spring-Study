@@ -1,13 +1,7 @@
 package com.example.demo.entity;
 
 import com.google.common.base.Objects;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.Reader;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.math.BigDecimal;
@@ -584,7 +578,7 @@ public class DiffTool {
             那么将会直接将两个集合存储的不同节点中
          */
         if (o1 instanceof Set) {
-            return hashCompare(o1, o2, prefix, differMap);
+            return differSet((Collection<?>) o1, (Collection<?>) o2, prefix, differMap);
         }
 
         /*
@@ -592,9 +586,8 @@ public class DiffTool {
             因此可以针对不同的索引位置的元素进行对应的比较
          */
         if (o1 instanceof List) {
-//            List<?> list1 = (List<?>) o1, list2 = (List<?>) o2;
-//            return differList(list1, list2, prefix, differMap);
-            return differSet((Collection<?>) o1, (Collection<?>) o2, prefix, differMap);
+            List<?> list1 = (List<?>) o1, list2 = (List<?>) o2;
+            return differList(list1, list2, prefix, differMap);
         }
 
         /*
