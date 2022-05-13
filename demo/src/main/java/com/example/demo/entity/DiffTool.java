@@ -233,6 +233,8 @@ public class DiffTool {
      * 移除当前前缀中含有的数组索引 "#{number}"，否则可能会导致无法和主键属性对应
      */
     private static String removePreIdx(String str) {
+        if (str == null) return "";
+
         StringBuilder sb = new StringBuilder();
         char[] arr = str.toCharArray();
 
@@ -254,6 +256,9 @@ public class DiffTool {
             Object o1, Object o2,
             String prefix, Map<String, Node<Object>> diffMap
     ) {
+        if (o1 == null && o2 == null) return ABS_EQUAL;
+        if (o1 == null || o2 == null) return ABS_NO_EQUAL;
+
         List<String> idKeys = new ArrayList<>();
         Map<?, ?> map1 = (Map<?, ?>) o1, map2 = (Map<?, ?>) o2;
 
@@ -308,6 +313,9 @@ public class DiffTool {
             Object o1, Object o2,
             String prefix, Map<String, Node<Object>> diffMap
     ) {
+        if (o1 == null && o2 == null) return ABS_EQUAL;
+        if (o1 == null || o2 == null) return ABS_NO_EQUAL;
+
         Class<?> c1 = o1.getClass(), c2 = o2.getClass();
         checkParams(c1 != c2, "o1 和 o2 类型不相等");
 
@@ -327,6 +335,8 @@ public class DiffTool {
      * 统计当前处理的类型具有多少个一般属性，一般属性是指：没有被 final、static 修饰的字段
      */
     int countField(Object o) {
+        if (o == null) return 0;
+
         Class<?> c = o.getClass();
         if (c.isPrimitive() || isBasicType(c)) return 1;
         if (isMap(c)) return ((Map<?, ?>) o).size();
@@ -457,7 +467,6 @@ public class DiffTool {
             Object v1, Object v2, Class<?> fieldClass,
             String curFiled, Map<String, Node<Object>> map
     ) {
-
         if (isBasicType(fieldClass)) {
             if (v1 == null && v2 == null) return EQUALS;
             if (v1 == null) {
@@ -527,6 +536,9 @@ public class DiffTool {
 
     // 检查两个枚举类型数据是否相同
     static boolean equalsEnum(Enum<?> o1, Enum<?> o2) {
+        if (o1 == null && o2 == null) return true;
+        if (o1 == null || o2 == null) return false;
+
         checkParams(o1.getClass() != o2.getClass(), "o1 和 o2 不同时为枚举类型");
         return o1 == o2;
     }
@@ -540,6 +552,9 @@ public class DiffTool {
      */
     @SuppressWarnings("unchecked")
     static boolean equalsObj(Object o1, Object o2) {
+        if (o1 == null && o2 == null) return true;
+        if (o1 == null || o2 == null) return false;
+
         if (o1 instanceof Comparable)
             return ((Comparable<Object>) o1).compareTo(o2) == 0;
         return o1.equals(o2);
@@ -567,6 +582,9 @@ public class DiffTool {
             Object o1, Object o2,
             String prefix, Map<String, Node<Object>> differMap
     ) {
+        if (o1 == null && o2 == null) return true;
+        if (o1 == null || o2 == null) return false;
+
         Class<?> c1 = o1.getClass(), c2 = o2.getClass();
         checkParams(c1 != c2, "集合 o1 和 o2 的类型不一致.");
 
@@ -611,6 +629,9 @@ public class DiffTool {
             Object o1, Object o2,
             String prefix, Map<String, Node<Object>> diffMap
     ) {
+        if (o1 == null && o2 == null) return true;
+        if (o1 == null || o2 == null) return false;
+
         Class<?> c1 = o1.getClass(), c2 = o2.getClass();
         checkParams(c1 != c2, "o1 和 o2 类型不一致");
 
@@ -649,6 +670,9 @@ public class DiffTool {
             Collection<?> co1, Collection<?> co2,
             String prefix, Map<String, Node<Object>> differMap
     ) {
+        if (co1 == null && co2 == null) return true;
+        if (co1 == null || co2 == null) return false;
+
         boolean res = true;
         List<?> list1 = new ArrayList<>(co1), list2 = new ArrayList<>(co2);
 
@@ -723,6 +747,9 @@ public class DiffTool {
             List<?> list1, List<?> list2,
             String prefix, Map<String, Node<Object>> differMap
     ) {
+        if (list1 == null && list2 == null) return true;
+        if (list1 == null || list2 == null) return false;
+
         boolean res = true;
         Map<String, Node<Object>> tmpMap = new HashMap<>(); // 记录相同索引位置的索引元素的不同
 
@@ -762,6 +789,9 @@ public class DiffTool {
             Map<?, ?> m1, Map<?, ?> m2,
             String prefix, Map<String, Node<Object>> differMap
     ) {
+        if (m1 == null && m2 == null) return true;
+        if (m1 == null || m2 == null) return false;
+
         checkParams(m1.getClass() != m2.getClass(), "map1 和 map2 类型不一致");
 
         boolean res = true;
@@ -827,6 +857,8 @@ public class DiffTool {
      * @return : 该对象生成的 hash 值
      */
     static long genHash(Object obj) {
+        if (obj ==null) return 0L;
+
         Class<?> c = obj.getClass();
         long ans = 0L;
 
