@@ -26,6 +26,57 @@ public class Application {
         this.obj = new Object();
     }
 
+    public int maximumWhiteTiles(int[][] tiles, int len) {
+        int n = tiles.length;
+        TreeSet<int[]> ts = new TreeSet<>((a, b) -> {
+            return a[0] == b[0] ? a[1] - b[1] : a[0] - b[0];
+        });
+
+        for (int[] tile : tiles) {
+            int[] left = ts.floor(tile), right = ts.ceiling(tile);
+            // System.out.println(Arrays.toString(left) + "\t" + Arrays.toString(tile) + "\t" + Arrays.toString(right));
+            if (left == null && right == null) {
+                ts.add(tile);
+                continue;
+            }
+
+            boolean lc = left != null && left[1] >= tile[0] || tile[0] - left[1] == 1;
+            boolean rc = right != null && tile[1] >= right[0] || right[0] - tile[1] == 1;
+
+            if (lc && rc) {
+                ts.remove(left);
+                ts.remove(right);
+                ts.add(new int[]{left[0], right[1]});
+                continue;
+            }
+
+
+            if (lc) {
+                ts.remove(left);
+                ts.add(new int[]{left[0], tile[1]});
+            } else if (rc) {
+                ts.remove(right);
+                ts.add(new int[]{tile[0], right[1]});
+            } else {
+                ts.add(tile);
+            }
+        }
+
+        int ans = 0;
+        for (int[] val : ts) {
+            System.out.println(Arrays.toString(val));
+            int lo = val[0], hi = val[1];
+            int sz = hi - lo + 1;
+            if (sz < len) {
+                if (sz > ans) ans = sz;
+            } else {
+                ans = len;
+            }
+        }
+
+        return ans;
+    }
+
     public static void addElement(Set<?> set) {
         set.add(null);
     }
@@ -101,7 +152,7 @@ public class Application {
     private static boolean cloudLoad(int[] weights, int days, int capacity) {
         int times = 0;
         final int N = weights.length;
-        for (int i = 0; i < N;) {
+        for (int i = 0; i < N; ) {
             int sum = 0;
             if (weights[i] > capacity) return false;
             while (i < N && sum + weights[i] <= capacity) {
@@ -116,6 +167,15 @@ public class Application {
         return times <= days;
     }
 
+    static void printTable(int m) {
+        for (int i = 1; i <= m; ++i) {
+            for (int j = 1; j <= i; ++j) {
+                System.out.print(j + "*" + i + "=" + j * i + "\t");
+            }
+            System.out.println();
+        }
+    }
+
 
     public static void main(String[] args) throws InterruptedException {
 /*
@@ -125,9 +185,10 @@ public class Application {
         System.out.println("left=" + s1.substring(1, s1.length()));
         System.out.println("right=" + right);
 */
-
-        int a = Integer.MIN_VALUE - 1;
-        System.out.println(a);
-        System.out.println(Integer.MAX_VALUE);
+        int[][] vals = new int[][]{{1, 2}, {3, 4}};
+        Object[] array = Arrays.stream(vals)
+                .map(val -> val == null ? null : val.clone())
+                .toArray();
+        Arrays.copyOf(vals, 0);
     }
 }
