@@ -2,6 +2,7 @@ package com.example.demo.entity;
 
 import com.google.common.base.Objects;
 
+import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.math.BigDecimal;
@@ -612,12 +613,25 @@ public final class DiffTool {
             对于数组类型的处理，可以转换为 List 进行类似的处理
          */
         if (c1.isArray()) {
-            List<?> list1 = Arrays.stream((Object[]) o1).collect(Collectors.toList());
-            List<?> list2 = Arrays.stream((Object[]) o2).collect(Collectors.toList());
-            return differList(list1, list2, prefix, differMap);
+            return differList(getListByArray(o1), getListByArray(o2), prefix, differMap);
         }
 
         throw new RuntimeException("未能处理的集合类型异常 " + o1.getClass());
+    }
+
+    /**
+     * 将一个数组对象转换为对应的 List 对象，在进行转换前，必须确保当前的对象时一个数组对象，
+     * 对于非数组对象的转换将会导致抛出 {@code IllegalArgumentException}
+     */
+    private static List<?> getListByArray(Object obj) {
+        if (!obj.getClass().isArray()) {
+            throw new IllegalArgumentException("不能将非数组类型的对象转换为对应的 List");
+        }
+        int len = Array.getLength(obj);
+        List<Object> ans = new ArrayList<>();
+        for (int i = 0; i < len; ++i) ans.add(Array.get(obj, i));
+
+        return ans;
     }
 
     /**
@@ -640,8 +654,8 @@ public final class DiffTool {
             co1 = (Collection<?>) o1;
             co2 = (Collection<?>) o2;
         } else if (c1.isArray()) {
-            co1 = Arrays.stream((Object[]) o1).collect(Collectors.toList());
-            co2 = Arrays.stream((Object[]) o2).collect(Collectors.toList());
+            co1 = getListByArray(o1);
+            co2 = getListByArray(o2);
         } else {
             throw new RuntimeException("不支持的集合类型 " + c1);
         }

@@ -2,8 +2,12 @@ package com.example.demo.entity;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 /**
  * @author xhliu
@@ -40,21 +44,8 @@ public enum Type {
     }
 
     public static void main(String[] args) {
-        String str = "data.proj.data";
-        StringBuilder sb = new StringBuilder();
-        char[] arr = str.toCharArray();
-
-        boolean state = false;
-        for (char c : arr) {
-            if (state && c != '.') continue;
-
-            if (c == '.') {
-                sb.append(c);
-                state = false;
-            } else if (c == '#') state = true;
-            else sb.append(c);
-        }
-
-        System.out.println(sb);
+        Gson gson = new Gson();
+        Map<String, Object> map = new HashMap<>();
+        System.out.println(gson.toJson(map));
     }
 }
