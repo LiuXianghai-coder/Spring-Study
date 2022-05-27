@@ -28,9 +28,7 @@ public class Application {
 
     public int maximumWhiteTiles(int[][] tiles, int len) {
         int n = tiles.length;
-        TreeSet<int[]> ts = new TreeSet<>((a, b) -> {
-            return a[0] == b[0] ? a[1] - b[1] : a[0] - b[0];
-        });
+        TreeSet<int[]> ts = new TreeSet<>((a, b) -> a[0] == b[0] ? a[1] - b[1] : a[0] - b[0]);
 
         for (int[] tile : tiles) {
             int[] left = ts.floor(tile), right = ts.ceiling(tile);
@@ -40,8 +38,10 @@ public class Application {
                 continue;
             }
 
-            boolean lc = left != null && left[1] >= tile[0] || tile[0] - left[1] == 1;
-            boolean rc = right != null && tile[1] >= right[0] || right[0] - tile[1] == 1;
+            boolean lc = left != null && left[1] >= tile[0]
+                    || tile[0] - Objects.requireNonNull(left)[1] == 1;
+            boolean rc = right != null && tile[1] >= right[0]
+                    || Objects.requireNonNull(right)[0] - tile[1] == 1;
 
             if (lc && rc) {
                 ts.remove(left);
@@ -92,7 +92,7 @@ public class Application {
                     .option(ChannelOption.TCP_NODELAY, true)
                     .childHandler(new ChannelInitializer<SocketChannel>() {
                         @Override
-                        protected void initChannel(SocketChannel socketChannel) throws Exception {
+                        protected void initChannel(SocketChannel socketChannel) {
                             /* TODO */
                         }
                     });
@@ -176,19 +176,7 @@ public class Application {
         }
     }
 
+    public static void main(String[] args) {
 
-    public static void main(String[] args) throws InterruptedException {
-/*
-        Application application = new Application();
-        application.start(9096);
-        String s1 = "great";
-        System.out.println("left=" + s1.substring(1, s1.length()));
-        System.out.println("right=" + right);
-*/
-        int[][] vals = new int[][]{{1, 2}, {3, 4}};
-        Object[] array = Arrays.stream(vals)
-                .map(val -> val == null ? null : val.clone())
-                .toArray();
-        Arrays.copyOf(vals, 0);
     }
 }

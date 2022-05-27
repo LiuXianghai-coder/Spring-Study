@@ -1,10 +1,2 @@
-spring:
-#  jackson:
-#    visibility:
-#      field: any
-  datasource:
-    url: jdbc:mysql://127.0.0.1:3306/lxh_db
-    username: root
-    password: 12345678
 server:
   port: 8080
