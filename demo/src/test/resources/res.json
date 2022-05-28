@@ -1,197 +1,64 @@
 {
-  "data.proj.data#0.period#0": {
-    "oldVal": {
-      "id": "040d38eb9b5caf214baf0a",
-      "date_time": "2017-09-11 10:52:27",
-      "des": "第一期次"
+  "data": {
+    "response": {
+      "code": "1000",
+      "message": "成功"
     },
-    "newVal": null,
-    "op": "DEL"
-  },
-  "data.proj.data#0.period#1": {
-    "oldVal": {
-      "id": "hh7a536e6eb2ba4hyb17d7",
-      "date_time": "2019-10-11 21:15:17",
-      "des": "第二期次"
-    },
-    "newVal": {
-      "id": "hh7a536e6eb2ba4hyb17d7",
-      "date_time": "2017-12-11 21:15:17",
-      "des": "第二期次"
-    },
-    "op": "MODIFY"
-  },
-  "data.proj.data#0.period#4": {
-    "oldVal": {
-      "id": "h8mozc6e6eb2ba467yhbkz",
-      "date_time": "2019-06-18 21:46:08",
-      "des": "第十一期次"
-    },
-    "newVal": {
-      "id": "h8mozc6e6eb2ba467yhbkz",
-      "date_time": "2019-06-18 21:46:08",
-      "des": "第五期次"
-    },
-    "op": "MODIFY"
-  },
-  "data.proj.data#0.period#5": {
-    "oldVal": null,
-    "newVal": {
-      "id": "48818c6e6eb2ba468317d7",
-      "date_time": "2017-09-11 10:52:27",
-      "des": "第一期次"
-    },
-    "op": "ADD"
-  },
-  "data.proj.data#1.period#0": {
-    "oldVal": {
-      "id": "8f362181271803abc75qa0",
-      "date_time": "2019-08-21 14:02:37",
-      "des": "第十二期次"
-    },
-    "newVal": {
-      "id": "8f362181271803abc75qa0",
-      "date_time": "2019-08-21 14:02:37",
-      "des": "第六期次"
-    },
-    "op": "MODIFY"
-  },
-  "data.proj.data#0": {
-    "oldVal": {
-      "id": "000001",
-      "name": "xhliu",
-      "version": "version-1",
-      "age": 22.0,
-      "period": [
+    "project": {
+      "projId": "0000000",
+      "proj": {
+        "id": "eeffa1as",
+        "name": "Project 1",
+        "industryType": "computer",
+        "createdDate": "May 25, 2022 1:13:31 PM",
+        "delFlag": 0,
+        "investScale": 1,
+        "stock": 129
+      },
+      "productViewList": [
         {
-          "id": "48818c6e6eb2ba468317d7",
-          "date_time": "2017-09-11 10:52:27",
-          "des": "第一期次"
+          "projId": "7da8f4e",
+          "name": "Example 1",
+          "isPeriod": false,
+          "periodViewList": [
+            {
+              "id": "0x3f3f3f3f",
+              "projId": "eaa8a53",
+              "isAdd": false
+            },
+            {
+              "id": "b5bccee",
+              "projId": "23b8348"
+            },
+            {
+              "id": "afec75e",
+              "projId": "d274838",
+              "isAdd": true
+            }
+          ]
         },
         {
-          "id": "hh7a536e6eb2ba4hyb17d7",
-          "date_time": "2017-12-11 21:15:17",
-          "des": "第二期次"
-        },
-        {
-          "id": "htgb8c6e6eb2ba468347kl",
-          "date_time": "2018-02-15 09:25:15",
-          "des": "第三期次"
-        },
-        {
-          "id": "hybjpc6e6eb2ba46837pt3",
-          "date_time": "2018-04-16 15:02:19",
-          "des": "第四期次"
-        },
-        {
-          "id": "h8mozc6e6eb2ba467yhbkz",
-          "date_time": "2019-06-18 21:46:08",
-          "des": "第五期次"
+          "projId": "c525286",
+          "name": "Example 2",
+          "isPeriod": true,
+          "periodViewList": [
+            {
+              "id": "d274838",
+              "projId": "87349b1",
+              "isAdd": true
+            },
+            {
+              "id": "b5bccee",
+              "projId": "23b8348"
+            },
+            {
+              "id": "f053fd0",
+              "projId": "a2b8e13",
+              "isAdd": true
+            }
+          ]
         }
       ]
-    },
-    "newVal": {
-      "id": "000001",
-      "name": "xhliu",
-      "version": "version-1",
-      "age": 22.0,
-      "period": [
-        {
-          "id": "040d38eb9b5caf214baf0a",
-          "date_time": "2017-09-11 10:52:27",
-          "des": "第一期次"
-        },
-        {
-          "id": "hh7a536e6eb2ba4hyb17d7",
-          "date_time": "2019-10-11 21:15:17",
-          "des": "第二期次"
-        },
-        {
-          "id": "htgb8c6e6eb2ba468347kl",
-          "date_time": "2018-02-15 09:25:15",
-          "des": "第三期次"
-        },
-        {
-          "id": "hybjpc6e6eb2ba46837pt3",
-          "date_time": "2018-04-16 15:02:19",
-          "des": "第四期次"
-        },
-        {
-          "id": "h8mozc6e6eb2ba467yhbkz",
-          "date_time": "2019-06-18 21:46:08",
-          "des": "第十一期次"
-        }
-      ]
-    },
-    "op": "MODIFY"
-  },
-  "data.proj.data#1": {
-    "oldVal": {
-      "id": "000002",
-      "name": "aozhao",
-      "version": "version-2",
-      "age": 24.0,
-      "period": [
-        {
-          "id": "8f362181271803abc75qa0",
-          "date_time": "2019-08-21 14:02:37",
-          "des": "第六期次"
-        },
-        {
-          "id": "d38eb9b5caf214baf049a0",
-          "date_time": "2019-10-16 16:00:07",
-          "des": "第七期次"
-        },
-        {
-          "id": "abc756b4e04e68582b6bb4",
-          "date_time": "2019-12-15 19:15:15",
-          "des": "第八期次"
-        },
-        {
-          "id": "271803abc756b4e04e582",
-          "date_time": "2020-02-06 10:12:39",
-          "des": "第九期次"
-        },
-        {
-          "id": "38eb9b5caf214baf06218",
-          "date_time": "2020-04-08 19:16:18",
-          "des": "第十期次"
-        }
-      ]
-    },
-    "newVal": {
-      "id": "000002",
-      "name": "aozhao",
-      "version": "version-2",
-      "age": 24.0,
-      "period": [
-        {
-          "id": "8f362181271803abc75qa0",
-          "date_time": "2019-08-21 14:02:37",
-          "des": "第十二期次"
-        },
-        {
-          "id": "d38eb9b5caf214baf049a0",
-          "date_time": "2019-10-16 16:00:07",
-          "des": "第七期次"
-        },
-        {
-          "id": "abc756b4e04e68582b6bb4",
-          "date_time": "2019-12-15 19:15:15",
-          "des": "第八期次"
-        },
-        {
-          "id": "271803abc756b4e04e582",
-          "date_time": "2020-02-06 10:12:39",
-          "des": "第九期次"
-        },
-        {
-          "id": "38eb9b5caf214baf06218",
-          "date_time": "2020-04-08 19:16:18",
-          "des": "第十期次"
-        }
-      ]
-    },
-    "op": "MODIFY"
+    }
   }
 }
