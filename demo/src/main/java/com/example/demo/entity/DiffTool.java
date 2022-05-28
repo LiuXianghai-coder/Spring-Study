@@ -18,7 +18,7 @@ import static java.util.concurrent.ThreadLocalRandom.current;
  * @author xhliu
  * @create 2022-03-18-15:00
  **/
-public class DiffTool {
+public final class DiffTool {
     static final Set<Class<?>> BASIC_CLASS_SET = new HashSet<>();
 
     static {
@@ -703,13 +703,13 @@ public class DiffTool {
             int ans = 0, idx = 0;
             for (int j = 0; j < sz2; ++j) {
                 int tmp = compareObj(list1.get(i), list2.get(j), getListPrefix(prefix, i), differMap);
-                if (tmp == EQUALS || tmp == PART_EQUAL) {
+                if (tmp == ABS_EQUAL || tmp == PART_EQUAL) {
                     ans = tmp;
                     idx = j;
-                    if (tmp == EQUALS) break;
+                    if (tmp == ABS_EQUAL) break;
                 }
             }
-            if (ans == EQUALS) continue; // 两个集合中存在相同的元素对象
+            if (ans == ABS_EQUAL) continue; // 两个集合中存在相同的元素对象
 
             if (ans == ABS_NO_EQUAL) { // 绝对不相等，即集合中存在的元素在集合二中已经被删除
                 map.put(new int[]{i, -1}, Operator.DEL);
@@ -725,7 +725,7 @@ public class DiffTool {
             for (Object o : list1) {
                 // 修复: 比对结果有时会取反的 bug
                 int tmp = compareObj(o, list2.get(i), getListPrefix(prefix, i), differMap);
-                if (tmp == EQUALS || tmp == PART_EQUAL) continue label;
+                if (tmp == ABS_EQUAL || tmp == PART_EQUAL) continue label;
             }
             list.add(i);
         }
