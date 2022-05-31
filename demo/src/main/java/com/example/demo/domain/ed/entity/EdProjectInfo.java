@@ -1,6 +1,8 @@
 package com.example.demo.domain.ed.entity;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 
 public class EdProjectInfo extends ProjectInfo {
     private String fundFor;
@@ -9,7 +11,27 @@ public class EdProjectInfo extends ProjectInfo {
 
     private LocalDateTime payDate;
 
+    private int[] arr;
+
+    private Object[] objs;
+
     public static EdProjectInfo EXAMPLE = new EdProjectInfo();
+
+    public int[] getArr() {
+        return arr;
+    }
+
+    public void setArr(int[] arr) {
+        this.arr = arr;
+    }
+
+    public Object[] getObjs() {
+        return objs;
+    }
+
+    public void setObjs(Object[] objs) {
+        this.objs = objs;
+    }
 
     static {
         EXAMPLE.setProjId("DN00001");
@@ -18,6 +40,12 @@ public class EdProjectInfo extends ProjectInfo {
         EXAMPLE.setFundFor("保险");
         EXAMPLE.setFundType("Invest");
         EXAMPLE.setPayDate(LocalDateTime.of(2021, 5, 26, 19, 0));
+        EXAMPLE.setArr(new int[]{1, 2, 3});
+        EXAMPLE.setObjs(new Object[]{
+                LocalDate.of(2011, 10, 23),
+                LocalDate.of(2013, 12, 14),
+                LocalDate.of(2014, 2, 18)
+        });
     }
 
     public String getFundFor() {
@@ -50,6 +78,8 @@ public class EdProjectInfo extends ProjectInfo {
                 "fundFor='" + fundFor + '\'' +
                 ", fundType='" + fundType + '\'' +
                 ", payDate=" + payDate +
+                ", arr=" + Arrays.toString(arr) +
+                ", objs=" + Arrays.toString(objs) +
                 '}';
     }
 }
