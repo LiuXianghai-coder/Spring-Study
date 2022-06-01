@@ -15,7 +15,13 @@ public class EdProjectInfo extends ProjectInfo {
 
     private Object[] objs;
 
-    public static EdProjectInfo EXAMPLE = new EdProjectInfo();
+    private final int val;
+
+    public EdProjectInfo(int val) {
+        this.val = val;
+    }
+
+    public static EdProjectInfo EXAMPLE = new EdProjectInfo(1);
 
     public int[] getArr() {
         return arr;
@@ -80,6 +86,7 @@ public class EdProjectInfo extends ProjectInfo {
                 ", payDate=" + payDate +
                 ", arr=" + Arrays.toString(arr) +
                 ", objs=" + Arrays.toString(objs) +
+                ", val=" + val +
                 '}';
     }
 }

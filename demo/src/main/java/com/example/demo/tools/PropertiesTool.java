@@ -3,12 +3,11 @@ package com.example.demo.tools;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.lang.model.type.PrimitiveType;
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
+import java.time.chrono.ChronoLocalDate;
 import java.time.chrono.ChronoLocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 public class PropertiesTool {
     private final static Logger log = LoggerFactory.getLogger(PropertiesTool.class);
@@ -29,13 +28,21 @@ public class PropertiesTool {
         for (Field sf : sfs) {
             for (Field tf : tfs) {
                 if (!sf.equals(tf)) continue;
+                int modifiers = tf.getModifiers();
+
+                // 过滤静态字段
+                if ((modifiers & Modifier.STATIC) != 0) continue;
+
                 try {
                     tf.setAccessible(true);
                     Object val = tf.get(src);
 
                     Class<?> fc = tf.getType();
-                    if (!isBasicType(fc)) {
-                        if (fc.isArray()) tf.set(target, cloneArray(val));
+                    if (!isConstType(fc)) {
+                        if (fc.isArray()) {
+                            tf.set(target, cloneArray(val));
+                            continue;
+                        }
 
                         // 对于对象类型的深度属性复制，需要相关的对象具有对应的无参构造函数
                         Object obj = fc.getDeclaredConstructor().newInstance();
@@ -54,15 +61,35 @@ public class PropertiesTool {
         copyProperties(src, srcClass.getSuperclass(), target, tarClass.getSuperclass());
     }
 
-    private static boolean isBasicType(Class<?> clazz) {
+    private static boolean isConstType(Class<?> clazz) {
         if (clazz.isPrimitive()) return true;
+
+        // LocalDate 系列不可变对象的处理
         if (ChronoLocalDateTime.class.isAssignableFrom(clazz)) return true;
+        if (ChronoLocalDate.class.isAssignableFrom(clazz)) return true;
 
         // 数值型的类型是不可变的，可以在多个对象之间安全地进行共享
         if (Number.class.isAssignableFrom(clazz)) return true;
 
         // String 在这里被视为基本数据类型，因为它是不可变的，可以安全地在多个对象之间共享
         return clazz == String.class;
+    }
+
+    private enum Clazz {
+        BYTE(byte.class),
+        BOOLEAN(boolean.class),
+        SHORT(short.class),
+        CHAR(char.class),
+        FLOAT(float.class),
+        INT(int.class),
+        LONG(long.class),
+        DOUBLE(double.class);
+
+        public final Class<?> clazz;
+
+        Clazz(Class<?> clazz) {
+            this.clazz = clazz;
+        }
     }
 
     /**
@@ -77,21 +104,35 @@ public class PropertiesTool {
             throw new IllegalArgumentException("不能将非数组类型的对象转换为对应的 List");
         }
 
-        List<Object> list = new ArrayList<>();
+        Class<?> compClazz = obj.getClass().getComponentType();
+        if (compClazz.isPrimitive()) {
+            Clazz type = Clazz.valueOf(Clazz.class, compClazz.getSimpleName().toUpperCase());
+
+            Object res = null;
+            switch (type) {
+                case BYTE: res = ((byte[]) obj).clone(); break;
+                case BOOLEAN: res = ((boolean[]) obj).clone(); break;
+                case SHORT: res = ((short[]) obj).clone(); break;
+                case CHAR: res = ((char[]) obj).clone(); break;
+                case FLOAT: res = ((float[]) obj).clone(); break;
+                case INT: res = ((int[]) obj).clone(); break;
+                case LONG: res = ((long[]) obj).clone(); break;
+                case DOUBLE: res = ((double[]) obj).clone(); break;
+            }
+
+            return res;
+        }
 
         int len = Array.getLength(obj);
-        if (len <= 0) return list.toArray();
+        if (len <= 0) return null;
 
         Class<?> clazz = Array.get(obj, 0).getClass();
         Object ans = Array.newInstance(clazz, len);
-
         for (int i = 0; i < len; i++) {
-            list.add(Array.get(obj, i));
-
             Object val = Array.get(obj, i); // 当前属性中，数组中指定位置的对象
 
             // 基本类型直接复制即可
-            if (isBasicType(clazz)) {
+            if (isConstType(clazz)) {
                 Array.set(ans, i, val);
                 continue;
             }
