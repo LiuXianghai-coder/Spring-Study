@@ -17,11 +17,25 @@ public class EdProjectInfo extends ProjectInfo {
 
     private final int val;
 
+    private int[][] dirs;
+
     public EdProjectInfo(int val) {
         this.val = val;
     }
 
-    public static EdProjectInfo EXAMPLE = new EdProjectInfo(1);
+    public final static EdProjectInfo EXAMPLE = new EdProjectInfo(1);
+
+    public int getVal() {
+        return val;
+    }
+
+    public int[][] getDirs() {
+        return dirs;
+    }
+
+    public void setDirs(int[][] dirs) {
+        this.dirs = dirs;
+    }
 
     public int[] getArr() {
         return arr;
@@ -52,6 +66,7 @@ public class EdProjectInfo extends ProjectInfo {
                 LocalDate.of(2013, 12, 14),
                 LocalDate.of(2014, 2, 18)
         });
+        EXAMPLE.setDirs(new int[][]{{0, 1},{0, -1}, {1, 0}, {-1, 0}});
     }
 
     public String getFundFor() {
@@ -87,6 +102,7 @@ public class EdProjectInfo extends ProjectInfo {
                 ", arr=" + Arrays.toString(arr) +
                 ", objs=" + Arrays.toString(objs) +
                 ", val=" + val +
+                ", dirs=" + Arrays.deepToString(dirs) +
                 '}';
     }
 }

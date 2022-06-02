@@ -137,6 +137,12 @@ public class PropertiesTool {
                 continue;
             }
 
+            // 多维数组的处理
+            if (clazz.isArray()) {
+                Array.set(ans, i, cloneArray(val));
+                continue;
+            }
+
             try {
                 /*
                  * 针对数组中元素类型为一般对象，那么首先通过反射的方式实例化该位置的数组元素，
