@@ -1,5 +1,6 @@
 package com.example.demo.tools;
 
+import com.google.common.collect.Sets;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -8,6 +9,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.time.chrono.ChronoLocalDate;
 import java.time.chrono.ChronoLocalDateTime;
+import java.util.Set;
 
 public class PropertiesTool {
     private final static Logger log = LoggerFactory.getLogger(PropertiesTool.class);
@@ -22,10 +24,11 @@ public class PropertiesTool {
      * 这里的属性复制为深度拷贝，但这并不意味着一定会创建新的实例属性。因为对于不可变的对象，在多个对象
      * 之间进行共享是安全的，并且这些不可变对象一般都不会提供直接的实例化构造函数，因此对于不可变类的属性
      * 将会直接复制对象引用而不是重新实例化新的实例
+     *
+     * @param src      具备相关属性值的实例对象
+     * @param target   将要填充属性值的实例对象
+     * @param copyNull 控制开关，是否需要将 null 值拷贝到目标对象
      * @apiNote 复制的属性将会覆盖所有的非静态字段，即使这些字段属性被 final 修饰
-     * @param src       具备相关属性值的实例对象
-     * @param target    将要填充属性值的实例对象
-     * @param copyNull  控制开关，是否需要将 null 值拷贝到目标对象
      */
     public static void copyProperties(Object src, Object target, boolean copyNull) {
         copyProperties(src, src.getClass(), target, target.getClass(), copyNull);
@@ -40,40 +43,40 @@ public class PropertiesTool {
         if (srcClass == null || tarClass == null) return;
 
         Field[] sfs = srcClass.getDeclaredFields();
-        Field[] tfs = tarClass.getDeclaredFields();
-        for (Field sf : sfs) {
-            for (Field tf : tfs) {
-                if (!sf.equals(tf)) continue;
-                int modifiers = tf.getModifiers();
+        Set<Field> fieldSet = Sets.newHashSet(tarClass.getDeclaredFields());
+        for (Field tf : sfs) {
+            // 目标对象不包含的属性字段需要跳过
+            if (!fieldSet.contains(tf)) continue;
 
-                // 过滤静态字段
-                if ((modifiers & Modifier.STATIC) != 0) continue;
+            int modifiers = tf.getModifiers();
 
-                try {
-                    tf.setAccessible(true);
-                    Object val = tf.get(src);
+            // 过滤静态字段
+            if ((modifiers & Modifier.STATIC) != 0) continue;
 
-                    // 是否将空值复制到目标对象的对象的处理
-                    if (copyNull && val == null) continue;
+            try {
+                tf.setAccessible(true);
+                Object val = tf.get(src);
 
-                    Class<?> fc = tf.getType();
-                    if (!isConstType(fc)) {
-                        if (fc.isArray()) {
-                            tf.set(target, cloneArray(val));
-                            continue;
-                        }
+                // 是否将空值复制到目标对象的对象的处理
+                if (copyNull && val == null) continue;
 
-                        // 对于对象类型的深度属性复制，需要相关的对象具有对应的无参构造函数
-                        Object obj = fc.getDeclaredConstructor().newInstance();
-                        copyProperties(val, obj);
-                        tf.set(target, obj);
+                Class<?> fc = tf.getType();
+                if (!isConstType(fc)) {
+                    if (fc.isArray()) {
+                        tf.set(target, cloneArray(val));
                         continue;
                     }
 
-                    tf.set(target, val); // 基本类型的特殊处理
-                } catch (Exception e) {
-                    throw new RuntimeException(e);
+                    // 对于对象类型的深度属性复制，需要相关的对象具有对应的无参构造函数
+                    Object obj = fc.getDeclaredConstructor().newInstance();
+                    copyProperties(val, obj);
+                    tf.set(target, obj);
+                    continue;
                 }
+
+                tf.set(target, val); // 基本类型的特殊处理
+            } catch (Exception e) {
+                throw new RuntimeException(e);
             }
         }
 
@@ -115,8 +118,8 @@ public class PropertiesTool {
      * 实现数组对象的深度拷贝，数组中元素类型，应当至少存在一个无参构造函数，
      * 即使这个构造函数是私有的同样可以满足要求
      *
-     * @param obj  待拷贝的数组对象
-     * @return  拷贝之后的数组对象
+     * @param obj 待拷贝的数组对象
+     * @return 拷贝之后的数组对象
      */
     private static Object cloneArray(Object obj) {
         if (!obj.getClass().isArray()) {
@@ -129,14 +132,30 @@ public class PropertiesTool {
 
             Object res = null;
             switch (type) {
-                case BYTE: res = ((byte[]) obj).clone(); break;
-                case BOOLEAN: res = ((boolean[]) obj).clone(); break;
-                case SHORT: res = ((short[]) obj).clone(); break;
-                case CHAR: res = ((char[]) obj).clone(); break;
-                case FLOAT: res = ((float[]) obj).clone(); break;
-                case INT: res = ((int[]) obj).clone(); break;
-                case LONG: res = ((long[]) obj).clone(); break;
-                case DOUBLE: res = ((double[]) obj).clone(); break;
+                case BYTE:
+                    res = ((byte[]) obj).clone();
+                    break;
+                case BOOLEAN:
+                    res = ((boolean[]) obj).clone();
+                    break;
+                case SHORT:
+                    res = ((short[]) obj).clone();
+                    break;
+                case CHAR:
+                    res = ((char[]) obj).clone();
+                    break;
+                case FLOAT:
+                    res = ((float[]) obj).clone();
+                    break;
+                case INT:
+                    res = ((int[]) obj).clone();
+                    break;
+                case LONG:
+                    res = ((long[]) obj).clone();
+                    break;
+                case DOUBLE:
+                    res = ((double[]) obj).clone();
+                    break;
             }
 
             return res;
