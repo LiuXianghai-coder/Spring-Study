@@ -13,12 +13,28 @@ public class PropertiesTool {
     private final static Logger log = LoggerFactory.getLogger(PropertiesTool.class);
 
     public static void copyProperties(Object src, Object target) {
-        copyProperties(src, src.getClass(), target, target.getClass());
+        copyProperties(src, target, true);
+    }
+
+    /**
+     * 将一个原对象的所有非静态属性（包括父类属性）复制到目标对象，复制属性时，通过属性的类型和名称来
+     * 判断是否是相同的属性<br />
+     * 这里的属性复制为深度拷贝，但这并不意味着一定会创建新的实例属性。因为对于不可变的对象，在多个对象
+     * 之间进行共享是安全的，并且这些不可变对象一般都不会提供直接的实例化构造函数，因此对于不可变类的属性
+     * 将会直接复制对象引用而不是重新实例化新的实例
+     * @apiNote 复制的属性将会覆盖所有的非静态字段，即使这些字段属性被 final 修饰
+     * @param src       具备相关属性值的实例对象
+     * @param target    将要填充属性值的实例对象
+     * @param copyNull  控制开关，是否需要将 null 值拷贝到目标对象
+     */
+    public static void copyProperties(Object src, Object target, boolean copyNull) {
+        copyProperties(src, src.getClass(), target, target.getClass(), copyNull);
     }
 
     private static void copyProperties(
             Object src, Class<?> srcClass,
-            Object target, Class<?> tarClass
+            Object target, Class<?> tarClass,
+            boolean copyNull
     ) {
         if (src == null || target == null) return;
         if (srcClass == null || tarClass == null) return;
@@ -36,6 +52,9 @@ public class PropertiesTool {
                 try {
                     tf.setAccessible(true);
                     Object val = tf.get(src);
+
+                    // 是否将空值复制到目标对象的对象的处理
+                    if (copyNull && val == null) continue;
 
                     Class<?> fc = tf.getType();
                     if (!isConstType(fc)) {
@@ -58,7 +77,7 @@ public class PropertiesTool {
             }
         }
 
-        copyProperties(src, srcClass.getSuperclass(), target, tarClass.getSuperclass());
+        copyProperties(src, srcClass.getSuperclass(), target, tarClass.getSuperclass(), copyNull);
     }
 
     private static boolean isConstType(Class<?> clazz) {
