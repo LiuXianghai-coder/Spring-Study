@@ -1,7 +1,7 @@
 package com.example.demo.controller;
 
 import com.example.demo.app.FormatOp;
-import com.example.demo.entity.DiffTool;
+import com.example.demo.tools.DiffTool;
 import com.example.demo.entity.Person;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;

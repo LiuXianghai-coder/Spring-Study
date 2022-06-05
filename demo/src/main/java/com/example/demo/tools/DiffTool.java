@@ -1,4 +1,4 @@
-package com.example.demo.entity;
+package com.example.demo.tools;
 
 import com.google.common.base.Objects;
 import com.google.common.collect.Lists;
