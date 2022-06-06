@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE configuration
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-config.dtd" >
+<configuration>
+    <!-- 加载对应的配置文件，将相关的数据库配置信息放入这里面会更好 -->
+    <properties resource="mybatis/jdbc.properties" />
+
+    <!-- MyBatis 相关的一些设置 -->
+    <settings>
+        <!-- 将日志输出到标准输出 -->
+        <setting name="logImpl" value="STDOUT_LOGGING"/>
+        <!-- 设置字段与列之间的映射关系，可选值为 NONE, PARTIAL, FULL -->
+        <setting name="autoMappingBehavior" value="PARTIAL" />
+        <!-- 将下划线自动映射为陀峰 -->
+        <setting name="mapUnderscoreToCamelCase" value="true"/>
+    </settings>
+
+    <!--<typeAliases>
+        <package name="vo"/>
+    </typeAliases>-->
+
+    <!-- 不同开发环境对应的配置，默认为 dev 的配置 -->
+    <environments default="dev">
+
+        <environment id="dev">
+            <transactionManager type="JDBC" /> <!-- 使用 JDBC 作为事务管理 -->
+            <!-- 数据源的一些配置 -->
+            <dataSource type="POOLED" >
+                <property name="driver" value="${driver}" />
+                <property name="url" value="${url}" />
+                <property name="username" value="${username}" />
+                <property name="password" value="${password}" />
+            </dataSource>
+        </environment>
+
+    </environments>
+
+    <databaseIdProvider type="DB_VENDOR" />
+
+    <!-- 要加载的 Mapper XML 映射文件 -->
+    <mappers>
+        <mapper resource="mybatis/mapper/UserMapper.xml" />
+        <mapper resource="mybatis/mapper/MessageMapper.xml" />
+    </mappers>
+</configuration>
