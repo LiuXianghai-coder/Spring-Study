@@ -40,7 +40,6 @@
 
     <!-- 要加载的 Mapper XML 映射文件 -->
     <mappers>
-        <mapper resource="mybatis/mapper/UserMapper.xml" />
-        <mapper resource="mybatis/mapper/MessageMapper.xml" />
+        <mapper resource="mybatis/mapper/UserInfoMapper.xml" />
     </mappers>
 </configuration>
