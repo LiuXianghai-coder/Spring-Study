@@ -1,0 +1,38 @@
+[
+  {
+    "fishId": "da6c5e15e31f371a8d78639c12086954",
+    "fishType": "Grass carp",
+    "color": "red",
+    "area": "Asia",
+    "swimSpeed": 30,
+    "lDel": "0",
+    "vcCreatedUser": "admin",
+    "vcUpdatedUser": "admin",
+    "createdTime": "2021-10-23 10:23:16",
+    "updatedTime": "2022-03-05 06:13:16"
+  },
+  {
+    "fishId": "500d2a3757dadde1b6cc9f1de9adce33",
+    "fishType": "Peruvian anchoveta",
+    "color": "black",
+    "area": "Europe",
+    "swimSpeed": 45,
+    "lDel": "0",
+    "vcCreatedUser": "admin",
+    "vcUpdatedUser": "admin",
+    "createdTime": "2021-10-23 10:23:16",
+    "updatedTime": "2022-03-05 06:13:16"
+  },
+  {
+    "fishId": "bc86729ad219faca3cc20b13f860505a",
+    "fishType": "Silver carp",
+    "color": "black",
+    "area": "Australia",
+    "swimSpeed": 26,
+    "lDel": "0",
+    "vcCreatedUser": "admin",
+    "vcUpdatedUser": "admin",
+    "createdTime": "2021-10-23 10:23:16",
+    "updatedTime": "2022-03-05 06:13:16"
+  }
+]

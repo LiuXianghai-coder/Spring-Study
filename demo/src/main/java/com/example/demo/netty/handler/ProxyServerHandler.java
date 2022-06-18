@@ -4,9 +4,7 @@ import io.netty.bootstrap.Bootstrap;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.*;
-import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
-import io.netty.util.CharsetUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,9 +39,7 @@ public class ProxyServerHandler extends ChannelInboundHandlerAdapter {
                         protected void channelRead0(ChannelHandlerContext ctxProxy, ByteBuf msg) {
                             log.info("Proxy Server Receive From Remote: " + msg.toString(StandardCharsets.UTF_8));
                             in.retain();
-                            ctx.write(msg).addListener((ChannelFutureListener) channelFuture -> {
-                                log.info("Write msg from Proxy Server to Client success...");
-                            });
+                            ctx.write(msg).addListener((ChannelFutureListener) channelFuture -> log.info("Write msg from Proxy Server to Client success..."));
                         }
 
                         @Override
