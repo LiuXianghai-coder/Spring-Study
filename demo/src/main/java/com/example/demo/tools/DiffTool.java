@@ -1,6 +1,7 @@
-package com.example.demo.entity;
+package com.example.demo.tools;
 
 import com.google.common.base.Objects;
+import com.google.common.collect.Lists;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
@@ -423,7 +424,7 @@ public final class DiffTool {
 
         boolean res = true;
         // 检查当前对象的属性以及属性对象的子属性的值是否一致
-        Field[] fields = o1.getClass().getDeclaredFields();
+        List<Field> fields = getAllField(Lists.newArrayList(), o1.getClass());
         for (Field field : fields) {
             int modifiers = field.getModifiers();
             if ((modifiers & Modifier.STATIC) != 0) continue; // 过滤静态修饰符修饰的字段
@@ -447,6 +448,17 @@ public final class DiffTool {
         cache.put(knot, res);
 
         return res;
+    }
+
+    /**
+     * 获取当前类的所有属性，包括继承而来的属性
+     */
+    private static List<Field> getAllField(List<Field> fields, Class<?> type) {
+        fields.addAll(Lists.newArrayList(type.getDeclaredFields()));
+
+        if (type.getSuperclass() != null)
+            getAllField(fields, type.getSuperclass());
+        return fields;
     }
 
     final static int EQUALS = 1 << 1;     // 表示比较的对象的当前属性相等

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!-- namespace 对应相关的 DAO 接口，Mybatis 会根据这个接口通过代理的方式生成对应的数据访问对象 -->
+<mapper namespace="com.example.demo.mapper.UserInfoMapper">
+    <sql id="allColumn">
+        id
+        , name, age, created_time, created_user, updated_user, updated_time
+    </sql>
+
+    <!-- 一个简单的查询，这里没有配置 ORM 关系，因此会直接将列名映射为对象的属性名 -->
+    <select id="getUserById" parameterType="long" resultType="com.example.demo.entity.UserInfo">
+        SELECT
+        <include refid="allColumn"/> <!-- 引入之前的列名集合 -->
+        FROM
+        tb_user
+        WHERE
+        id=#{id}
+    </select>
+
+    <resultMap id="BaseResult" type="com.example.demo.entity.UserInfo">
+        <id column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="age" property="age"/>
+        <result column="created_time" property="createdTime"/>
+        <result column="created_user" property="createdUser"/>
+        <result column="updated_time" property="updatedTime"/>
+        <result column="updated_user" property="updatedUser"/>
+    </resultMap>
+</mapper>

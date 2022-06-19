@@ -1,0 +1,44 @@
+[
+  {
+    "@type": "Mouse",
+    "mouseId":"365ace546bea65efcec57f5fac22ba2f",
+    "mouseType": "pet",
+    "coatColor": 0,
+    "area": "Asia",
+    "pawLen": 2.3,
+    "tailLength": 10.2,
+    "lDel": "0",
+    "vcCreatedUser": "admin",
+    "vcUpdatedUser": "admin",
+    "createdTime": "2021-10-23 10:23:16",
+    "updatedTime": "2022-03-05 06:13:16"
+  },
+  {
+    "@type": "Mouse",
+    "mouseId":"8da07e456f286e0fb62f8a8586429e14",
+    "mouseType": "feed",
+    "coatColor": 1,
+    "area": "Europe",
+    "pawLen": 1.6,
+    "tailLength": 8.2,
+    "lDel": "0",
+    "vcCreatedUser": "root",
+    "vcUpdatedUser": "root",
+    "createdTime": "2020-11-11 09:13:26",
+    "updatedTime": "2021-03-05 16:53:26"
+  },
+  {
+    "@type": "Mouse",
+    "mouseId":"ee7502bba307fbe99fb8d7a4e80cd848",
+    "mouseType": "food",
+    "coatColor": 2,
+    "area": "Australia",
+    "pawLen": 2.3,
+    "tailLength": 9.4,
+    "lDel": "0",
+    "vcCreatedUser": "root",
+    "vcUpdatedUser": "root",
+    "createdTime": "2020-11-11 09:13:26",
+    "updatedTime": "2021-03-05 16:53:26"
+  }
+]

@@ -1,0 +1,35 @@
+[
+  {
+    "birdId": "b814b05e8da62be5c3b0722eefb613c7",
+    "birdColor": "red",
+    "weight": 22.4,
+    "birdType": "Eager",
+    "lDel": "0",
+    "vcCreatedUser": "admin",
+    "vcUpdatedUser": "admin",
+    "createdTime": "2021-10-23 10:23:16",
+    "updatedTime": "2022-03-05 06:13:16"
+  },
+  {
+    "birdId": "cb3268ddc7733a3da657813d1886fcf5",
+    "birdColor": "black",
+    "weight": 1.56,
+    "birdType": "Prey",
+    "lDel": "0",
+    "vcCreatedUser": "admin",
+    "vcUpdatedUser": "admin",
+    "createdTime": "2021-10-23 10:23:16",
+    "updatedTime": "2022-03-05 06:13:16"
+  },
+  {
+    "birdId": "c8a09bdff4c1b35eeb591928694cf6c5",
+    "birdColor": "yellow",
+    "weight": 3.45,
+    "birdType": "Condor",
+    "lDel": "0",
+    "vcCreatedUser": "admin",
+    "vcUpdatedUser": "admin",
+    "createdTime": "2021-10-23 10:23:16",
+    "updatedTime": "2022-03-05 06:13:16"
+  }
+]
