@@ -41,10 +41,6 @@ public class DemoApplication {
         person.setCreatedTime(new Date());
 
         System.out.println(gson.toJson(person));
-    public static void main(String[] args) throws FileNotFoundException {
-        ConfigurableApplicationContext context = SpringApplication.run(DemoApplication.class, args);
-        JsonConfig jsonConfig = context.getBean(JsonConfig.class);
-        Gson gson = jsonConfig.gson();
 
         Order order = new Order();
         order.setId(1);
