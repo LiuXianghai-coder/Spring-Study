@@ -2,6 +2,7 @@ package com.example.demo;
 
 import com.example.demo.config.GsonConfig;
 import com.example.demo.config.GsonConfig.NormalDateSerializerAdapter;
+import com.example.demo.config.GsonConfig.YearDateSerializerAdapter;
 import com.example.demo.config.JsonConfig;
 import com.example.demo.controller.JustController;
 import com.example.demo.domain.common.entity.Person;
@@ -28,31 +29,17 @@ public class DemoApplication {
     public static void main(String[] args) throws FileNotFoundException, JsonProcessingException {
 //        ConfigurableApplicationContext context = SpringApplication.run(DemoApplication.class, args);
 
-//        Person person = mapper.readValue("{\"name\":\"xhliu\",\"createdTime\":\"2022-06-19 13:16:23\"}", Person.class);
-//        person.setName("xhliu");
-//        person.setCreatedTime(new Date());
-
         Gson gson = new GsonBuilder()
                 .registerTypeAdapter(Date.class, new NormalDateSerializerAdapter())
                 .create();
 
+        ObjectMapper mapper = new ObjectMapper();
+
+//        Person person = mapper.readValue("{\"name\":\"xhliu\",\"createdTime\":\"2022-06-19 13:16:23\"}", Person.class);
         Person person = new Person();
         person.setName("xhliu");
-        person.setCreatedTime(new Date());
+        person.setCreatedTime(LocalDateTime.now());
 
-        System.out.println(gson.toJson(person));
-
-        Order order = new Order();
-        order.setId(1);
-        order.setOrderCreatedDate(LocalDate.now());
-        order.setOrderCreatedDateTime(LocalDateTime.now());
-
-        System.out.println(gson.toJson(order));
-
-        String json = gson.toJson(order);
-
-        Order order1 = gson.fromJson(json, Order.class);
-        System.out.println(order1);
-        System.out.println(gson.toJson(order1));
+        System.out.println(mapper.writeValueAsString(person));
     }
 }
