@@ -1,30 +1,16 @@
 package com.example.demo.domain.common.entity;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
+import lombok.Data;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 /**
  * @author lxh
  * @date 2022/6/19-下午8:39
  */
+@Data
 public class Person {
     private String name;
-    private Date createdTime;
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public Date getCreatedTime() {
-        return createdTime;
-    }
-
-    public void setCreatedTime(Date createdTime) {
-        this.createdTime = createdTime;
-    }
+    private LocalDateTime createdTime;
 }

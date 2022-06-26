@@ -4,9 +4,13 @@ import com.example.demo.entity.Order;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.*;
+import lombok.SneakyThrows;
 
 import java.lang.reflect.Type;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.LocalDate;
@@ -36,12 +40,34 @@ public class GsonConfig {
             return new JsonPrimitive(format.format(src));
         }
 
+        @SneakyThrows
         @Override
         public Date deserialize(
                 JsonElement json, Type typeOfT,
                 JsonDeserializationContext context
         ) throws JsonParseException {
-            return Date.from(Instant.parse(json.getAsString()));
+            DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            return format.parse(json.getAsString());
+        }
+    }
+
+    public static class YearDateSerializerAdapter
+            implements JsonDeserializer<Date>, JsonSerializer<Date> {
+
+        @Override
+        public JsonElement serialize(Date src, Type typeOfSrc, JsonSerializationContext context) {
+            DateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+            return new JsonPrimitive(format.format(src));
+        }
+
+        @SneakyThrows
+        @Override
+        public Date deserialize(
+                JsonElement json, Type typeOfT,
+                JsonDeserializationContext context
+        ) throws JsonParseException {
+            DateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+            return format.parse(json.getAsString());
         }
     }
 
