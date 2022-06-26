@@ -18,7 +18,8 @@
     <description>Demo project for Spring Boot</description>
 
     <properties>
-        <java.version>8</java.version>
+        <java.version>17</java.version>
+        <aspectj.version>1.9.7</aspectj.version>
     </properties>
 
     <dependencies>
@@ -69,21 +70,60 @@
             <groupId>com.google.code.gson</groupId>
             <artifactId>gson</artifactId>
         </dependency>
+
+        <dependency>
+            <groupId>org.mybatis</groupId>
+            <artifactId>mybatis</artifactId>
+            <version>3.5.10</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.aspectj</groupId>
+            <artifactId>aspectjweaver</artifactId>
+            <version>${aspectj.version}</version>
+        </dependency>
+
+        <!-- 运行时需要的依赖 -->
+        <dependency>
+            <groupId>org.aspectj</groupId>
+            <artifactId>aspectjrt</artifactId>
+            <version>${aspectj.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>aspectj-maven-plugin</artifactId>
+            <version>1.14.0</version>
+            <type>maven-plugin</type>
+        </dependency>
     </dependencies>
 
     <build>
         <plugins>
+            <!-- 编译时织入的 maven 插件 -->
             <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>aspectj-maven-plugin</artifactId>
+                <version>1.14.0</version>
                 <configuration>
-                    <excludes>
-                        <exclude>
-                            <groupId>org.projectlombok</groupId>
-                            <artifactId>lombok</artifactId>
-                        </exclude>
-                    </excludes>
+                    <complianceLevel>11</complianceLevel>
+                    <source>11</source>
+                    <target>11</target>
+                    <showWeaveInfo>true</showWeaveInfo>
+                    <verbose>true</verbose>
+                    <Xlint>ignore</Xlint>
+                    <encoding>UTF-8</encoding>
                 </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <!-- use this goal to weave all your main classes -->
+                            <goal>compile</goal>
+                            <!-- use this goal to weave all your test classes -->
+                            <goal>test-compile</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>

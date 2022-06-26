@@ -1,10 +1,18 @@
 package com.example.demo.config;
 
+import com.example.demo.entity.Order;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.google.gson.*;
 
 import java.lang.reflect.Type;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
 /**
@@ -35,5 +43,45 @@ public class GsonConfig {
         ) throws JsonParseException {
             return Date.from(Instant.parse(json.getAsString()));
         }
+    }
+
+    private static class LocalDateTimeAdapter
+            implements JsonSerializer<LocalDateTime>, JsonDeserializer<LocalDateTime> {
+        private static final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
+        @Override
+        public LocalDateTime deserialize(
+                JsonElement json, Type typeOfT,
+                JsonDeserializationContext context
+        ) throws JsonParseException {
+            return LocalDateTime.parse(json.getAsString(),
+                    dateTimeFormatter.withZone(ZoneId.systemDefault())
+            );
+        }
+
+        @Override
+        public JsonElement serialize(
+                LocalDateTime src, Type typeOfSrc,
+                JsonSerializationContext context
+        ) {
+            return new JsonPrimitive(dateTimeFormatter.format(src));
+        }
+    }
+
+    public static void main(String[] args) throws JsonProcessingException {
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.registerModule(new JavaTimeModule());
+
+        Gson gson = new GsonBuilder()
+                .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter())
+                .create();
+
+        Order order = new Order();
+        order.setId(1);
+        order.setOrderCreatedDate(LocalDate.now());
+        order.setOrderCreatedDateTime(LocalDateTime.now());
+
+        System.out.println(mapper.writeValueAsString(order));
+        System.out.println(gson.toJson(order));
     }
 }

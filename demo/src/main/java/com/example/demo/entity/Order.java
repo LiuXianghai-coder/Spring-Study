@@ -1,5 +1,7 @@
 package com.example.demo.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
@@ -11,7 +13,10 @@ public class Order {
     private int id;
     private String orderName;
     private String orderDesc;
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate orderCreatedDate;
+
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime orderCreatedDateTime;
 
     public int getId() {

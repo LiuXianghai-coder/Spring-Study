@@ -1,8 +1,17 @@
 package com.example.demo.inter;
 
-import java.lang.reflect.Array;
+import com.example.demo.entity.Order;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.google.gson.*;
+
+import java.lang.reflect.Type;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
-import java.util.Timer;
 
 /**
  * @author xhliu
@@ -170,7 +179,6 @@ public class Solution {
 
         return Math.min(op1, op2);
     }
-
     boolean check() {
         for (int i = 1; i < n; ++i)
             if (arr[i] < arr[i - 1]) return false;
@@ -178,28 +186,43 @@ public class Solution {
         return true;
     }
 
-    public static void main(String[] args) {
-        Solution solution = new Solution();
-        long start, end;
+    private static class LocalDateTimeAdapter
+            implements JsonSerializer<LocalDateTime>, JsonDeserializer<LocalDateTime> {
+        private static final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
-        start = System.currentTimeMillis();
-        System.out.println(solution.minFlipsMonoIncr("01"));
-        end = System.currentTimeMillis();
-        System.out.printf("Take Time %.4f ms\n", (end - start) * 1.0 / 1000);
+        @Override
+        public LocalDateTime deserialize(
+                JsonElement json, Type typeOfT,
+                JsonDeserializationContext context
+        ) throws JsonParseException {
+            return LocalDateTime.parse(json.getAsString(),
+                    dateTimeFormatter.withZone(ZoneId.systemDefault())
+            );
+        }
 
-//        start = System.currentTimeMillis();
-//        System.out.println(solution.minFlipsMonoIncr("010110"));
-//        end = System.currentTimeMillis();
-//        System.out.printf("Take Time %.4f ms\n", (end - start) * 1.0 / 1000);
-//
-//        start = System.currentTimeMillis();
-//        System.out.println(solution.minFlipsMonoIncr("00011000"));
-//        end = System.currentTimeMillis();
-//        System.out.printf("Take Time %.4f ms\n", (end - start) * 1.0 / 1000);
-//
-//        start = System.currentTimeMillis();
-//        System.out.println(solution.minFlipsMonoIncr("10011111110010111011"));
-//        end = System.currentTimeMillis();
-//        System.out.printf("Take Time %.4f ms\n", (end - start) * 1.0 / 1000);
+        @Override
+        public JsonElement serialize(
+                LocalDateTime src, Type typeOfSrc,
+                JsonSerializationContext context
+        ) {
+            return new JsonPrimitive(dateTimeFormatter.format(src));
+        }
+    }
+
+    public static void main(String[] args) throws JsonProcessingException {
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.registerModule(new JavaTimeModule());
+
+        Gson gson = new GsonBuilder()
+                .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter())
+                .create();
+
+        Order order = new Order();
+        order.setId(1);
+        order.setOrderCreatedDate(LocalDate.now());
+        order.setOrderCreatedDateTime(LocalDateTime.now());
+
+        System.out.println(mapper.writeValueAsString(order));
+        System.out.println(gson.toJson(order));
     }
 }
