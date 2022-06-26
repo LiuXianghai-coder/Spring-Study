@@ -10,6 +10,9 @@ import org.aspectj.lang.reflect.MethodSignature;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * @author lxh
  * @date 2022/6/26-上午8:28
@@ -17,6 +20,8 @@ import org.slf4j.LoggerFactory;
 @Aspect
 public class StatesAspect {
     private final static Logger log = LoggerFactory.getLogger(StatesAspect.class);
+
+    private final Map<String, long[]> timeMap = new HashMap<>();
 
     @Pointcut("execution(* com.example.demo.tools.DiffTool.*(..))")
     public void execute(){}
@@ -30,8 +35,11 @@ public class StatesAspect {
         long startTime = System.currentTimeMillis();
         Object result = pjp.proceed();
         MethodSignature method = (MethodSignature) pjp.getSignature();
-        log.info("[StatesAspect] 方法：【" + method.getMethod().getName()
-                + "】结束，耗时：" + (System.currentTimeMillis() - startTime));
+        String methodName = method.getName();
+
+        long[] time = timeMap.getOrDefault(methodName, new long[2]);
+        time[0]++; time[1] += System.currentTimeMillis() - startTime;
+        timeMap.put(methodName, time);
 
         return result;
     }
@@ -39,5 +47,9 @@ public class StatesAspect {
     @After("compExe()")
     public void staticsTimes(JoinPoint jp) {
         log.info("执行结束之后的时间统计");
+        for (String key : timeMap.keySet()) {
+            long[] val = timeMap.get(key);
+            System.out.println(key + " 总共调用 " + val[0] + " 次， 共耗时 " + val[1] + " ms");
+        }
     }
 }

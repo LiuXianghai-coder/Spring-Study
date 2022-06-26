@@ -4,15 +4,12 @@ import com.example.demo.entity.Order;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.*;
 import lombok.SneakyThrows;
 
 import java.lang.reflect.Type;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -46,8 +43,13 @@ public class GsonConfig {
                 JsonElement json, Type typeOfT,
                 JsonDeserializationContext context
         ) throws JsonParseException {
-            DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            return format.parse(json.getAsString());
+            try {
+                DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                return format.parse(json.getAsString());
+            } catch (Exception e) {
+                e.printStackTrace();
+                return null;
+            }
         }
     }
 
@@ -66,8 +68,13 @@ public class GsonConfig {
                 JsonElement json, Type typeOfT,
                 JsonDeserializationContext context
         ) throws JsonParseException {
-            DateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-            return format.parse(json.getAsString());
+            try {
+                DateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+                return format.parse(json.getAsString());
+            } catch (Exception e) {
+                e.printStackTrace();
+                return null;
+            }
         }
     }
 
