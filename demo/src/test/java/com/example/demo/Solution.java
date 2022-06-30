@@ -137,7 +137,8 @@ public class Solution {
                 prev.left = null;
             }
 
-            root.left = null; root.right = null;
+            root.left = null;
+            root.right = null;
             return suc;
         }
 
@@ -201,8 +202,53 @@ public class Solution {
         firstTraverse(node.right, builder);
     }
 
+    Map<String, Integer> map = new HashMap<>();
+
+    public List<Integer> findSubstring(String s, String[] words) {
+        List<Integer> ans = new ArrayList<>();
+        int n = words.length, wl = words[0].length(), sum = n * wl;
+
+        int[] cnt = new int[26], tar = new int[26];
+        for (String word : words) {
+            map.put(word, map.getOrDefault(word, 0) + 1);
+            for (int j = 0; j < wl; ++j) tar[word.charAt(j) - 'a']++;
+        }
+
+        char[] arr = s.toCharArray();
+        int len = arr.length, lo = 0, hi = 0;
+        while (hi < len) {
+            while (hi < len && hi - lo + 1 <= sum) cnt[arr[hi++] - 'a']++;
+
+            if (check(cnt, tar) && order(s.substring(lo, hi), wl)) ans.add(lo);
+
+            while (lo < hi && hi - lo + 1 > sum) cnt[arr[lo++] - 'a']--;
+        }
+
+        return ans;
+    }
+
+    boolean check(int[] cnt, int[] tar) {
+        for (int i = 0; i < cnt.length; ++i)
+            if (cnt[i] != tar[i]) return false;
+        return true;
+    }
+
+    boolean order(String s, int wl) {
+        Map<String, Integer> tmp = new HashMap<>();
+        for (int i = 0; i < s.length(); i += wl) {
+            String s1 = s.substring(i, i + wl);
+            tmp.put(s1, tmp.getOrDefault(s1, 0) + 1);
+        }
+
+        return tmp.equals(map);
+    }
+
     public static void main(String[] args) {
-        File file = new File("~/.config/tea.properties");
-        System.out.println(file);
+        Solution solution = new Solution();
+        List<Integer> substring = solution.findSubstring(
+                "abaababbaba",
+                new String[]{"ab","ba","ab","ba"}
+        );
+        System.out.println(substring);
     }
 }

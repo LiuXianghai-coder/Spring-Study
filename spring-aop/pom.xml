@@ -111,30 +111,30 @@
             </plugin>
 
             <!-- 编译时织入插件 -->
-            <!--            <plugin>-->
-            <!--                <groupId>org.codehaus.mojo</groupId>-->
-            <!--                <artifactId>aspectj-maven-plugin</artifactId>-->
-            <!--                <version>1.7</version>-->
-            <!--                <configuration>-->
-            <!--                    <complianceLevel>1.8</complianceLevel>-->
-            <!--                    <source>1.8</source>-->
-            <!--                    <target>1.8</target>-->
-            <!--                    <showWeaveInfo>true</showWeaveInfo>-->
-            <!--                    <verbose>true</verbose>-->
-            <!--                    <Xlint>ignore</Xlint>-->
-            <!--                    <encoding>UTF-8</encoding>-->
-            <!--                </configuration>-->
-            <!--                <executions>-->
-            <!--                    <execution>-->
-            <!--                        <goals>-->
-            <!--                            &lt;!&ndash; use this goal to weave all your main classes &ndash;&gt;-->
-            <!--                            <goal>compile</goal>-->
-            <!--                            &lt;!&ndash; use this goal to weave all your test classes &ndash;&gt;-->
-            <!--                            <goal>test-compile</goal>-->
-            <!--                        </goals>-->
-            <!--                    </execution>-->
-            <!--                </executions>-->
-            <!--            </plugin>-->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>aspectj-maven-plugin</artifactId>
+                <version>1.7</version>
+                <configuration>
+                    <complianceLevel>1.8</complianceLevel>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                    <showWeaveInfo>true</showWeaveInfo>
+                    <verbose>true</verbose>
+                    <Xlint>ignore</Xlint>
+                    <encoding>UTF-8</encoding>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <!-- use this goal to weave all your main classes -->
+                            <goal>compile</goal>
+                            <!-- use this goal to weave all your test classes -->
+                            <goal>test-compile</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
 
             <!-- 编译后织入插件 -->
             <!--            <plugin>-->

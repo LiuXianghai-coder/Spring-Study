@@ -19,7 +19,9 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" name="Maven: com.example:aop-share:1.0" level="project" />
+    <orderEntry type="library" name="Maven: com.example:aopshare:1.0" level="project" />
+    <orderEntry type="library" name="Maven: cglib:cglib:3.3.0" level="project" />
+    <orderEntry type="library" name="Maven: org.ow2.asm:asm:7.1" level="project" />
     <orderEntry type="library" name="Maven: org.springframework.boot:spring-boot-starter:2.5.6" level="project" />
     <orderEntry type="library" name="Maven: org.springframework.boot:spring-boot:2.5.6" level="project" />
     <orderEntry type="library" name="Maven: org.springframework:spring-context:5.3.12" level="project" />

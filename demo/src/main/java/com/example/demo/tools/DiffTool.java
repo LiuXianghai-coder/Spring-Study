@@ -390,7 +390,7 @@ public final class DiffTool {
             return false;
         }
 
-        Knot knot = new Knot(o1, o2);
+        Knot knot = genKnot(o1, o2);
         if (useCache && cache.getOrDefault(knot, false))
             return true;
 
@@ -400,25 +400,25 @@ public final class DiffTool {
         if (isBasicType(c1)) {
             boolean tmp = o1.equals(o2);
             if (!tmp && takeBasic) map.put(prefix, new Node<>(o1, o2));
-            cache.put(knot, tmp);
+            if (useCache) cache.put(knot, tmp);
             return tmp;
         }
 
         if (isEnum(c1)) {
             if (o1 != o2) map.put(prefix, new Node<>(o1, o2));
-            cache.put(knot, o1 == o2);
+            if (useCache) cache.put(knot, o1 == o2);
             return o1 == o2;
         }
 
         if (isMap(c1)) {
             boolean tmp = equalsMap((Map<?, ?>) o1, (Map<?, ?>) o2, prefix, map);
-            cache.put(knot, tmp);
+            if (useCache) cache.put(knot, tmp);
             return tmp;
         }
 
         if (isCollection(c1)) {
             boolean tmp = equalsCollection(o1, o2, prefix, map);
-            cache.put(knot, tmp);
+            if (useCache) cache.put(knot, tmp);
             return tmp;
         }
 
@@ -445,9 +445,18 @@ public final class DiffTool {
             }
         }
 
-        cache.put(knot, res);
+        if (useCache) cache.put(knot, res);
 
         return res;
+    }
+
+    private Knot genKnot(Object o1, Object o2) {
+        return new Knot(o1, o2);
+    }
+
+    private void genCache(Object o1, Object o2, boolean res) {
+        if (!useCache) return;
+        cache.put(genKnot(o1, o2), res);
     }
 
     /**

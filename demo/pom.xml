@@ -18,7 +18,7 @@
     <description>Demo project for Spring Boot</description>
 
     <properties>
-        <java.version>17</java.version>
+        <java.version>8</java.version>
         <aspectj.version>1.9.7</aspectj.version>
     </properties>
 
@@ -46,12 +46,6 @@
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.mybatis</groupId>
-            <artifactId>mybatis</artifactId>
-            <version>3.5.7</version>
         </dependency>
 
         <dependency>
@@ -112,9 +106,9 @@
                 <artifactId>aspectj-maven-plugin</artifactId>
                 <version>1.14.0</version>
                 <configuration>
-                    <complianceLevel>11</complianceLevel>
-                    <source>11</source>
-                    <target>11</target>
+                    <complianceLevel>1.8</complianceLevel>
+                    <source>1.8</source>
+                    <target>1.8</target>
                     <showWeaveInfo>true</showWeaveInfo>
                     <verbose>true</verbose>
                     <Xlint>ignore</Xlint>
