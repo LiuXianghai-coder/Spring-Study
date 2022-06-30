@@ -178,8 +178,15 @@ public class Application {
     }
 
     public static void main(String[] args) {
-        String[] nums = "2001:0db8:85a3:0:0:8A2E:0370:7334:".split(":");
-        System.out.println(Arrays.toString(nums));
-        System.out.println(BigInteger.probablePrime(16, ThreadLocalRandom.current()));
+        long[] prefix = new long[]{0, 1, 2, 3};
+        long val = 2;
+        int lo = 1, hi = 3;
+        while (lo <= hi) {
+            int mid = lo + ((hi - lo) >> 1);
+            if (prefix[mid] >= val) hi = mid - 1;
+            else lo = mid + 1;
+        }
+
+        System.out.println("lo=" + lo);
     }
 }
