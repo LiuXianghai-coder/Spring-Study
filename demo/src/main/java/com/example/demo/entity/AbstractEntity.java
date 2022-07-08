@@ -1,5 +1,7 @@
 package com.example.demo.entity;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 /**
@@ -9,11 +11,18 @@ import java.util.Date;
 public abstract class AbstractEntity {
     private String createdUser;
 
-    private Date createdTime;
+    private LocalDate createdTime;
 
     private String updatedUser;
 
-    private Date updatedTime;
+    private LocalDate updatedTime;
+
+    public void initFiled() {
+        setCreatedTime(LocalDate.now());
+        setUpdatedTime(LocalDate.now());
+        setUpdatedUser("xhliu");
+        setCreatedUser("xhliu");
+    }
 
     public String getCreatedUser() {
         return createdUser;
@@ -23,11 +32,11 @@ public abstract class AbstractEntity {
         this.createdUser = createdUser;
     }
 
-    public Date getCreatedTime() {
+    public LocalDate getCreatedTime() {
         return createdTime;
     }
 
-    public void setCreatedTime(Date createdTime) {
+    public void setCreatedTime(LocalDate createdTime) {
         this.createdTime = createdTime;
     }
 
@@ -39,11 +48,11 @@ public abstract class AbstractEntity {
         this.updatedUser = updatedUser;
     }
 
-    public Date getUpdatedTime() {
+    public LocalDate getUpdatedTime() {
         return updatedTime;
     }
 
-    public void setUpdatedTime(Date updatedTime) {
+    public void setUpdatedTime(LocalDate updatedTime) {
         this.updatedTime = updatedTime;
     }
 }

@@ -19,6 +19,11 @@
         id=#{id}
     </select>
 
+    <insert id="insert" parameterType="com.example.demo.entity.UserInfo" >
+        INSERT INTO tb_user(id, name, age, created_time, created_user, updated_time, updated_user)
+        VALUES (#{id}, #{name}, #{age}, #{createdTime}, #{createdUser}, #{updatedTime}, #{updatedUser})
+    </insert>
+
     <resultMap id="BaseResult" type="com.example.demo.entity.UserInfo">
         <id column="id" property="id"/>
         <result column="name" property="name"/>

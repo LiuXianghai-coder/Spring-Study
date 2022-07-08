@@ -243,12 +243,96 @@ public class Solution {
         return tmp.equals(map);
     }
 
+    public List<List<Integer>> minimumAbsDifference(int[] arr) {
+        Arrays.sort(arr);
+        int min = Integer.MAX_VALUE;
+        int n = arr.length;
+        for (int i = 0; i < n - 1; ++i) {
+            int tmp = arr[i + 1] - arr[i];
+            if (tmp < min) min = tmp;
+        }
+
+        List<List<Integer>> ans = new ArrayList<>();
+        for (int i = 0; i < n - 1; ++i) {
+            int lo = i + 1, hi = n - 1;
+            while (lo <= hi) {
+                int mid = lo + ((hi - lo) >> 1);
+                int tmp = arr[mid] - arr[i];
+                if (tmp == min)
+                    ans.add(Arrays.asList(arr[i], arr[mid]));
+                else if (tmp < min) lo = mid + 1;
+                else hi = mid - 1;
+            }
+        }
+
+        return ans;
+    }
+
+    private static class Node {
+        int ls, rs, add, val;
+    }
+
+    static int N = (int) 1e9, M = 120010;
+    int cnt = 1;
+    Node[] tr = new Node[M];
+
+    void update(int u, int lc, int rc, int l, int r, int v) {
+        if (l <= lc && rc <= r) {
+            tr[u].val += (rc - lc + 1) * v;
+            tr[u].add += v;
+            return;
+        }
+
+        lazyCreate(u);
+        pushDown(u, rc - lc + 1);
+        int mid = lc + rc >> 1;
+        if (l <= mid) update(tr[u].ls, lc, mid, l, r, v);
+        if (r > mid) update(tr[u].rs, mid + 1, rc, l, r, v);
+        pushUp(u);
+    }
+
+    int query(int u, int lc, int rc, int l, int r) {
+        if (l <= lc && rc <= r) return tr[u].val;
+        lazyCreate(u);
+        pushDown(u, rc - lc + 1);
+        int mid = l + ((r - l) >> 1), ans = 0;
+        if (l <= mid) ans += query(tr[u].ls, lc, mid, l, r);
+        if (r > mid) ans += query(tr[u].rs, mid + 1, rc, l, r);
+        return ans;
+    }
+
+    void lazyCreate(int u) {
+        if (tr[u] == null) tr[u] = new Node();
+        if (tr[u].ls == 0) {
+            tr[u].ls = ++cnt;
+            tr[tr[u].ls] = new Node();
+        }
+        if (tr[u].rs == 0) {
+            tr[u].rs = ++cnt;
+            tr[tr[u].rs] = new Node();
+        }
+    }
+
+    void pushDown(int u, int len) {
+        tr[tr[u].ls].add += tr[u].add;
+        tr[tr[u].rs].add += tr[u].add;
+        tr[tr[u].ls].val += (len - len / 2) * tr[u].add;
+        tr[tr[u].rs].val += len / 2 * tr[u].add;
+        tr[u].add = 0;
+    }
+
+    void pushUp(int u) {
+        tr[u].val = tr[tr[u].ls].val + tr[tr[u].rs].val;
+    }
+
+    public boolean book(int start, int end) {
+        if (query(1, 1, N + 1, start + 1, end) > 0) return false;
+        update(1, 1, N + 1, start + 1, end, 1);
+        return true;
+    }
+
     public static void main(String[] args) {
-        Solution solution = new Solution();
-        List<Integer> substring = solution.findSubstring(
-                "abaababbaba",
-                new String[]{"ab","ba","ab","ba"}
-        );
-        System.out.println(substring);
+        int a = 0x80000001;
+        System.out.println(a);
     }
 }

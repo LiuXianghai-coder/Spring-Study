@@ -38,20 +38,6 @@ public class UserInfo extends AbstractEntity{
         this.age = age;
     }
 
-//    @Override
-//    public String toString() {
-//        return MoreObjects.toStringHelper(this)
-//                .add("id", id)
-//                .add("name", name)
-//                .add("age", age)
-//                .add("create_user", getCreatedUser())
-//                .add("create_time", getCreatedTime())
-//                .add("update_user", getUpdatedUser())
-//                .add("update_time", getUpdatedTime())
-//                .toString();
-//    }
-
-
     @Override
     public String toString() {
         return "UserInfo{" +
