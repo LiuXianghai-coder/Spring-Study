@@ -243,12 +243,131 @@ public class Solution {
         return tmp.equals(map);
     }
 
+    static int mod = 1000_000_000 + 7;
+
+    int[][] g, dp;
+    public int countPaths(int[][] _g) {
+        g = _g;
+        m = g.length; n = g[0].length;
+        dp = new int[m][n];
+        for (int i = 0; i < m; ++i) Arrays.fill(dp[i], -1);
+
+        int ans = 0;
+        for (int i = 0; i < m; ++i) {
+            for (int j = 0; j < n; ++j) {
+                ans = (ans + dfs(i, j)) % mod;
+            }
+        }
+
+        for (int i = 0; i < m; ++i) {
+            for (int j = 0; j < n; ++j) {
+                System.out.print(dp[i][j] + "\t");
+            }
+            System.out.println();
+        }
+
+        return ans;
+    }
+
+    int dfs(int i, int j) {
+        if (dp[i][j] > 0) return dp[i][j];
+
+        dp[i][j] = 1; // 每个位置自身都是一条有效的路径
+        for (int[] dir : dirs) {
+            int x = i + dir[0], y = j + dir[1];
+            if (x < 0 || x >= m || y < 0 || y >= n || g[x][y] >= g[i][j]) continue;
+
+            dp[i][j] = (dp[i][j] + dfs(x, y)) % mod;
+        }
+
+        return dp[i][j];
+    }
+
+    public int lenLongestFibSubseq(int[] arr) {
+        int n = arr.length;
+        long[] dp = new long[n + 1];
+        Arrays.fill(dp, 1L);
+        Map<Long, Integer> map = new HashMap<>();
+        for (int i = 0; i < n; ++i) map.put((long) arr[i], i);
+        long ans = 0L;
+        for (int i = 0; i < n - 2; ++i) {
+            for (int j = i + 1; j < n - 1; ++j) {
+                long tmp = (long) arr[i] + arr[j];
+                if (!map.containsKey(tmp)) continue;
+                int idx = map.get(tmp);
+                dp[idx] = Math.max(dp[i] + 2, dp[idx]);
+                if (dp[idx] > ans) ans = dp[idx];
+            }
+        }
+
+        return (int) ans;
+    }
+
+    void fib(int n) {
+        int[] dp = new int[n];
+        dp[0] = 1;
+        dp[1] = 1;
+        for (int i = 2; i < n; ++i) {
+            dp[i] = dp[i - 1] + dp[i - 2];
+        }
+        System.out.println(Arrays.toString(dp));
+    }
+
+    public boolean canChange(String start, String target) {
+        char[] s = start.toCharArray();
+        char[] t = target.toCharArray();
+
+        int n = s.length;
+
+        TreeSet<int[]> lts = new TreeSet<>(Comparator.comparingInt(a -> a[0]));
+        TreeSet<int[]> rts = new TreeSet<>(Comparator.comparingInt(a -> a[0]));
+        int ls = 0;
+        for (int i = 0; i < n; ++i) {
+            if (s[i] == 'L') {
+                lts.add(new int[]{i, ls});
+            } else if (s[i] != '_') ls = i + 1;
+        }
+
+        int rs = n - 1;
+        for (int i = n - 1; i >= 0; --i) {
+            if (s[i] == 'R') rts.add(new int[]{i, rs});
+            else if (s[i] != '_') rs = i - 1;
+        }
+
+        for (int i = 0; i < s.length; ++i) {
+            if (s[i] == t[i]) continue;
+            if (s[i] == '_' && t[i] == 'L') {
+                int[] tmp = lts.ceiling(new int[]{i + 1, 0});
+                // System.out.println(i + "\t" + idx);
+                if (tmp == null || tmp[1] > i) return false;
+                exchange(s, i, tmp[0]);
+            }
+        }
+
+        for (int i = n - 1; i >= 0; --i) {
+            if (s[i] == t[i]) continue;
+            if (s[i] == '_' && t[i] == 'R') {
+                int[] tmp = rts.floor(new int[]{i - 1, 0});
+                // System.out.println(i + "\t" + idx + " simple");
+                if (tmp == null || tmp[1] < i) return false;
+                exchange(s, i, tmp[0]);
+            }
+        }
+
+        // System.out.println(String.valueOf(s));
+        for (int i = 0; i < n; ++i) {
+            if (s[i] != t[i]) return false;
+        }
+        return true;
+    }
+
+    void exchange(char[] s, int i, int j) {
+        char ch = s[i];
+        s[i]= s[j];
+        s[j] = ch;
+    }
+
     public static void main(String[] args) {
         Solution solution = new Solution();
-        List<Integer> substring = solution.findSubstring(
-                "abaababbaba",
-                new String[]{"ab","ba","ab","ba"}
-        );
-        System.out.println(substring);
     }
 }
