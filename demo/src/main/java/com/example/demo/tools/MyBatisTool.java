@@ -6,6 +6,7 @@ import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
+import org.springframework.beans.BeanUtils;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -51,6 +52,9 @@ public class MyBatisTool {
             UserInfoMapper infoMapper = sqlSession.getMapper(UserInfoMapper.class);
             UserInfo user = infoMapper.getUserById(1L);
             System.out.println(user);
+            UserInfo info = new UserInfo();
+            BeanUtils.copyProperties(user, info);
+            System.out.println(info);
         }
     }
 }

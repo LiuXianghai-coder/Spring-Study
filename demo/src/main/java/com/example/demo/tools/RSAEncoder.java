@@ -29,7 +29,7 @@ public class RSAEncoder {
     static {
         while (E.compareTo(R) < 0) {
             if (E.gcd(R).intValue() == 1) break;
-            E.add(ONE);
+            E = E.add(ONE);
         }
 
         D = E.modInverse(R);

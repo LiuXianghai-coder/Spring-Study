@@ -7,6 +7,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.google.gson.*;
 
 import java.lang.reflect.Type;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -222,7 +223,8 @@ public class Solution {
         order.setOrderCreatedDate(LocalDate.now());
         order.setOrderCreatedDateTime(LocalDateTime.now());
 
-        System.out.println(mapper.writeValueAsString(order));
-        System.out.println(gson.toJson(order));
+        String json = mapper.writeValueAsString(order);
+        System.out.println(json);
+        System.out.println(mapper.readValue(json, Order.class));
     }
 }
