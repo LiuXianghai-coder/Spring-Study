@@ -1,7 +1,6 @@
 package com.example.demo.entity;
 
-import com.google.common.base.MoreObjects;
-import com.google.common.base.Objects;
+import java.util.Objects;
 
 /**
  * @author lxh
@@ -49,5 +48,18 @@ public class UserInfo extends AbstractEntity{
                 ", update_user=" + getUpdatedUser() +
                 ", update_time=" + getUpdatedTime() +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        UserInfo userInfo = (UserInfo) o;
+        return id == userInfo.id && age == userInfo.age && Objects.equals(name, userInfo.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, age);
     }
 }

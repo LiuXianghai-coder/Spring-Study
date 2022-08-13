@@ -11,6 +11,6 @@ import org.aspectj.lang.annotation.Before;
 public class LogAspect {
     @Before("com.example.demo.app.FormatAspect.point()")
     public void log() {
-        System.out.println("Hello World");
+//        System.out.println("Hello World");
     }
 }

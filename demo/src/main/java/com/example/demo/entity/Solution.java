@@ -154,11 +154,71 @@ public class Solution {
         return ans;
     }
 
+    public int[] exclusiveTime(int n, List<String> logs) {
+        int[] ans = new int[n];
+        List<String[]> list = new ArrayList<>();
+        for (String log : logs) {
+            list.add(log.split(":"));
+        }
+        list.sort((a, b) -> {
+            Integer t1 = Integer.parseInt(a[2]);
+            Integer t2 = Integer.parseInt(b[2]);
+            return t1.compareTo(t2);
+        });
+        Deque<String[]> stack = new ArrayDeque<>();
+        int[] map = new int[20];
+        int lv = -1;
+        for (String[] ss : list) {
+            String state = ss[1];
+            if ("start".equals(state)) {
+                stack.push(ss);
+                lv += 1;
+                map[lv] = 0;
+                continue;
+            }
+
+            String[] pop = stack.pop();
+            int id = Integer.parseInt(ss[0]);
+            int et = Integer.parseInt(ss[2]);
+            int st = Integer.parseInt(pop[2]);
+            ans[id] += et - st + 1 - map[lv + 1];
+            map[lv] += et - st + 1;
+            lv -= 1;
+        }
+        return ans;
+    }
+
+    public boolean validPartition(int[] nums) {
+        int n = nums.length;
+
+        boolean[] dp = new boolean[n + 1];
+        dp[0] = true;
+        dp[2] = nums[0] == nums[1];
+        for (int i = 2, j = 3; i < n; ++i, ++j) {
+            boolean tmp = false;
+            // 3 is valid ?
+            if ((nums[i] == nums[i - 1] && nums[i - 1] == nums[i - 2])
+                    || (nums[i] - 1 == nums[i - 1] && nums[i - 1] - 1 == nums[i - 2])
+            ) {
+                tmp = dp[j - 3];
+            }
+            // 2 is valid ?
+            if (nums[i - 1] == nums[i]) {
+                tmp |= dp[j - 2];
+            }
+            dp[j] = tmp;
+        }
+
+        return dp[n];
+    }
+
     public static void main(String[] args) {
-        List<Integer> list = new ArrayList<>();
-        list.add(1);
-        list.add(2);
-        list.add(3);
-        System.out.println("".split(", ").length);
+        Solution solution = new Solution();
+        int[] arr = new int[100000];
+        for (int i = 0; i < arr.length; ++i) arr[i] = i;
+        long start = System.currentTimeMillis();
+        System.out.println(solution.validPartition(new int[]{1, 2, 3, 4, 5, 6, 7}));
+        long end = System.currentTimeMillis();
+        System.out.printf("Take time %d ms\n", end - start);
     }
 }
