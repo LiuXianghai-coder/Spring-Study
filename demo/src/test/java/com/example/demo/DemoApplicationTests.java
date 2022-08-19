@@ -1209,38 +1209,11 @@ public class DemoApplicationTests {
     }
 
     public static void main(String[] args) {
-//        System.out.println(Integer.parseInt("12345"));
-//        System.out.println(lbs(new int[]{0, 8, 4, 12, 2, 10, 6, 14, 1, 9, 5, 13, 3, 11, 7, 15}));
-        DemoApplicationTests application = new DemoApplicationTests();
-//        System.out.println(editDistanceDp("sunday", "saturday"));
-//        int[][] cost = {
-//                {1, 2, 3},
-//                {4, 8, 2},
-//                {1, 5, 3}
-//        };
-//        System.out.print(minCostPathDP(cost, 2, 2));
-
-//        System.out.println(coinExchange(new int[]{1, 2, 3}, 4));
-//        System.out.println(minMultiMatrix(new int[]{10, 30, 5, 60}, 4));
-//        System.out.println(nCr(778, 116));
-//        System.out.println(knapSack(new int[]{60, 100, 120}, new int[]{10, 20, 30}, 50, 2));
-//        String str = "abaedaba";
-//        System.out.println(minPalPartitionDpOp(str));
-
-//        System.out.println(findPartitionDp(new int[]{1, 5, 11, 5}));
-//        System.out.println(coinChange(new int[]{2, 5, 10, 1}, 27));
-//        System.out.println(minFallingPathSum(new int[][]{
-//                {100, -42, -46, -41},
-//                {31, 97, 10, -10},
-//                {-58, -51, 82, 89},
-//                {51, 81, 69, -51}
-//        }));
-
-//        System.out.println(ladderLength("hog", "cog", Collections.singletonList("cog")));
-//        System.out.println(Integer.toUnsignedString(Integer.parseInt("077", 8), 10));
-//        System.out.println(application.minWindow("ADOBECODEBANC", "ABC"));
-//        int[] arr = {4,3,0,2,8,2,17,8,4,14,4,17};
-        int[] arr = {4,3,0,2,8,2,17,8,4,14,4,23};
-        System.out.println(Arrays.stream(arr).sum());
+        int[] tmp = new int[]{1, 2, 3, 4, 5, 6};
+        int last = tmp[tmp.length - 1];
+        System.out.println(Arrays.toString(tmp));
+        System.arraycopy(tmp, 0, tmp, 1, tmp.length - 1);
+        tmp[0] = last;
+        System.out.println(Arrays.toString(tmp));
     }
 }

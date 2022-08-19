@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.HandlerExceptionResolver;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
+import org.xhliu.springmvc.entity.Person;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -32,7 +33,10 @@ public class AuthorExceptionHandler
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<Object> handleRuntimeException(RuntimeException e) {
         logger.info("receive runtime exception " + e.getMessage());
-        return new ResponseEntity<>("OK", new HttpHeaders(), HttpStatus.OK);
+        Person person = new Person();
+        person.setFirstName("xhliu");
+        person.setLastName("liu");
+        return new ResponseEntity<>(person, new HttpHeaders(), HttpStatus.OK);
     }
 
     @Override

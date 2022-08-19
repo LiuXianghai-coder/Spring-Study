@@ -1,6 +1,8 @@
 package com.example.demo.tools;
 
+import com.example.demo.entity.RateInfo;
 import com.example.demo.entity.UserInfo;
+import com.example.demo.mapper.RateInfoMapper;
 import com.example.demo.mapper.UserInfoMapper;
 import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.session.SqlSession;
@@ -10,6 +12,7 @@ import org.springframework.beans.BeanUtils;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.math.BigDecimal;
 
 /**
  * @author lxh
@@ -49,12 +52,13 @@ public class MyBatisTool {
         try (
                 SqlSession sqlSession = openSqlSession()
         ) {
-            UserInfoMapper infoMapper = sqlSession.getMapper(UserInfoMapper.class);
-            UserInfo user = infoMapper.getUserById(1L);
-            System.out.println(user);
-            UserInfo info = new UserInfo();
-            BeanUtils.copyProperties(user, info);
-            System.out.println(info);
+            RateInfoMapper mapper = sqlSession.getMapper(RateInfoMapper.class);
+            RateInfo rateInfo = new RateInfo();
+            rateInfo.setId(4L);
+            rateInfo.setRateVal("0.99991");
+            rateInfo.setRateName("rate_4");
+            mapper.insert(rateInfo);
+            sqlSession.commit();
         }
     }
 }
