@@ -2,6 +2,8 @@ package com.example.demo;
 
 import java.io.File;
 import java.io.IOException;
+import java.math.BigDecimal;
+import java.math.MathContext;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -505,10 +507,12 @@ public class JustSolution {
     };
 
     public static void main(String[] args) {
-        int a = 1 << 3;
-        a |= (1 << 2);
-        System.out.println(Integer.toBinaryString(a));
-        a ^= (1 << 3);
-        System.out.println(Integer.toBinaryString(a));
+        int a = 0x80000001;
+        System.out.println(a);
+
+        double val = 1.0 - 9*0.1;
+        System.out.println(val);
+        BigDecimal d = new BigDecimal(String.valueOf(val), MathContext.UNLIMITED);
+        System.out.println(d);
     }
 }
