@@ -4,99 +4,54 @@ package com.example.demo.algorithm;
  * @author lxh
  */
 public class SegmentTree {
-    int[] tree = new int[100010];
-
-    int[] lazy = new int[100010];
-
-    /**
-     * 用于区间求和
-     *
-     * @param rt 当前处理的子树的根节点
-     */
-    void pushUpSum(int rt) {
-        tree[rt] = tree[rt << 1] + tree[rt << 1 | 1];
-    }
-
-    /**
-     * 用于求区间最大值
-     * @param rt 当前处理的子树的根节点
-     */
-    void pushUpMax(int rt) {
-        tree[rt] = Math.max(tree[rt << 1], tree[rt << 1 | 1]);
-    }
-
-    /**
-     * 用于区间求和，需要使用到懒标记
-     * @param rt    处理的子树的根节点的位置索引
-     * @param len   根节点统计的区间长度
-     */
-    void pushDownSum(int rt, int len) {
-        tree[rt << 1] += lazy[rt] * (len - (len>>1));
-        lazy[rt << 1] += lazy[rt];
-        tree[rt << 1 | 1] += lazy[rt] * (len >> 1);
-        lazy[rt << 1 | 1] += lazy[rt];
-        lazy[rt] = 0;
-    }
-
-    /**
-     * 求区间最大值，不需要乘以长度，因此不需要参数 len
-     * @param rt    处理的子树的根节点的位置索引
-     */
-    void pushDownMax(int rt) {
-        tree[rt << 1] += lazy[rt];
-        lazy[rt << 1] += lazy[rt];
-        tree[rt << 1 | 1] += lazy[rt];
-        lazy[rt << 1 | 1] += lazy[rt];
-        lazy[rt] = 0;
-    }
-
-    void build(int l, int r, int rt) {
-        if (l >= r) {
-            tree[rt] = 1; // 线段树的属性设置
-            return;
+    static class Node {
+        int l, r;
+        int lazy, val;
+        Node(int _l, int _r) {
+            l = _l; r =_r;
         }
 
-        int m = l + ((r - l) >> 1);
-        build(rt << 1, l, m);
-        build(rt << 1 | 1, m + 1, r);
-        pushUpSum(rt);
+        Node(){}
     }
 
-    /**
-     * 单点更新，不需要用到懒标记
-     */
-    void update(int p, int val, int rt, int l, int r) {
-        if (l >= r) {
-            tree[rt] += val;
-            return;
-        }
+    Node[] tree;
 
-        int m = l + ((r - l) >> 1);
-        if (p <= m) update(p, val, rt << 1, l, m);
-        else update(p, val, rt << 1 | 1, m + 1, r);
-        pushUpSum(rt);
+    public SegmentTree(int n) {
+        tree = new Node[n + 1];
     }
 
-    void update(int L, int R, int val, int rt, int l, int r) {
+    void build(int rt, int l, int r) {
+        tree[rt] = new Node(l, r);
+        if (l >= r) return;
+        int mid = l + ((r - l) >> 1);
+        build(rt << 1, l, mid);
+        build(rt << 1 | 1, mid + 1, r);
+    }
+
+    void update(int rt, int L, int R, int l, int r, int val) {
         if (L <= l && r <= R) {
-            tree[rt] += val * (r - l + 1);
-            lazy[rt] += val;
+            tree[rt].val += (r - l + 1) * val;
+            tree[rt].lazy += val;
             return;
         }
-        if (lazy[rt] > 0) pushDownSum(rt, r - l + 1);
-        int m = l + ((r - l) >> 1);
-        if (L <= m) update(L, R, val, rt << 1, l, m);
-        if (R >= m) update(L, R, val, rt << 1 | 1, m + 1, r);
-        pushUpSum(rt);
+
+        if (tree[rt].lazy > 0) pushDown(rt, r - l + 1);
+        int mid = l + ((r - l) >> 1);
+        if (L <= mid) update(rt << 1, L, R, l, mid, val);
+        else update(rt << 1 | 1, L, R, mid + 1, r, val);
+        pushUp(rt);
     }
 
-    int query(int L, int R, int rt, int l, int r) {
-        if (L <= l && r <= R) return tree[rt];
-        if (lazy[rt] > 0) pushDownSum(rt, r - l + 1);
-        int m = l + ((r - l) >> 1);
-        int res = 0;
-        if (L <= m) res += query(L, R, rt << 1, l, m);
-        if (R > m) res += query(L, R, rt << 1 | 1, m + 1, r);
-        return res;
+    void pushDown(int rt, int len) {
+        int l = rt << 1, r = rt << 1 | 1;
+        tree[l].val += tree[rt].lazy * (len - (len >> 1));
+        tree[l].lazy += tree[rt].lazy;
+        tree[r].val += tree[rt].lazy * (len >> 1);
+        tree[r].lazy += tree[rt].lazy;
+        tree[rt].lazy = 0;
+    }
+
+    void pushUp(int rt) {
+        tree[rt].val = tree[tree[rt].l].val + tree[tree[rt].r].val;
     }
 }
