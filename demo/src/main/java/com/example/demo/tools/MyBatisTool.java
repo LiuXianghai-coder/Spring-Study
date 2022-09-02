@@ -53,12 +53,8 @@ public class MyBatisTool {
                 SqlSession sqlSession = openSqlSession()
         ) {
             RateInfoMapper mapper = sqlSession.getMapper(RateInfoMapper.class);
-            RateInfo rateInfo = new RateInfo();
-            rateInfo.setId(4L);
-            rateInfo.setRateVal("0.99991");
-            rateInfo.setRateName("rate_4");
-            mapper.insert(rateInfo);
-            sqlSession.commit();
+            RateInfo rateInfo = mapper.selectById(4L);
+            System.out.println(rateInfo.toString());
         }
     }
 }

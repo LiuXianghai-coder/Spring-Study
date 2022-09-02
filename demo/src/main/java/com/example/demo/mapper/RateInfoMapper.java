@@ -10,7 +10,5 @@ import org.apache.ibatis.annotations.Param;
 public interface RateInfoMapper {
     RateInfo selectById(@Param("id") long id);
 
-    RateInfo selectById(@Param("id") long id, @Param("name") String name);
-
     int insert(RateInfo rateInfo);
 }

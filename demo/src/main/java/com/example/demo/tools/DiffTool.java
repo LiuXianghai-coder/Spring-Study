@@ -12,14 +12,16 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.concurrent.ThreadLocalRandom;
 
+import static java.math.BigInteger.probablePrime;
 import static java.util.concurrent.ThreadLocalRandom.current;
 
 /**
  * @author xhliu
  * @create 2022-03-18-15:00
  **/
-public final class DiffTool {
+public class DiffTool {
     static final Set<Class<?>> BASIC_CLASS_SET = new HashSet<>();
 
     static {
@@ -310,10 +312,8 @@ public final class DiffTool {
      * 比较两个对象，具体比对结果可以查看 {@code ABS_EQUAL}、
      * {@code PART_EQUAL}、{@code ABS_NO_EQUAL}
      */
-    int compareObj(
-            Object o1, Object o2,
-            String prefix, Map<String, Node<Object>> diffMap
-    ) {
+    int compareObj(Object o1, Object o2, String prefix,
+                   Map<String, Node<Object>> diffMap) {
         if (o1 == null && o2 == null) return ABS_EQUAL;
         if (o1 == null || o2 == null) return ABS_NO_EQUAL;
 
@@ -474,7 +474,9 @@ public final class DiffTool {
     final static int NO_EQUALS = 1 << 2;     // 表示当前对象的类型能够进行处理，但是两个对象值并不相等
     final static int DISABLE = 1 << 3;     // 表示当前传入的对象该方法无法进行处理
 
-    final static int PRIME = 51; // 一个比较正常的质数，这个质数将会作为进位数来计算对象的 hash 值
+    final Random random =   ThreadLocalRandom.current();
+    final long   PRIME  =   probablePrime(16, random).longValue(); // 一个比较正常的质数，这个质数将会作为进位数来计算对象的 hash 值
+    final long   MOD    =   probablePrime(48, random).longValue(); // 用于避免 long 类型的溢出
 
     final static int ABS_EQUAL = 1 << 1;    // 表示两个对象绝对相等，即所有属性字段都相等
     final static int PART_EQUAL = 1 << 2;   // 表示两个对象之间有部分属性值相等
@@ -658,11 +660,8 @@ public final class DiffTool {
      * 通过计算两个集合对象的 Hash 值来判断两个集合是否相等，对于不相等的两个集合，
      * 将会直接将这两个集合对象
      */
-    static boolean
-    hashCompare(
-            Object o1, Object o2,
-            String prefix, Map<String, Node<Object>> diffMap
-    ) {
+    protected boolean hashCompare(Object o1, Object o2, String prefix,
+                                  Map<String, Node<Object>> diffMap) {
         if (o1 == null && o2 == null) return true;
         if (o1 == null || o2 == null) return false;
 
@@ -682,12 +681,15 @@ public final class DiffTool {
 
         // 分别计算两个集合的信息指纹
         long h1 = 0, h2 = 0;
-        long hash = BigInteger
-                .probablePrime(32, current())
+        long hash = probablePrime(16, current())
                 .longValue(); // 随机的大质数用于随机化信息指纹
 
-        for (Object obj : co1) h1 += genHash(obj) * hash;
-        for (Object obj : co2) h2 += genHash(obj) * hash;
+        for (Object obj : co1) {
+            h1 = ((h1 % MOD) + (genHash(obj) * hash) % MOD) % MOD;
+        }
+        for (Object obj : co2) {
+            h2 = (h2 % MOD + (genHash(obj) * hash) % MOD) % MOD;
+        }
 
         if (h1 != h2) {
             diffMap.put(prefix, new Node<>(co1, co2));
@@ -819,10 +821,8 @@ public final class DiffTool {
      * @param prefix    : 此时已经处理的对象的字段深度
      * @param differMap : 记录不同的属性值的 Map
      */
-    boolean equalsMap(
-            Map<?, ?> m1, Map<?, ?> m2,
-            String prefix, Map<String, Node<Object>> differMap
-    ) {
+    boolean equalsMap(Map<?, ?> m1, Map<?, ?> m2, String prefix,
+                      Map<String, Node<Object>> differMap) {
         if (m1 == null && m2 == null) return true;
         if (m1 == null || m2 == null) return false;
 
@@ -890,27 +890,35 @@ public final class DiffTool {
      * @param obj : 待计算 hashcode 的对象
      * @return : 该对象生成的 hash 值
      */
-    static long genHash(Object obj) {
-        if (obj ==null) return 0L;
+    protected long genHash(Object obj) {
+        if (obj == null) return 0L;
 
         Class<?> c = obj.getClass();
         long ans = 0L;
 
         // 能够自行产生 hashcode 的类型
-        if (c.isPrimitive() || isBasicType(c) || isEnum(c) || isMap(c)) {
-            return Objects.hashCode(obj);
+        if (isBasicType(c) || isEnum(c)) {
+            return obj.hashCode() % MOD;
+        }
+
+        if (isMap(c)) {
+            Map<?, ?> map = (Map<?, ?>) obj;
+            for (Map.Entry<?, ?> entry : map.entrySet()) {
+                ans = ((ans * PRIME) % MOD + genHash(entry.getValue()) % MOD) % MOD;
+            }
+            return ans;
         }
 
         if (c.isArray()) { // 针对数组类型
             Iterator<?> iterator = Arrays.stream(((Object[]) obj)).iterator();
             while (iterator.hasNext())
-                ans = ans * PRIME + genHash(iterator.next());
+                ans = ((ans * PRIME) % MOD + genHash(iterator.next()) % MOD) % MOD;
             return ans;
         }
 
         if (Collection.class.isAssignableFrom(c)) { // 针对集合类型
             for (Object tmp : (Collection<?>) obj)
-                ans = ans * PRIME + genHash(tmp);
+                ans = ((ans * PRIME) % MOD + genHash(tmp) % MOD) % MOD;
             return ans;
         }
 
@@ -921,19 +929,19 @@ public final class DiffTool {
             try {
                 field.setAccessible(true);
                 Object tmp = field.get(obj);
-                if (field.getType().isPrimitive()) { // 对于基本数据类型需要进行特殊的处理
-                    ans = ans * PRIME + ((Number) tmp).longValue();
+                Class<?> type = field.getType();
+                if (tmp instanceof Number) { // 对于数值类型需要进行特殊的处理
+                    ans = ((ans * PRIME) % MOD + ((Number) tmp).longValue() % MOD) % MOD;
                     continue;
                 }
 
-                // 能够使用 Objects 计算 hashCode 的类，需要进行单独的处理
-                if (isBasicType(c) || isEnum(c) || isMap(c)) {
-                    ans = ans * PRIME + Objects.hashCode(tmp);
+                if (isBasicType(c) || isEnum(c)) {
+                    ans = ((ans * PRIME) % MOD + tmp.hashCode() % MOD) % MOD;
                     continue;
                 }
 
                 // 对于其余的情况，说明该属性字段是一个自定义对象，递归对每个字段进行处理
-                ans = ans * PRIME + genHash(obj);
+                ans = ((ans * PRIME) % MOD + genHash(obj)) % MOD;
             } catch (IllegalAccessException e) {
                 e.printStackTrace();
             }

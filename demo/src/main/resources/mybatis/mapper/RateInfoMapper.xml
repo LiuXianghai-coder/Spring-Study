@@ -16,9 +16,6 @@
         SELECT <include refid="baseCols" />
         FROM rate_info
         WHERE id=#{id}
-        <if test="name != null">
-            AND rate_name=#{name}
-        </if>
     </select>
 
     <resultMap id="BaseResult" type="com.example.demo.entity.RateInfo">
