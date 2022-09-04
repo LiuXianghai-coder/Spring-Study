@@ -50,11 +50,9 @@ public class MyBatisTool {
                 SqlSession sqlSession = openSqlSession()
         ) {
             UserInfoMapper infoMapper = sqlSession.getMapper(UserInfoMapper.class);
-            UserInfo user = infoMapper.getUserById(1L);
-            System.out.println(user);
-            UserInfo info = new UserInfo();
-            BeanUtils.copyProperties(user, info);
-            System.out.println(info);
+            System.out.println(infoMapper.getUserById(1L));
+            System.out.println(infoMapper.getUserById(1L));
+            System.out.println(infoMapper.getUserById(1L));
         }
     }
 }

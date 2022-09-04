@@ -56,15 +56,12 @@ public class NumArray {
         return query(1, left + 1, right + 1);
     }
 
+    public static final Object lock = new Object();
+
     public static void main(String[] args) {
-        long l1 = Long.MAX_VALUE;
-        long l2 = Long.MAX_VALUE;
-        long l3 = l1 * l2;
-        long l4 = Long.MAX_VALUE * 3;
-        long l5 = Long.MAX_VALUE * 5;
-        System.out.println(l3);
-        System.out.println(l4);
-        System.out.println(l5);
-        System.out.println(l4 == l5);
+        synchronized (lock) {
+            System.out.println("hello world");
+            throw new IllegalArgumentException();
+        }
     }
 }
