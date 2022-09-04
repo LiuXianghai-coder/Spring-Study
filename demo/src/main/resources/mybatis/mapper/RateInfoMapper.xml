@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!-- namespace 对应相关的 DAO 接口，Mybatis 会根据这个接口通过代理的方式生成对应的数据访问对象 -->
+<mapper namespace="com.example.demo.mapper.RateInfoMapper">
+    <insert id="insert" parameterType="com.example.demo.entity.RateInfo" >
+        INSERT INTO rate_info(id, rate_name, rate_val, backup_id) VALUES (#{id}, #{rateName}, #{rateVal}, #{backUpId})
+    </insert>
+
+    <sql id="baseCols">
+        id, rate_name, rate_val
+    </sql>
+
+    <select id="selectById" parameterType="long" resultType="com.example.demo.entity.RateInfo">
+        SELECT <include refid="baseCols" />
+        FROM rate_info
+        WHERE id=#{id}
+    </select>
+
+    <resultMap id="BaseResult" type="com.example.demo.entity.RateInfo">
+        <id column="id" property="id"/>
+        <result column="rate_name" property="rateName"/>
+        <result column="rate_val" property="rateVal"/>
+    </resultMap>
+</mapper>

@@ -177,16 +177,84 @@ public class Application {
         }
     }
 
-    public static void main(String[] args) {
-        long[] prefix = new long[]{0, 1, 2, 3};
-        long val = 2;
-        int lo = 1, hi = 3;
-        while (lo <= hi) {
-            int mid = lo + ((hi - lo) >> 1);
-            if (prefix[mid] >= val) hi = mid - 1;
-            else lo = mid + 1;
+    public static String fractionAddition(String exp) {
+        Deque<int[]> deque = new LinkedList<>();
+        long[] ans = new long[]{1, 0, 1};
+        if (exp.charAt(0) != '-') exp = "+" + exp;
+        char[] arr = exp.toCharArray();
+        int n = arr.length;
+        for (int i = 0; i < n;) {
+            int flag = arr[i] == '-' ? -1 : 1;
+            int j = i + 1;
+            while (j < n && arr[j] != '+' && arr[j] != '-') ++j;
+            String[] fra = exp.substring(i + 1, j).split("/");
+            int[] tmp = new int[]{flag, Integer.parseInt(fra[0]), Integer.parseInt(fra[1])};
+            deque.offer(tmp);
+            i = j;
         }
 
-        System.out.println("lo=" + lo);
+        while (!deque.isEmpty()) {
+            int[] val = deque.poll();
+            long a1 = ans[1]*ans[0], b1 = ans[2];
+            long a2 = (long) val[1] * val[0], b2 = val[2];
+            a1 *= b2; a2 *= b1;
+
+            long up = a1 + a2, down = b1*b2;
+            ans[1] = up;
+            ans[2] = down;
+        }
+
+        long gcd = BigInteger.valueOf(ans[1]).gcd(BigInteger.valueOf(ans[2])).longValue();
+        return (ans[1] >= 0 ? "" : "-") + (ans[1] / gcd) + "/" + (ans[2] / gcd);
+    }
+
+    public static int maxPoints(int[][] points) {
+        int n = points.length;
+        Set<Set<int[]>> set = new HashSet<>();
+        for (int i = 0; i < n; ++i) {
+            for (int j = 0; j < n; ++j) {
+                if (i == j) continue;
+                Set<int[]> ts = new TreeSet<>((a, b) -> a[0] == b[0] ? a[1] - b[1] : a[0] - b[0]);
+                ts.add(points[i]);
+                ts.add(points[j]);
+                set.add(ts);
+            }
+        }
+
+        for (int[] point : points) {
+            int x = point[0], y = point[1];
+            for (Set<int[]> list : set) {
+                int xt = -1, yt = -1;
+                boolean flag = true;
+                for (int[] t : list) {
+                    if (x == t[0] && y == t[1]) continue;
+                    if (xt == -1 && yt == -1) {
+                        xt = t[0];
+                        yt = t[1];
+                        continue;
+                    }
+
+                    long a = (long) (y - yt) * (x - t[0]);
+                    long b = (long) (y - t[1]) * (x - xt);
+                    if (a != b) {
+                        flag = false;
+                        break;
+                    }
+                }
+                if (flag) list.add(new int[]{x, y});
+            }
+        }
+
+        int ans = 2;
+        for (Set<int[]> list : set) {
+            if (list.size() > ans) {
+                ans = list.size();
+            }
+        }
+        return ans;
+    }
+
+    public static void main(String[] args) {
+        System.out.println(maxPoints(new int[][]{{1, 1}, {2, 2}, {3, 3}}));
     }
 }

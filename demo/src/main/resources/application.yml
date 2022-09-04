@@ -4,3 +4,7 @@ server:
 spring:
   jackson:
     date-format: "yyyy-MM-dd HH:mm:ss"
+  datasource:
+    url: jdbc:mysql://39.99.129.90:3306/lxh
+    username: root
+    password: 17358870357yi

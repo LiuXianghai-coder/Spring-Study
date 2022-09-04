@@ -9,8 +9,10 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
+import java.util.function.BiFunction;
+import java.util.function.Function;
 
-public class Solution {
+public class JustSolution {
     static final int[][] dirs = new int[][]{{0, 1}, {0, -1}, {1, 0}, {-1, 0}};
     int m, n;
     int[][] grid;
@@ -458,6 +460,51 @@ public class Solution {
         update(1, 1, N + 1, start + 1, end, 1);
         return true;
     }
+
+    static int diff(String s1, String s2) {
+        int ans = 0, i;
+        for (i = 0; i < s1.length() && i < s2.length(); ++i) {
+            if (s1.charAt(i) != s2.charAt(i)) ans++;
+        }
+        if (i < s1.length()) ans += s1.length() - i;
+        if (i < s2.length()) ans += s2.length() - i;
+        return ans;
+    }
+
+    public int intersectionSizeTwo(int[][] inter) {
+        Arrays.sort(inter, (a, b) -> a[1] == b[1] ? a[0] - b[0] : a[1] - b[1]);
+        Set<Integer> set = new HashSet<>();
+        for (int[] tmp : inter) {
+            int cnt = 0;
+            for (int e : set) {
+                if (search(tmp[0], tmp[1], e) >= 0) cnt++;
+                if (cnt >= 2) break;
+            }
+            if (cnt >= 2) continue;
+            if (cnt == 1) set.add(tmp[1]);
+            if (cnt == 0) {
+                set.add(tmp[1]);
+                set.add(tmp[1] - 1);
+            }
+        }
+
+        System.out.println(set);
+        return set.size();
+    }
+
+    int search(int lo, int hi, int val) {
+        while (lo <= hi) {
+            int mid = lo + ((hi - lo) >> 1);
+            if (mid == val) return mid;
+            if (mid < val) lo = mid + 1;
+            else hi = mid - 1;
+        }
+        return -1;
+    }
+
+    BiFunction<Object, String, String> func = (x, y) -> {
+        return x + y;
+    };
 
     public static void main(String[] args) {
         int a = 0x80000001;
