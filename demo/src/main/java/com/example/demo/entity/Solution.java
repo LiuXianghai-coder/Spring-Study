@@ -1,6 +1,9 @@
 package com.example.demo.entity;
 
+import java.math.BigInteger;
 import java.util.*;
+import java.util.concurrent.ThreadLocalRandom;
+import java.util.stream.Collectors;
 
 public class Solution {
     static final int START = 0;
@@ -213,12 +216,22 @@ public class Solution {
     }
 
     public static void main(String[] args) {
-        Solution solution = new Solution();
-        int[] arr = new int[100000];
-        for (int i = 0; i < arr.length; ++i) arr[i] = i;
-        long start = System.currentTimeMillis();
-        System.out.println(solution.validPartition(new int[]{1, 2, 3, 4, 5, 6, 7}));
-        long end = System.currentTimeMillis();
-        System.out.printf("Take time %d ms\n", end - start);
+        Random random = ThreadLocalRandom.current();
+        BigInteger P = BigInteger.probablePrime(31, random);
+        BigInteger mod = BigInteger.probablePrime(63, random);
+        BigInteger res = BigInteger.ONE;
+        long ans = 1;
+        long start, end;
+        System.out.println(P);
+        System.out.println(mod);
+        start = System.currentTimeMillis();
+        for (int i = 0; i < 1000_000; i++) {
+//            res = res.multiply(P).mod(mod);
+            ans = ((ans % mod.longValue()) * P.intValue()) % mod.longValue();
+        }
+        end = System.currentTimeMillis();
+        System.out.println(ans);
+        System.out.println("take time " + (end - start) * 1.0 / 1000 + " s");
+        System.out.println(BigInteger.probablePrime(128, random));
     }
 }

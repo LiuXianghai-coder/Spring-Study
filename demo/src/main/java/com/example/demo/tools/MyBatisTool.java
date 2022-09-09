@@ -53,8 +53,8 @@ public class MyBatisTool {
                 SqlSession sqlSession = openSqlSession()
         ) {
             RateInfoMapper mapper = sqlSession.getMapper(RateInfoMapper.class);
-            RateInfo rateInfo = mapper.selectById(4L);
-            System.out.println(rateInfo.toString());
+            System.out.println(mapper.selectById(4L));
+            System.out.println(mapper.selectById(4L));
         }
     }
 }
