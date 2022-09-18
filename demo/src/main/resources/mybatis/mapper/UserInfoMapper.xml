@@ -4,6 +4,10 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <!-- namespace 对应相关的 DAO 接口，Mybatis 会根据这个接口通过代理的方式生成对应的数据访问对象 -->
 <mapper namespace="com.example.demo.mapper.UserInfoMapper">
+    <cache type="org.redisson.mybatis.RedissonCache">
+        <property name="redissonConfig" value="/redis-config.yml"/>
+    </cache>
+    
     <sql id="allColumn">
         id
         , name, age, created_time, created_user, updated_user, updated_time
