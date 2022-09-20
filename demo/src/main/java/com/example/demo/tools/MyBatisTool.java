@@ -56,6 +56,10 @@ public class MyBatisTool {
             System.out.println(mapper.selectById(4L));
             sqlSession.commit();
             System.out.println(mapper.selectById(4L));
+            UserInfoMapper infoMapper = sqlSession.getMapper(UserInfoMapper.class);
+            System.out.println(infoMapper.getUserById(1L));
+            System.out.println(infoMapper.getUserById(1L));
+            System.out.println(infoMapper.getUserById(1L));
         }
     }
 }

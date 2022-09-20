@@ -249,8 +249,52 @@ public class Solution {
         return false;
     }
 
+    TireNode[] root = new TireNode[26];
+
+    public int[] sumPrefixScores(String[] words) {
+        for (String word : words) add(word);
+        int n = words.length;
+        int[] ans = new int[n];
+        for (int i = 0; i < n; ++i) {
+            ans[i] = search(words[i]);
+        }
+        return ans;
+    }
+
+    int search(String str) {
+        return search(root, str);
+    }
+
+    int search(TireNode[] root, String str) {
+        if (root == null) return 0;
+        if (str == null || str.length() == 0) return 0;
+        int ch = str.charAt(0) - 'a';
+        return root[ch].cnt + search(root[ch].next, str.substring(1));
+    }
+
+    void add(String str) {
+        add(root, str);
+    }
+
+    void add(TireNode[] root, String str) {
+        if (str == null || str.trim().length() == 0) return;
+        int ch = str.charAt(0) - 'a';
+        if (root[ch] == null) root[ch] = new TireNode();
+        root[ch].cnt++;
+        add(root[ch].next, str.substring(1));
+    }
+
+    static class TireNode {
+        int cnt = 0;
+        TireNode[] next = new TireNode[26];
+    }
+
     public static void main(String[] args) {
         Solution s = new Solution();
         System.out.println(s.canPartitionKSubsets(new int[]{15,3557,42,3496,5,81,34,95,9,81,42,106,71}, 11));
+        int[][] arr = new int[][]{{1,0,1,0,1},{0,1,1,0,1},{1,1,1,0,0},{1,0,1,1,1},{0,0,1,1,0}};
+        for (int[] val : arr) {
+            System.out.println(Arrays.toString(val));
+        }
     }
 }

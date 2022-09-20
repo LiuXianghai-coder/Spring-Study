@@ -2,6 +2,7 @@ package com.example.demo.entity;
 
 import java.math.BigInteger;
 import java.util.*;
+import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * @author lxh
@@ -88,8 +89,16 @@ public class JustSolution {
     }
 
     public static void main(String[] args) {
-        System.out.println(zeroFilledSubarray(new int[]{1,3,0,0,2,0,0,4}));
-        System.out.println(zeroFilledSubarray(new int[]{0,0,0,2,0,0}));
-        System.out.println(zeroFilledSubarray(new int[]{2, 10, 2019}));
+        BigInteger res = BigInteger.ONE;
+        Random random = ThreadLocalRandom.current();
+        BigInteger p = BigInteger.probablePrime(16, random);
+        long start, end;
+        long ans = 1;
+        start = System.currentTimeMillis();
+        for (int i = 0; i < 1000_000; ++i) {
+            ans = ans * p.longValue();
+        }
+        end = System.currentTimeMillis();
+        System.out.printf("take time %d ms\n", (end - start));
     }
 }
