@@ -215,23 +215,42 @@ public class Solution {
         return dp[n];
     }
 
-    public static void main(String[] args) {
-        Random random = ThreadLocalRandom.current();
-        BigInteger P = BigInteger.probablePrime(31, random);
-        BigInteger mod = BigInteger.probablePrime(63, random);
-        BigInteger res = BigInteger.ONE;
-        long ans = 1;
-        long start, end;
-        System.out.println(P);
-        System.out.println(mod);
-        start = System.currentTimeMillis();
-        for (int i = 0; i < 1000_000; i++) {
-//            res = res.multiply(P).mod(mod);
-            ans = ((ans % mod.longValue()) * P.intValue()) % mod.longValue();
+    int[] nums;
+    boolean[] visit;
+
+    public boolean canPartitionKSubsets(int[] _nums, int k) {
+        nums = _nums;
+        int sum = 0;
+        for (int v : nums) sum += v;
+        if (sum % k != 0) return false;
+        int target = sum / k;
+        visit = new boolean[nums.length];
+
+        Arrays.sort(nums);
+        for (int i = 0; i < nums.length; ++i) {
+            if (visit[i]) continue;
+            if (!dfs(i,0, target)) return false;
         }
-        end = System.currentTimeMillis();
-        System.out.println(ans);
-        System.out.println("take time " + (end - start) * 1.0 / 1000 + " s");
-        System.out.println(BigInteger.probablePrime(128, random));
+        return true;
+    }
+
+    boolean dfs(int index, int curVal, int target) {
+        if (curVal == target) return true;
+        visit[index] = true;
+        for (int i = nums.length - 1; i >= 0 ; --i) {
+            if (visit[i]) continue;
+            int tmp = curVal + nums[i];
+            if (tmp > target) continue;
+            visit[i] = true;
+            if (dfs(i, tmp, target)) return true;
+            visit[i] = false;
+        }
+        visit[index] = false;
+        return false;
+    }
+
+    public static void main(String[] args) {
+        Solution s = new Solution();
+        System.out.println(s.canPartitionKSubsets(new int[]{15,3557,42,3496,5,81,34,95,9,81,42,106,71}, 11));
     }
 }

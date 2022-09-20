@@ -1,5 +1,7 @@
 package com.example.demo.entity;
 
+import com.example.demo.common.ReadAuth;
+
 /**
  * @author xhliu
  * @create 2022-05-24-15:50
