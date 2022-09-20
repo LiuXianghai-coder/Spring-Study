@@ -4,13 +4,8 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <!-- namespace 对应相关的 DAO 接口，Mybatis 会根据这个接口通过代理的方式生成对应的数据访问对象 -->
 <mapper namespace="com.example.demo.mapper.UserInfoMapper">
-    <cache type="org.redisson.mybatis.RedissonCache">
-        <property name="redissonConfig" value="/redis-config.yml"/>
-    </cache>
-    
     <sql id="allColumn">
-        id
-        , name, age, created_time, created_user, updated_user, updated_time
+        id, user_name, user_age, created_time, created_user, updated_user, updated_time
     </sql>
 
     <!-- 一个简单的查询，这里没有配置 ORM 关系，因此会直接将列名映射为对象的属性名 -->
@@ -18,14 +13,14 @@
         SELECT
         <include refid="allColumn"/> <!-- 引入之前的列名集合 -->
         FROM
-        tb_user
+            user_info
         WHERE
-        id=#{id}
+            id=#{id}
     </select>
 
     <insert id="insert" parameterType="com.example.demo.entity.UserInfo" >
-        INSERT INTO tb_user(id, name, age, created_time, created_user, updated_time, updated_user)
-        VALUES (#{id}, #{name}, #{age}, #{createdTime}, #{createdUser}, #{updatedTime}, #{updatedUser})
+        INSERT INTO user_info(<include refid="allColumn" />)
+        VALUES (#{id}, #{name}, #{age}, #{createdTime}, #{createdUser}, #{updatedUser}, #{updatedTime})
     </insert>
 
     <resultMap id="BaseResult" type="com.example.demo.entity.UserInfo">

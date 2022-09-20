@@ -52,14 +52,17 @@ public class MyBatisTool {
         try (
                 SqlSession sqlSession = openSqlSession()
         ) {
-            RateInfoMapper mapper = sqlSession.getMapper(RateInfoMapper.class);
-            System.out.println(mapper.selectById(4L));
-            sqlSession.commit();
-            System.out.println(mapper.selectById(4L));
             UserInfoMapper infoMapper = sqlSession.getMapper(UserInfoMapper.class);
-            System.out.println(infoMapper.getUserById(1L));
-            System.out.println(infoMapper.getUserById(1L));
-            System.out.println(infoMapper.getUserById(1L));
+//            System.out.println(infoMapper.getUserById(1L));
+//            System.out.println(infoMapper.getUserById(1L));
+//            System.out.println(infoMapper.getUserById(1L));
+            UserInfo userInfo = new UserInfo();
+            userInfo.initFiled();
+            userInfo.setId(1L);
+            userInfo.setAge(22);
+            userInfo.setName("xhliu");
+            infoMapper.insert(userInfo);
+            sqlSession.commit();
         }
     }
 }

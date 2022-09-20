@@ -1,25 +1,22 @@
 package com.example.demo.entity;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.Date;
+import java.time.OffsetDateTime;
 
 /**
  * @author lxh
- * @date 2022/6/6-下午10:06
  */
 public abstract class AbstractEntity {
     private String createdUser;
 
-    private LocalDate createdTime;
+    private OffsetDateTime createdTime;
 
     private String updatedUser;
 
-    private LocalDate updatedTime;
+    private OffsetDateTime updatedTime;
 
     public void initFiled() {
-        setCreatedTime(LocalDate.now());
-        setUpdatedTime(LocalDate.now());
+        setCreatedTime(OffsetDateTime.now());
+        setUpdatedTime(OffsetDateTime.now());
         setUpdatedUser("xhliu");
         setCreatedUser("xhliu");
     }
@@ -32,11 +29,11 @@ public abstract class AbstractEntity {
         this.createdUser = createdUser;
     }
 
-    public LocalDate getCreatedTime() {
+    public OffsetDateTime getCreatedTime() {
         return createdTime;
     }
 
-    public void setCreatedTime(LocalDate createdTime) {
+    public void setCreatedTime(OffsetDateTime createdTime) {
         this.createdTime = createdTime;
     }
 
@@ -48,11 +45,11 @@ public abstract class AbstractEntity {
         this.updatedUser = updatedUser;
     }
 
-    public LocalDate getUpdatedTime() {
+    public OffsetDateTime getUpdatedTime() {
         return updatedTime;
     }
 
-    public void setUpdatedTime(LocalDate updatedTime) {
+    public void setUpdatedTime(OffsetDateTime updatedTime) {
         this.updatedTime = updatedTime;
     }
 }

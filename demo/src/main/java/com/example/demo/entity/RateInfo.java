@@ -3,13 +3,11 @@ package com.example.demo.entity;
 import com.google.common.base.Objects;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 
 /**
  * @author xhliu
- * @create 2022-07-14-15:33
  **/
-public class RateInfo implements Serializable {
+public class RateInfo extends AbstractEntity implements Serializable {
     private long id;
     private String rateName;
     private String rateVal;

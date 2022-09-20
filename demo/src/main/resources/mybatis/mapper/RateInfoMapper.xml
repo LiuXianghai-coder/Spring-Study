@@ -5,21 +5,13 @@
 <!-- namespace 对应相关的 DAO 接口，Mybatis 会根据这个接口通过代理的方式生成对应的数据访问对象 -->
 <mapper namespace="com.example.demo.mapper.RateInfoMapper">
 
-    <cache type="org.redisson.mybatis.RedissonCache">
-        <property name="timeToLive" value="10000" />
-        <property name="maxIdleTime" value="5000" />
-        <property name="maxSize" value="100000" />
-
-        <property name="redissonConfig" value="/redisson.yaml" />
-    </cache>
-
     <insert id="insert" parameterType="com.example.demo.entity.RateInfo" >
         INSERT INTO rate_info(id, rate_name, rate_val, backup_id) VALUES (#{id}, #{rateName}, #{rateVal}, #{backUpId})
     </insert>
 
-    <sql id="baseCols">
+    <sql id="baseCols"><![CDATA[
         id, rate_name, rate_val
-    </sql>
+    ]]></sql>
 
     <select id="selectById" parameterType="long" resultType="com.example.demo.entity.RateInfo">
         SELECT <include refid="baseCols" />
