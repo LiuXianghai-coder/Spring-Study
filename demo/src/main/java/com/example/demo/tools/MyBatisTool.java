@@ -1,14 +1,11 @@
 package com.example.demo.tools;
 
 import com.example.demo.entity.RateInfo;
-import com.example.demo.entity.UserInfo;
 import com.example.demo.mapper.RateInfoMapper;
-import com.example.demo.mapper.UserInfoMapper;
 import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
-import org.springframework.beans.BeanUtils;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -16,7 +13,6 @@ import java.math.BigDecimal;
 
 /**
  * @author lxh
- * @date 2022/6/6-下午10:22
  */
 public class MyBatisTool {
     private static class Holder {
@@ -52,16 +48,13 @@ public class MyBatisTool {
         try (
                 SqlSession sqlSession = openSqlSession()
         ) {
-            UserInfoMapper infoMapper = sqlSession.getMapper(UserInfoMapper.class);
-//            System.out.println(infoMapper.getUserById(1L));
-//            System.out.println(infoMapper.getUserById(1L));
-//            System.out.println(infoMapper.getUserById(1L));
-            UserInfo userInfo = new UserInfo();
-            userInfo.initFiled();
-            userInfo.setId(1L);
-            userInfo.setAge(22);
-            userInfo.setName("xhliu");
-            infoMapper.insert(userInfo);
+            RateInfoMapper mapper = sqlSession.getMapper(RateInfoMapper.class);
+            RateInfo info = new RateInfo();
+            info.setId(2L);
+            info.setRateName("固定利率");
+            info.setRateVal(new BigDecimal("3.48"));
+            info.initFiled();
+            mapper.update(info);
             sqlSession.commit();
         }
     }
