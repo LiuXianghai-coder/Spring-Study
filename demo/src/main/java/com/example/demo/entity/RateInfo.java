@@ -1,6 +1,8 @@
 package com.example.demo.entity;
 
 import com.google.common.base.Objects;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -9,9 +11,12 @@ import java.math.BigDecimal;
  * @author xhliu
  **/
 public class RateInfo extends AbstractEntity implements Serializable {
+
+    private final static Logger log = LoggerFactory.getLogger(RateInfo.class);
+
     private long id;
     private String rateName;
-    private String rateVal;
+    private BigDecimal rateVal;
     private String backUpId;
 
     public String getBackUpId() {
@@ -19,6 +24,7 @@ public class RateInfo extends AbstractEntity implements Serializable {
     }
 
     public void setBackUpId(String backUpId) {
+        log.info("set backUp id {}", backUpId);
         this.backUpId = backUpId;
     }
 
@@ -35,14 +41,15 @@ public class RateInfo extends AbstractEntity implements Serializable {
     }
 
     public void setRateName(String rateName) {
+        log.info("set rateName {}", rateName);
         this.rateName = rateName;
     }
 
-    public String getRateVal() {
+    public BigDecimal getRateVal() {
         return rateVal;
     }
 
-    public void setRateVal(String rateVal) {
+    public void setRateVal(BigDecimal rateVal) {
         this.rateVal = rateVal;
     }
 

@@ -1,14 +1,11 @@
 package com.example.demo.tools;
 
 import com.example.demo.entity.RateInfo;
-import com.example.demo.entity.UserInfo;
 import com.example.demo.mapper.RateInfoMapper;
-import com.example.demo.mapper.UserInfoMapper;
 import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
-import org.springframework.beans.BeanUtils;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -52,14 +49,14 @@ public class MyBatisTool {
         try (
                 SqlSession sqlSession = openSqlSession()
         ) {
-           RateInfoMapper mapper = sqlSession.getMapper(RateInfoMapper.class);
-           RateInfo info = new RateInfo();
-           info.setId(1);
-           info.setRateName("浮动利率");
-           info.setRateVal("2.00");
-           info.initFiled();
-           mapper.update(info);
-           sqlSession.commit();
+            RateInfoMapper mapper = sqlSession.getMapper(RateInfoMapper.class);
+            RateInfo info = new RateInfo();
+            info.setId(2L);
+            info.setRateName("固定利率");
+            info.setRateVal(new BigDecimal("3.48"));
+            info.initFiled();
+            mapper.update(info);
+            sqlSession.commit();
         }
     }
 }

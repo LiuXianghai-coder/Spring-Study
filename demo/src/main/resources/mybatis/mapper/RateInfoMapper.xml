@@ -6,26 +6,33 @@
 <mapper namespace="com.example.demo.mapper.RateInfoMapper">
 
     <insert id="insert" parameterType="com.example.demo.entity.RateInfo" >
-        INSERT INTO rate_info(id, rate_name, rate_val, backup_id) VALUES (#{id}, #{rateName}, #{rateVal}, #{backUpId})
+        INSERT INTO rate_info(<include refid="allCols" />)
+        VALUES (#{id}, #{rateName}, #{rateVal}, #{backUpId}, #{createdTime}, #{createdUser}, #{updatedUser}, #{updatedTime})
     </insert>
 
-    <update id="update" parameterType="com.example.demo.entity.RateInfo">
-        UPDATE rate_info SET rate_name=#{rateName}, rate_val=#{rateVal}, backup_id=#{backUpId} WHERE id=#{id}
-    </update>
-
-    <sql id="baseCols"><![CDATA[
-        id, rate_name, rate_val
-    ]]></sql>
+    <sql id="allCols">
+        id, rate_name, rate_val, backup_id, created_time, created_user, updated_user, updated_time
+    </sql>
 
     <select id="selectById" parameterType="long" resultType="com.example.demo.entity.RateInfo">
-        SELECT <include refid="baseCols" />
+        SELECT <include refid="allCols" />
         FROM rate_info
         WHERE id=#{id}
     </select>
 
+    <update id="update" parameterType="com.example.demo.entity.RateInfo">
+        UPDATE rate_info SET rate_name=#{rateName}, rate_val=#{rateVal}, backup_id=#{backUpId},
+                             updated_time=#{updatedTime}, updated_user=#{updatedUser}
+        WHERE id=#{id}
+    </update>
+
     <resultMap id="BaseResult" type="com.example.demo.entity.RateInfo">
         <id column="id" property="id"/>
-        <result column="rate_name" jdbcType="VARCHAR" property="rateName"/>
+        <result column="rate_name" property="rateName"/>
         <result column="rate_val" property="rateVal"/>
+        <result column="created_time" property="createdTime"/>
+        <result column="created_user" property="createdUser"/>
+        <result column="updated_time" property="updatedTime"/>
+        <result column="updated_user" property="updatedUser"/>
     </resultMap>
 </mapper>
