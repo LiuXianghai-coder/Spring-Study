@@ -11,4 +11,6 @@ public interface RateInfoMapper {
     RateInfo selectById(@Param("id") long id);
 
     int insert(RateInfo rateInfo);
+
+    int update(RateInfo rateInfo);
 }

@@ -9,6 +9,10 @@
         INSERT INTO rate_info(id, rate_name, rate_val, backup_id) VALUES (#{id}, #{rateName}, #{rateVal}, #{backUpId})
     </insert>
 
+    <update id="update" parameterType="com.example.demo.entity.RateInfo">
+        UPDATE rate_info SET rate_name=#{rateName}, rate_val=#{rateVal}, backup_id=#{backUpId} WHERE id=#{id}
+    </update>
+
     <sql id="baseCols"><![CDATA[
         id, rate_name, rate_val
     ]]></sql>
@@ -21,7 +25,7 @@
 
     <resultMap id="BaseResult" type="com.example.demo.entity.RateInfo">
         <id column="id" property="id"/>
-        <result column="rate_name" property="rateName"/>
+        <result column="rate_name" jdbcType="VARCHAR" property="rateName"/>
         <result column="rate_val" property="rateVal"/>
     </resultMap>
 </mapper>

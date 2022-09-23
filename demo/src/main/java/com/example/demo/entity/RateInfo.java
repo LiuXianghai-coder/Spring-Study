@@ -3,6 +3,7 @@ package com.example.demo.entity;
 import com.google.common.base.Objects;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 
 /**
  * @author xhliu
