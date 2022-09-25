@@ -21,6 +21,11 @@ public abstract class AbstractEntity {
         setCreatedUser("xhliu");
     }
 
+    public void initUpdate() {
+        setUpdatedTime(OffsetDateTime.now());
+        setUpdatedUser("xhliu");
+    }
+
     public String getCreatedUser() {
         return createdUser;
     }
@@ -51,5 +56,13 @@ public abstract class AbstractEntity {
 
     public void setUpdatedTime(OffsetDateTime updatedTime) {
         this.updatedTime = updatedTime;
+    }
+
+    @Override
+    public String toString() {
+        return  ", createdUser='" + createdUser + '\'' +
+                ", createdTime=" + createdTime +
+                ", updatedUser='" + updatedUser + '\'' +
+                ", updatedTime=" + updatedTime;
     }
 }

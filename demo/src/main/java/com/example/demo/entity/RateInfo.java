@@ -74,6 +74,7 @@ public class RateInfo extends AbstractEntity implements Serializable {
                 ", rateName='" + rateName + '\'' +
                 ", rateVal='" + rateVal + '\'' +
                 ", backUpId='" + backUpId + '\'' +
+                super.toString() +
                 '}';
     }
 }

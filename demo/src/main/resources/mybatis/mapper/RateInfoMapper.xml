@@ -4,6 +4,10 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <!-- namespace 对应相关的 DAO 接口，Mybatis 会根据这个接口通过代理的方式生成对应的数据访问对象 -->
 <mapper namespace="com.example.demo.mapper.RateInfoMapper">
+    
+    <cache>
+        <property name="readOnly" value="false"/>
+    </cache>
 
     <insert id="insert" parameterType="com.example.demo.entity.RateInfo" >
         INSERT INTO rate_info(<include refid="allCols" />)

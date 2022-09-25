@@ -3,14 +3,12 @@ package com.example.demo.plugin;
 import com.example.demo.entity.RateInfo;
 import org.apache.ibatis.executor.Executor;
 import org.apache.ibatis.mapping.MappedStatement;
-import org.apache.ibatis.plugin.Interceptor;
-import org.apache.ibatis.plugin.Intercepts;
-import org.apache.ibatis.plugin.Invocation;
-import org.apache.ibatis.plugin.Signature;
+import org.apache.ibatis.plugin.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Method;
+import java.util.Properties;
 
 /**
  * @author xhliu
@@ -35,6 +33,16 @@ public class BackupPlugin implements Interceptor {
             param.setBackUpId(String.valueOf(param.getId()));
         }
         return method.invoke(target, args);
+    }
+
+    @Override
+    public Object plugin(Object target) {
+        return Plugin.wrap(target, this);
+    }
+
+    @Override
+    public void setProperties(Properties properties) {
+
     }
 
     private RateInfo findParam(Object[] args) {
