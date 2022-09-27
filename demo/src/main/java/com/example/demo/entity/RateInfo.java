@@ -24,7 +24,6 @@ public class RateInfo extends AbstractEntity implements Serializable {
     }
 
     public void setBackUpId(String backUpId) {
-        log.info("set backUp id {}", backUpId);
         this.backUpId = backUpId;
     }
 
@@ -41,7 +40,6 @@ public class RateInfo extends AbstractEntity implements Serializable {
     }
 
     public void setRateName(String rateName) {
-        log.info("set rateName {}", rateName);
         this.rateName = rateName;
     }
 

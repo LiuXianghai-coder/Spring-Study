@@ -4,9 +4,18 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <!-- namespace 对应相关的 DAO 接口，Mybatis 会根据这个接口通过代理的方式生成对应的数据访问对象 -->
 <mapper namespace="com.example.demo.mapper.RateInfoMapper">
-    
-    <cache>
-        <property name="readOnly" value="false"/>
+
+    <!-- 使用 RedissonCache 替换现有的二级缓存实现 -->
+    <cache type="org.redisson.mybatis.RedissonCache">
+        <!-- 存活时间，即缓存对的有效时间 -->
+        <property name="timeToLive" value="10000" />
+        <!-- 最大空闲时间，超过这个时间没有被使用的缓存将会被清除 -->
+        <property name="maxIdleTime" value="5000" />
+        <!-- 缓存对的最大大小 -->
+        <property name="maxSize" value="100000" />
+
+        <!-- Redisson 配置文件 -->
+        <property name="redissonConfig" value="redisson.yaml" />
     </cache>
 
     <insert id="insert" parameterType="com.example.demo.entity.RateInfo" >

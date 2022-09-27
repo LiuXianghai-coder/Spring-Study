@@ -1,11 +1,13 @@
 package com.example.demo.entity;
 
+import java.io.Serializable;
 import java.time.OffsetDateTime;
 
 /**
  * @author lxh
  */
-public abstract class AbstractEntity {
+public abstract class AbstractEntity implements Serializable {
+
     private String createdUser;
 
     private OffsetDateTime createdTime;

@@ -44,35 +44,24 @@ public class MyBatisTool {
         return Holder.getSqlSessionFactory().openSession();
     }
 
+    public static SqlSession openSqlSession(boolean autoCommit) {
+        return Holder.getSqlSessionFactory().openSession(autoCommit);
+    }
+
     public static void main(String[] args) {
         try (
-                // 打开两个 SqlSession，使得具备两个 Session 上下文
                 SqlSession sqlSession1 = openSqlSession();
                 SqlSession sqlSession2 = openSqlSession()
         ) {
             RateInfoMapper mapper1 = sqlSession1.getMapper(RateInfoMapper.class);
             RateInfoMapper mapper2 = sqlSession2.getMapper(RateInfoMapper.class);
 
-            // 两个 Session 分别执行第一次查询
-            RateInfo info1 = mapper1.selectById(1L);
-            RateInfo info2 = mapper2.selectById(1L);
-            System.out.println("info1: " + info1);
-            System.out.println("info2: " + info2);
-
-            // session1 执行数据的更新操作
-            RateInfo data = new RateInfo();
-            data.setId(1L);
-            data.setRateName("LPR");
-            data.setRateVal(new BigDecimal("3.141"));
-            mapper1.update(data);
+            System.out.println("session1 第一次查询：" + mapper1.selectById(1L));
             sqlSession1.commit();
-            System.out.println("sqlSession1 完成数据的更新");
-
-            // 更新完成之后两个 Session 再分别执行一次数据的查询
-            info1 = mapper1.selectById(1L);
-            info2 = mapper2.selectById(1L);
-            System.out.println("info1: " + info1);
-            System.out.println("info2: " + info2);
+            System.out.println("session1 提交事务");
+            System.out.println("session2 第一次查询：" + mapper2.selectById(1L));
+            System.out.println("session1 第二次查询：" + mapper1.selectById(1L));
+            System.out.println("session2 第二次查询：" + mapper2.selectById(1L));
         }
     }
 }
