@@ -1,6 +1,8 @@
 package com.example.demo.entity;
 
+import com.example.demo.json.JacksonDatetimeDeserializer;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -10,7 +12,6 @@ import java.time.LocalDateTime;
 
 /**
  * @author xhliu
- * @create 2022-06-16-11:07
  **/
 public class Order {
     private int id;
@@ -19,7 +20,8 @@ public class Order {
     @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
     private LocalDate orderCreatedDate;
 
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
+    @JsonDeserialize(using = JacksonDatetimeDeserializer.class)
     private LocalDateTime orderCreatedDateTime;
 
     public int getId() {
