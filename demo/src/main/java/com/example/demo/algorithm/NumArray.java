@@ -1,5 +1,11 @@
 package com.example.demo.algorithm;
 
+import com.example.demo.common.BackupInfo;
+
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.List;
+
 /**
  * @author lxh
  */
@@ -58,10 +64,15 @@ public class NumArray {
 
     public static final Object lock = new Object();
 
-    public static void main(String[] args) {
-        synchronized (lock) {
-            System.out.println("hello world");
-            throw new IllegalArgumentException();
-        }
+    public List<?> update() {
+        return null;
+    }
+
+    public static void main(String[] args) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+        NumArray array = new NumArray(new int[]{1, 2, 3, 4});
+        Method method = NumArray.class.getDeclaredMethod("update");
+        Object res = method.invoke(array);
+        System.out.println(res == null);
+        System.out.println(null instanceof BackupInfo);
     }
 }

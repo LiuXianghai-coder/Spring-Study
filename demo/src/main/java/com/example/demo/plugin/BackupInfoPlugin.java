@@ -25,7 +25,7 @@ public class BackupInfoPlugin implements Interceptor {
         if (obj instanceof BackupInfo) {
             BackupInfo info = (BackupInfo) obj;
             String bakId = info.getBackupId();
-            if (bakId == null) info.setBackupId(info.getId());
+            if (bakId == null) info.setBackupId(info.getRecordId());
         }
         return method.invoke(target, args);
     }

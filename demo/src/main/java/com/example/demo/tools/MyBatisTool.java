@@ -50,18 +50,10 @@ public class MyBatisTool {
 
     public static void main(String[] args) {
         try (
-                SqlSession sqlSession1 = openSqlSession();
-                SqlSession sqlSession2 = openSqlSession()
+                SqlSession sqlSession = openSqlSession()
         ) {
-            RateInfoMapper mapper1 = sqlSession1.getMapper(RateInfoMapper.class);
-            RateInfoMapper mapper2 = sqlSession2.getMapper(RateInfoMapper.class);
-
-            System.out.println("session1 第一次查询：" + mapper1.selectById(1L));
-            sqlSession1.commit();
-            System.out.println("session1 提交事务");
-            System.out.println("session2 第一次查询：" + mapper2.selectById(1L));
-            System.out.println("session1 第二次查询：" + mapper1.selectById(1L));
-            System.out.println("session2 第二次查询：" + mapper2.selectById(1L));
+            RateInfoMapper mapper = sqlSession.getMapper(RateInfoMapper.class);
+            System.out.println(mapper.selectById(1L));
         }
     }
 }

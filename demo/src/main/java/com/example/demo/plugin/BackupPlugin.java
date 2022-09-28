@@ -30,7 +30,7 @@ public class BackupPlugin implements Interceptor {
         RateInfo param = findParam(args);
         if (param == null) return invocation.proceed();
         if (param.getBackUpId() == null) {
-            param.setBackUpId(String.valueOf(param.getId()));
+            param.setBackUpId(String.valueOf(param.getRecordId()));
         }
         return method.invoke(target, args);
     }
