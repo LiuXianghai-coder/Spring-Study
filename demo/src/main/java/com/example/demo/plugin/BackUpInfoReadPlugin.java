@@ -33,8 +33,8 @@ public class BackUpInfoReadPlugin implements Interceptor {
         for (Object obj : list) {
             if (!(obj instanceof BackupInfo)) continue;
             BackupInfo info = (BackupInfo) obj;
-            if (info.getBackupId() != null) continue;
-            info.setBackupId(info.getRecordId());
+            if (info.getBackUpId() != null) continue;
+            info.setBackUpId(info.getRecordId());
         }
         return list;
     }

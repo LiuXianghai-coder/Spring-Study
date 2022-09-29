@@ -30,12 +30,12 @@ public class ProdInfo extends AbstractEntity implements BackupInfo {
     }
 
     @Override
-    public String getBackupId() {
+    public String getBackUpId() {
         return backUpId;
     }
 
     @Override
-    public void setBackupId(String backupId) {
+    public void setBackUpId(String backupId) {
         this.backUpId = backupId;
     }
 
@@ -53,14 +53,6 @@ public class ProdInfo extends AbstractEntity implements BackupInfo {
 
     public void setProdName(String prodName) {
         this.prodName = prodName;
-    }
-
-    public String getBackUpId() {
-        return backUpId;
-    }
-
-    public void setBackUpId(String backUpId) {
-        this.backUpId = backUpId;
     }
 
     @Override

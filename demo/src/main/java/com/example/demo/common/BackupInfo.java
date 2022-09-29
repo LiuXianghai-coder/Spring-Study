@@ -6,7 +6,7 @@ package com.example.demo.common;
 public interface BackupInfo {
     String getRecordId();
 
-    String getBackupId();
+    String getBackUpId();
 
-    void setBackupId(String backupId);
+    void setBackUpId(String backupId);
 }

@@ -20,14 +20,6 @@ public class RateInfo extends AbstractEntity implements BackupInfo, Serializable
     private BigDecimal rateVal;
     private String backUpId;
 
-    public String getBackUpId() {
-        return backUpId;
-    }
-
-    public void setBackUpId(String backUpId) {
-        this.backUpId = backUpId;
-    }
-
     public long getId() {
         return id;
     }
@@ -38,12 +30,12 @@ public class RateInfo extends AbstractEntity implements BackupInfo, Serializable
     }
 
     @Override
-    public String getBackupId() {
+    public String getBackUpId() {
         return backUpId;
     }
 
     @Override
-    public void setBackupId(String backupId) {
+    public void setBackUpId(String backupId) {
         this.backUpId = backupId;
     }
 
