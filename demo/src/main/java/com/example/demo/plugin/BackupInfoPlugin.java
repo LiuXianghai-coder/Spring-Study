@@ -3,12 +3,10 @@ package com.example.demo.plugin;
 import com.example.demo.common.BackupInfo;
 import org.apache.ibatis.executor.Executor;
 import org.apache.ibatis.mapping.MappedStatement;
-import org.apache.ibatis.plugin.Interceptor;
-import org.apache.ibatis.plugin.Intercepts;
-import org.apache.ibatis.plugin.Invocation;
-import org.apache.ibatis.plugin.Signature;
+import org.apache.ibatis.plugin.*;
 
 import java.lang.reflect.Method;
+import java.util.Properties;
 
 /**
  * @author lxh
@@ -27,8 +25,18 @@ public class BackupInfoPlugin implements Interceptor {
         if (obj instanceof BackupInfo) {
             BackupInfo info = (BackupInfo) obj;
             String bakId = info.getBackupId();
-            if (bakId == null) info.setBackupId(info.getId());
+            if (bakId == null) info.setBackupId(info.getRecordId());
         }
         return method.invoke(target, args);
+    }
+
+    @Override
+    public Object plugin(Object target) {
+        return Plugin.wrap(target, this);
+    }
+
+    @Override
+    public void setProperties(Properties properties) {
+
     }
 }

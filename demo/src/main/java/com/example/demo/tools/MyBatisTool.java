@@ -45,18 +45,16 @@ public class MyBatisTool {
         return Holder.getSqlSessionFactory().openSession();
     }
 
+    public static SqlSession openSqlSession(boolean autoCommit) {
+        return Holder.getSqlSessionFactory().openSession(autoCommit);
+    }
+
     public static void main(String[] args) {
         try (
                 SqlSession sqlSession = openSqlSession()
         ) {
             RateInfoMapper mapper = sqlSession.getMapper(RateInfoMapper.class);
-            RateInfo info = new RateInfo();
-            info.setId(2L);
-            info.setRateName("固定利率");
-            info.setRateVal(new BigDecimal("3.48"));
-            info.initFiled();
-            mapper.update(info);
-            sqlSession.commit();
+            System.out.println(mapper.selectById(1L));
         }
     }
 }

@@ -8,3 +8,10 @@ spring:
     url: jdbc:mysql://39.99.129.90:3306/lxh
     username: root
     password: 17358870357yi
+
+mybatis:
+  configuration:
+    cache-enabled: true
+    local-cache-scope: statement
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  mapperLocations: mybatis/mapper/*

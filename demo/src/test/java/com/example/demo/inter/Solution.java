@@ -13,6 +13,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
+import java.util.Locale;
 
 /**
  * @author xhliu
@@ -210,21 +211,42 @@ public class Solution {
         }
     }
 
+    private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+    private static class LocalDateAdapter
+            implements JsonSerializer<LocalDate>, JsonDeserializer<LocalDate> {
+        @Override
+        public LocalDate deserialize(JsonElement json, Type type,
+                                     JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {
+            return LocalDate.parse(json.getAsString(),
+                    DateTimeFormatter.ofPattern("yyyy-MM-dd").withLocale(Locale.CHINA));
+        }
+
+        @Override
+        public JsonElement serialize(LocalDate localDate, Type type,
+                                     JsonSerializationContext jsonSerializationContext) {
+            return new JsonPrimitive(formatter.format(localDate));
+        }
+    }
+
     public static void main(String[] args) throws JsonProcessingException {
         ObjectMapper mapper = new ObjectMapper();
         mapper.registerModule(new JavaTimeModule());
 
         Gson gson = new GsonBuilder()
+                .registerTypeAdapter(LocalDate.class, new LocalDateAdapter())
                 .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter())
                 .create();
 
         Order order = new Order();
         order.setId(1);
+        order.setOrderDesc("order sample");
+        order.setOrderName("order-1");
         order.setOrderCreatedDate(LocalDate.now());
         order.setOrderCreatedDateTime(LocalDateTime.now());
 
-        String json = mapper.writeValueAsString(order);
+        String json = gson.toJson(order);
         System.out.println(json);
-        System.out.println(mapper.readValue(json, Order.class));
+        System.out.println(gson.fromJson(json, Order.class));
     }
 }

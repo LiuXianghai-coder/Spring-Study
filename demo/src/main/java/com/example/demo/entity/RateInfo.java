@@ -1,5 +1,6 @@
 package com.example.demo.entity;
 
+import com.example.demo.common.BackupInfo;
 import com.google.common.base.Objects;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,7 +11,7 @@ import java.math.BigDecimal;
 /**
  * @author xhliu
  **/
-public class RateInfo extends AbstractEntity implements Serializable {
+public class RateInfo extends AbstractEntity implements BackupInfo, Serializable {
 
     private final static Logger log = LoggerFactory.getLogger(RateInfo.class);
 
@@ -24,12 +25,26 @@ public class RateInfo extends AbstractEntity implements Serializable {
     }
 
     public void setBackUpId(String backUpId) {
-        log.info("set backUp id {}", backUpId);
         this.backUpId = backUpId;
     }
 
     public long getId() {
         return id;
+    }
+
+    @Override
+    public String getRecordId() {
+        return String.valueOf(id);
+    }
+
+    @Override
+    public String getBackupId() {
+        return backUpId;
+    }
+
+    @Override
+    public void setBackupId(String backupId) {
+        this.backUpId = backupId;
     }
 
     public void setId(long id) {
@@ -41,7 +56,6 @@ public class RateInfo extends AbstractEntity implements Serializable {
     }
 
     public void setRateName(String rateName) {
-        log.info("set rateName {}", rateName);
         this.rateName = rateName;
     }
 
@@ -74,6 +88,7 @@ public class RateInfo extends AbstractEntity implements Serializable {
                 ", rateName='" + rateName + '\'' +
                 ", rateVal='" + rateVal + '\'' +
                 ", backUpId='" + backUpId + '\'' +
+                super.toString() +
                 '}';
     }
 }

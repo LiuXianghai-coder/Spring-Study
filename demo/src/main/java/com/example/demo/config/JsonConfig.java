@@ -13,7 +13,6 @@ import java.util.Locale;
 
 /**
  * @author xhliu
- * @create 2022-06-16-10:58
  **/
 @Configuration
 public class JsonConfig {

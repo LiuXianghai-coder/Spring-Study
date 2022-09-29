@@ -23,6 +23,7 @@
     <plugins>
         <plugin interceptor="com.example.demo.plugin.BackupPlugin" />
         <plugin interceptor="com.example.demo.plugin.ParamFieldPlugin" />
+        <plugin interceptor="com.example.demo.plugin.BackUpInfoReadPlugin" />
     </plugins>
 
     <!-- 不同开发环境对应的配置，默认为 dev 的配置 -->

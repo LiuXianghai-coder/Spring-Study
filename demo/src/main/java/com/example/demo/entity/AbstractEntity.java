@@ -1,11 +1,13 @@
 package com.example.demo.entity;
 
+import java.io.Serializable;
 import java.time.OffsetDateTime;
 
 /**
  * @author lxh
  */
-public abstract class AbstractEntity {
+public abstract class AbstractEntity implements Serializable {
+
     private String createdUser;
 
     private OffsetDateTime createdTime;
@@ -19,6 +21,11 @@ public abstract class AbstractEntity {
         setUpdatedTime(OffsetDateTime.now());
         setUpdatedUser("xhliu");
         setCreatedUser("xhliu");
+    }
+
+    public void initUpdate() {
+        setUpdatedTime(OffsetDateTime.now());
+        setUpdatedUser("xhliu");
     }
 
     public String getCreatedUser() {
@@ -51,5 +58,13 @@ public abstract class AbstractEntity {
 
     public void setUpdatedTime(OffsetDateTime updatedTime) {
         this.updatedTime = updatedTime;
+    }
+
+    @Override
+    public String toString() {
+        return  ", createdUser='" + createdUser + '\'' +
+                ", createdTime=" + createdTime +
+                ", updatedUser='" + updatedUser + '\'' +
+                ", updatedTime=" + updatedTime;
     }
 }
