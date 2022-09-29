@@ -1,7 +1,6 @@
 package com.example.demo.plugin;
 
 import com.example.demo.common.BackupInfo;
-import com.google.common.collect.Lists;
 import org.apache.ibatis.executor.Executor;
 import org.apache.ibatis.executor.parameter.ParameterHandler;
 import org.apache.ibatis.executor.resultset.ResultSetHandler;
@@ -22,12 +21,10 @@ import org.slf4j.LoggerFactory;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.sql.Connection;
-import java.sql.Statement;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Properties;
 
-import static org.apache.ibatis.mapping.SqlCommandType.*;
+import static org.apache.ibatis.mapping.SqlCommandType.INSERT;
+import static org.apache.ibatis.mapping.SqlCommandType.UPDATE;
 
 /**
  * @author lxh
