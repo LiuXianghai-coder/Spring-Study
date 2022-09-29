@@ -16,7 +16,7 @@
         id, rate_name, rate_val, backup_id, created_time, created_user, updated_user, updated_time
     </sql>
 
-    <select id="selectById" parameterType="long" resultType="com.example.demo.entity.RateInfo">
+    <select id="selectById" parameterType="long" resultMap="BaseResult" resultType="com.example.demo.entity.RateInfo">
         SELECT <include refid="allCols" />
         FROM rate_info
         WHERE id=#{id}

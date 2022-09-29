@@ -1,5 +1,6 @@
 package com.example.demo.entity;
 
+import javax.persistence.Column;
 import java.io.Serializable;
 import java.time.OffsetDateTime;
 
@@ -8,12 +9,16 @@ import java.time.OffsetDateTime;
  */
 public abstract class AbstractEntity implements Serializable {
 
+    @Column(name = "created_user")
     private String createdUser;
 
+    @Column(name = "created_time")
     private OffsetDateTime createdTime;
 
+    @Column(name = "updated_user")
     private String updatedUser;
 
+    @Column(name = "updated_time")
     private OffsetDateTime updatedTime;
 
     public void initFiled() {

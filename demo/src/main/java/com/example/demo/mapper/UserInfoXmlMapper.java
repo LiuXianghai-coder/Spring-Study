@@ -6,7 +6,7 @@ import org.apache.ibatis.annotations.Param;
 /**
  * @author lxh
  */
-public interface UserInfoMapper {
+public interface UserInfoXmlMapper {
     UserInfo getUserById(@Param("id") long id);
 
     int insert(UserInfo userInfo);

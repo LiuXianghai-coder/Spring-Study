@@ -3,7 +3,7 @@
         PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <!-- namespace 对应相关的 DAO 接口，Mybatis 会根据这个接口通过代理的方式生成对应的数据访问对象 -->
-<mapper namespace="com.example.demo.mapper.UserInfoMapper">
+<mapper namespace="com.example.demo.mapper.UserInfoXmlMapper">
     <sql id="allColumn">
         id, user_name, user_age, created_time, created_user, updated_user, updated_time
     </sql>

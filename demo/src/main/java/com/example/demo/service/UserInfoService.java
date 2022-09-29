@@ -1,8 +1,6 @@
 package com.example.demo.service;
 
-import com.example.demo.proxy.UserInfoServiceProxy;
 import com.example.demo.proxy.UserServiceProxy;
-import net.sf.cglib.proxy.Enhancer;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

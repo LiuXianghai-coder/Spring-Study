@@ -1,33 +1,33 @@
 package com.example.demo.plugin;
 
 import com.example.demo.common.BackupInfo;
-import org.apache.ibatis.executor.Executor;
-import org.apache.ibatis.mapping.MappedStatement;
+import org.apache.ibatis.executor.statement.StatementHandler;
+import org.apache.ibatis.mapping.BoundSql;
 import org.apache.ibatis.plugin.*;
 
 import java.lang.reflect.Method;
+import java.sql.Statement;
 import java.util.Properties;
 
 /**
  * @author lxh
  */
-@Intercepts(value = @Signature(type = Executor.class, method = "update",
-        args = {MappedStatement.class, Object.class}))
+@Intercepts(value = @Signature(type = StatementHandler.class, method = "update",
+        args = {Statement.class}))
 public class BackupInfoPlugin implements Interceptor {
 
     @Override
     public Object intercept(Invocation invocation) throws Throwable {
-        Method method = invocation.getMethod();
-        Object[] args = invocation.getArgs();
-        if (args.length < 2) return invocation.proceed();
-        Object obj = args[1];
         Object target = invocation.getTarget();
-        if (obj instanceof BackupInfo) {
-            BackupInfo info = (BackupInfo) obj;
-            String bakId = info.getBackupId();
-            if (bakId == null) info.setBackupId(info.getRecordId());
-        }
-        return method.invoke(target, args);
+        Method method = target.getClass().getDeclaredMethod("getBoundSql");
+        Object param = method.invoke(target);
+        if (!(param instanceof BoundSql)) return invocation.proceed();
+        BoundSql bs = (BoundSql) param;
+        Object obj = bs.getParameterObject();
+        if (!(obj instanceof BackupInfo)) return invocation.proceed();
+        BackupInfo info = (BackupInfo) obj;
+        if (info.getBackupId() == null) info.setBackupId(info.getRecordId());
+        return invocation.proceed();
     }
 
     @Override
