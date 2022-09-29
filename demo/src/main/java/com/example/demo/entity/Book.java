@@ -63,6 +63,30 @@ public class Book {
         }
     }
 
+    public long getIsbn() {
+        return isbn;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public double getPrice() {
+        return price;
+    }
+
+    public String getAuthor() {
+        return author;
+    }
+
+    public String getPublisher() {
+        return publisher;
+    }
+
+    public String getDes() {
+        return des;
+    }
+
     public static void main(String[] args) {
         Book book = new Builder(9780201563177L, "APUE")
                 .author("Stevens").publisher("Person")

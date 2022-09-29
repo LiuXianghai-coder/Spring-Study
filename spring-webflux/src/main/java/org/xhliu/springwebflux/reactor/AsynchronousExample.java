@@ -10,6 +10,7 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Function;
 
@@ -80,6 +81,35 @@ public class AsynchronousExample {
         }
     }
 
+    private static void executor() {
+        File[] readFiles = new File[]{
+                new File(basPath + "/data_1.txt"),
+                new File(basPath + "/data_2.txt"),
+                new File(basPath + "/data_3.txt"),
+                new File(basPath + "/data_4.txt"),
+                new File(basPath + "/data_5.txt"),
+                new File(basPath + "/data_6.txt"),
+        };
+
+        int sz = Runtime.getRuntime().availableProcessors();;
+        ThreadPoolExecutor executor = new ThreadPoolExecutor(sz, sz,
+                300, TimeUnit.SECONDS, new LinkedBlockingDeque<>());
+
+        List<Callable<Element>> tasks = new ArrayList<>();
+        for (File file : readFiles) {
+            Element element = new ReadFunction(file.getName()).apply(file);
+            tasks.add(() -> new SortFunction().apply(element));
+        }
+        long start = System.currentTimeMillis();
+        try {
+            executor.invokeAll(tasks);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        long end = System.currentTimeMillis();
+        System.out.println("Thread Poll Take Time " + (end - start) + " ms");
+    }
+
     public static void main(String[] args) throws InterruptedException {
         File[] readFiles = new File[]{
                 new File(basPath + "/data_1.txt"),
@@ -123,9 +153,11 @@ public class AsynchronousExample {
                     @Override
                     public void onComplete() {
                         end.set(System.currentTimeMillis());
-                        System.out.println("Take Time: " + (end.get() - start.get()) + " ms");
-                        System.exit(0);
+                        System.out.println("Flux Take Time: " + (end.get() - start.get()) + " ms");
+//                        System.exit(0);
                     }
                 });
+//        System.out.println("before after");
+//        executor();
     }
 }

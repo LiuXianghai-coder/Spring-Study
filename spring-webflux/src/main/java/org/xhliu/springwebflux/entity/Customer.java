@@ -1,9 +1,7 @@
 package org.xhliu.springwebflux.entity;
 
-import org.springframework.data.annotation.Id;
 
 public class Customer {
-    @Id
     private Long id;
 
     private final String firstName;
