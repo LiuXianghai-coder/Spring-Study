@@ -91,7 +91,7 @@ public class AsynchronousExample {
                 new File(basPath + "/data_6.txt"),
         };
 
-        int sz = Runtime.getRuntime().availableProcessors();;
+        int sz = Runtime.getRuntime().availableProcessors();
         ThreadPoolExecutor executor = new ThreadPoolExecutor(sz, sz,
                 300, TimeUnit.SECONDS, new LinkedBlockingDeque<>());
 
@@ -110,7 +110,7 @@ public class AsynchronousExample {
         System.out.println("Thread Poll Take Time " + (end - start) + " ms");
     }
 
-    public static void main(String[] args) throws InterruptedException {
+    public static void main(String[] args) {
         File[] readFiles = new File[]{
                 new File(basPath + "/data_1.txt"),
                 new File(basPath + "/data_2.txt"),
@@ -154,10 +154,8 @@ public class AsynchronousExample {
                     public void onComplete() {
                         end.set(System.currentTimeMillis());
                         System.out.println("Flux Take Time: " + (end.get() - start.get()) + " ms");
-//                        System.exit(0);
+                        System.exit(0);
                     }
                 });
-//        System.out.println("before after");
-//        executor();
     }
 }
