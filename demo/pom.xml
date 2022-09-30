@@ -84,12 +84,6 @@
             <artifactId>redisson-mybatis</artifactId>
             <version>3.17.6</version>
         </dependency>
-
-        <dependency>
-            <groupId>tk.mybatis</groupId>
-            <artifactId>mapper-spring-boot-starter</artifactId>
-            <version>4.2.1</version>
-        </dependency>
         <!-- MyBatis 相关的依赖结束 -->
 
         <dependency>

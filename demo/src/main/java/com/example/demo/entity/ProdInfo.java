@@ -1,27 +1,15 @@
 package com.example.demo.entity;
 
 import com.example.demo.common.BackupInfo;
-import tk.mybatis.mapper.annotation.KeySql;
-import tk.mybatis.mapper.code.ORDER;
-
-import javax.persistence.Column;
-import javax.persistence.Id;
-import javax.persistence.Table;
 
 /**
  * @author xhliu
  **/
-@Table(name = "prod_info")
 public class ProdInfo extends AbstractEntity implements BackupInfo {
-    @Id
-    @Column(name = "id")
-    @KeySql(sql = "SELECT replace(uuid(), '-', '')", order = ORDER.BEFORE)
     private String id;
 
-    @Column(name = "prod_name")
     private String prodName;
 
-    @Column(name = "backup_id")
     private String backUpId;
 
     @Override
