@@ -1,6 +1,5 @@
 package com.example.demo.tools;
 
-import com.example.demo.entity.RateInfo;
 import com.example.demo.mapper.RateInfoMapper;
 import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.session.SqlSession;
@@ -9,7 +8,6 @@ import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.math.BigDecimal;
 
 /**
  * @author lxh

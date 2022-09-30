@@ -33,8 +33,8 @@
 
     <resultMap id="BaseResult" type="com.example.demo.entity.UserInfo">
         <id column="id" property="id"/>
-        <result column="name" property="name"/>
-        <result column="age" property="age"/>
+        <result column="user_name" property="name"/>
+        <result column="user_age" property="age"/>
         <result column="created_time" property="createdTime"/>
         <result column="created_user" property="createdUser"/>
         <result column="updated_time" property="updatedTime"/>
