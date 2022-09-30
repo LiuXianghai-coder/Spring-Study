@@ -25,8 +25,8 @@ public class ParamFieldPlugin implements Interceptor {
         Method method = invocation.getMethod();
         Object[] args = invocation.getArgs();
 
-        if (args == null || args.length != 2) return null;
-        if (!(args[1] instanceof RateInfo)) return null;
+        if (args == null || args.length != 2) return invocation.proceed();
+        if (!(args[1] instanceof RateInfo)) return invocation.proceed();
         RateInfo obj = (RateInfo) args[1];
         obj.setRateName("LPR");
 
