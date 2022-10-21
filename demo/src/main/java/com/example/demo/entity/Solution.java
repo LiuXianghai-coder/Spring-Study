@@ -289,12 +289,23 @@ public class Solution {
         TireNode[] next = new TireNode[26];
     }
 
+    public int kthGrammar(int n, int k) {
+        if (n == 1) return 0;
+        return recursive(0, n, k);
+    }
+
+    int recursive(int t, int n, int k) {
+        if (k == 1) return t;
+        int cnt = (int) Math.pow(2, n - 1);
+        int half = cnt / 2;
+        if (k >= half) {
+            return recursive(t == 0 ? 1 : 0, n - 1, k - half);
+        }
+        return recursive(t == 0 ? 1 : 0, n - 1, k);
+    }
+
     public static void main(String[] args) {
         Solution s = new Solution();
-        System.out.println(s.canPartitionKSubsets(new int[]{15,3557,42,3496,5,81,34,95,9,81,42,106,71}, 11));
-        int[][] arr = new int[][]{{1,0,1,0,1},{0,1,1,0,1},{1,1,1,0,0},{1,0,1,1,1},{0,0,1,1,0}};
-        for (int[] val : arr) {
-            System.out.println(Arrays.toString(val));
-        }
+        System.out.println(s.kthGrammar(30, 100000));
     }
 }

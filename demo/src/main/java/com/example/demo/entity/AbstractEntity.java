@@ -1,5 +1,7 @@
 package com.example.demo.entity;
 
+import com.google.common.base.Objects;
+
 import java.io.Serializable;
 import java.time.OffsetDateTime;
 
@@ -58,6 +60,22 @@ public abstract class AbstractEntity implements Serializable {
 
     public void setUpdatedTime(OffsetDateTime updatedTime) {
         this.updatedTime = updatedTime;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        AbstractEntity that = (AbstractEntity) o;
+        return Objects.equal(createdUser, that.createdUser)
+                && Objects.equal(createdTime, that.createdTime)
+                && Objects.equal(updatedUser, that.updatedUser)
+                && Objects.equal(updatedTime, that.updatedTime);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(createdUser, createdTime, updatedUser, updatedTime);
     }
 
     @Override

@@ -15,7 +15,5 @@ import org.springframework.scheduling.annotation.EnableAsync;
 public class DemoApplication {
     public static void main(String[] args){
         ConfigurableApplicationContext context = SpringApplication.run(DemoApplication.class, args);
-        RateInfoMapper mapper = context.getBean(RateInfoMapper.class);
-        System.out.println(mapper.selectById(1L));
     }
 }
