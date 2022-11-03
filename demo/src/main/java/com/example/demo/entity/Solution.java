@@ -289,6 +289,94 @@ public class Solution {
         TireNode[] next = new TireNode[26];
     }
 
+    public int kthGrammar(int n, int k) {
+        if (n == 1) return 0;
+        return recursive(0, n, k);
+    }
+
+    int recursive(int t, int n, int k) {
+        if (k == 1) return t;
+        int cnt = (int) Math.pow(2, n - 1);
+        int half = cnt / 2;
+        if (k >= half) {
+            return recursive(t == 0 ? 1 : 0, n - 1, k - half);
+        }
+        return recursive(t == 0 ? 1 : 0, n - 1, k);
+    }
+
+    final static int[][] dirs = new int[][]{{0, 1}, {0, -1}, {1, 0}, {-1, 0}};
+    final static int RED = 2;
+    final static int BLUE = 3;
+
+    int[][] grid;
+    int m, n;
+
+    public int shortestBridge(int[][] _grid) {
+        grid = _grid;
+        this.m = grid.length;
+        this.n = grid[0].length;
+
+        boolean flag = false;
+        for (int i = 0; i < m; ++i) {
+            for (int j = 0; j < n; ++j) {
+                if (grid[i][j] != 1) continue;
+                if (!flag) {
+                    mark(i, j, RED);
+                    flag = true;
+                }
+                else mark(i, j, BLUE);
+            }
+        }
+
+        printGrid(grid);
+
+        int ans = Integer.MAX_VALUE;
+        boolean[][] visited = new boolean[m][n];
+        for (int i = 0; i < m; ++i) {
+            for (int j = 0; j < n; ++j) {
+                if (grid[i][j] != RED) continue;
+                int tmp = dfs(i, j, RED, 0, visited);
+                if (tmp < ans) ans = tmp;
+            }
+        }
+        return ans;
+    }
+
+    void mark(int x, int y, int color) {
+        grid[x][y] = color;
+        for (int[] dir : dirs) {
+            int nx = x + dir[0], ny = y + dir[1];
+            if (nx < 0 || nx >= m || ny < 0 || ny >= n) continue;
+            if (grid[nx][ny] != 1) continue;
+            mark(nx, ny, color);
+        }
+    }
+
+    int dfs(int x, int y, int color, int dist, boolean[][] visited) {
+        if (grid[x][y] != 0 && grid[x][y] != color) return dist - 1;
+        int ans = Integer.MAX_VALUE;
+        visited[x][y] = true;
+        for (int[] dir : dirs) {
+            int nx = x + dir[0], ny = y + dir[1];
+            if (nx < 0 || nx >= m || ny < 0 || ny >= n) continue;
+            if (grid[nx][ny] == color || visited[nx][ny]) continue;
+            int distance = grid[nx][ny] == color ? dist : dist + 1;
+            int tmp = dfs(nx, ny, color, distance, visited);
+            if (tmp < ans) ans = tmp;
+        }
+        visited[x][y] = false;
+        return ans;
+    }
+
+    static void printGrid(int[][] grid) {
+        for (int i = 0; i <  grid.length; ++i) {
+            for (int j = 0; j < grid[i].length; ++j) {
+                System.out.print(grid[i][j] + "\t");
+            }
+            System.out.println();
+        }
+    }
+
     public static void main(String[] args) {
         Thread[] tasks = new Thread[8];
         NoFinalFieldEntity obj = null;

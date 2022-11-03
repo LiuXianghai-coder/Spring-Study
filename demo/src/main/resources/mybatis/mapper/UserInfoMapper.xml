@@ -31,6 +31,10 @@
         SELECT <include refid="allColumn" /> FROM user_info WHERE user_age=#{age}
     </select>
 
+    <select id="selectViewsById" resultMap="FriendResult" parameterType="long">
+        SELECT * FROM user_info WHERE id=#{id}
+    </select>
+
     <resultMap id="BaseResult" type="com.example.demo.entity.UserInfo">
         <id column="id" property="id"/>
         <result column="user_name" property="name"/>
@@ -40,4 +44,12 @@
         <result column="updated_time" property="updatedTime"/>
         <result column="updated_user" property="updatedUser"/>
     </resultMap>
+
+    <resultMap id="FriendResult" type="com.example.demo.entity.UserInfoView" extends="BaseResult">
+        <collection property="friends" column="id" ofType="string" select="selectFriend" />
+    </resultMap>
+
+    <select id="selectFriend" resultType="string">
+        SELECT fri_id FROM friend_info WHERE user_id=#{id}
+    </select>
 </mapper>

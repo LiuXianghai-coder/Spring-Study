@@ -1,20 +1,19 @@
 package com.example.demo;
 
-import com.example.demo.entity.Cat;
+import com.example.demo.entity.AbstractEntity;
+import com.example.demo.entity.UserInfo;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
-import io.netty.channel.nio.NioEventLoop;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
-import io.netty.channel.socket.nio.NioSocketChannel;
 
+import java.lang.reflect.Method;
 import java.math.BigInteger;
 import java.net.InetSocketAddress;
 import java.util.*;
-import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * @author xhliu2
@@ -254,7 +253,12 @@ public class Application {
         return ans;
     }
 
-    public static void main(String[] args) {
-        System.out.println(maxPoints(new int[][]{{1, 1}, {2, 2}, {3, 3}}));
+    public static void main(String[] args) throws NoSuchMethodException {
+        Class<?> clazz = UserInfo.class;
+        Method em = clazz.getMethod("equals", Object.class);
+        Method aem = AbstractEntity.class.getDeclaredMethod("equals", Object.class);
+        Method oem = Object.class.getDeclaredMethod("equals", Object.class);
+        System.out.println(em.equals(oem));
+        System.out.println(em.equals(aem));
     }
 }
