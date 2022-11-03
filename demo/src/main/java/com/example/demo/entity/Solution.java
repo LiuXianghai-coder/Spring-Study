@@ -290,11 +290,11 @@ public class Solution {
     }
 
     public static void main(String[] args) {
-        Solution s = new Solution();
-        System.out.println(s.canPartitionKSubsets(new int[]{15,3557,42,3496,5,81,34,95,9,81,42,106,71}, 11));
-        int[][] arr = new int[][]{{1,0,1,0,1},{0,1,1,0,1},{1,1,1,0,0},{1,0,1,1,1},{0,0,1,1,0}};
-        for (int[] val : arr) {
-            System.out.println(Arrays.toString(val));
+        Thread[] tasks = new Thread[8];
+        NoFinalFieldEntity obj = null;
+        for (int i = 0; i < tasks.length; i++) {
+            tasks[i] = new Thread(() -> System.out.println(obj.userInfo));
         }
+        for (Thread task : tasks) task.start();
     }
 }
