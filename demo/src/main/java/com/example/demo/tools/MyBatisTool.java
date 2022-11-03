@@ -1,6 +1,7 @@
 package com.example.demo.tools;
 
 import com.example.demo.mapper.RateInfoMapper;
+import com.example.demo.mapper.UserInfoMapper;
 import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
@@ -51,8 +52,8 @@ public class MyBatisTool {
         try (
                 SqlSession sqlSession = openSqlSession()
         ) {
-            RateInfoMapper mapper = sqlSession.getMapper(RateInfoMapper.class);
-            System.out.println(mapper.selectById(1L));
+            UserInfoMapper mapper = sqlSession.getMapper(UserInfoMapper.class);
+            System.out.println(mapper.selectViewsById(1L));
         }
     }
 }
