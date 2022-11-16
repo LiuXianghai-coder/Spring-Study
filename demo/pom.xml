@@ -20,6 +20,7 @@
     <properties>
         <java.version>8</java.version>
         <aspectj.version>1.9.9.1</aspectj.version>
+        <poi.version>5.2.3</poi.version>
     </properties>
 
     <dependencies>
@@ -82,7 +83,7 @@
         <dependency>
             <groupId>org.redisson</groupId>
             <artifactId>redisson-mybatis</artifactId>
-            <version>3.17.6</version>
+            <version>3.17.7</version>
         </dependency>
         <!-- MyBatis 相关的依赖结束 -->
 
@@ -105,6 +106,24 @@
             <version>1.14.0</version>
             <type>maven-plugin</type>
         </dependency>
+
+        <!-- excel 文件处理的依赖 -->
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>easyexcel</artifactId>
+            <version>3.1.2</version>
+        </dependency>
+        <!--        <dependency>-->
+        <!--            <groupId>org.apache.poi</groupId>-->
+        <!--            <artifactId>poi</artifactId>-->
+        <!--            <version>${poi.version}</version>-->
+        <!--        </dependency>-->
+        <!--        <dependency>-->
+        <!--            <groupId>org.apache.poi</groupId>-->
+        <!--            <artifactId>poi-ooxml</artifactId>-->
+        <!--            <version>${poi.version}</version>-->
+        <!--        </dependency>-->
+        <!-- excel 文件处理的依赖结束 -->
     </dependencies>
 
     <build>
