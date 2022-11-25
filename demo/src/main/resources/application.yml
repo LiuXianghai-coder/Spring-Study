@@ -14,4 +14,8 @@ mybatis:
     cache-enabled: true
     local-cache-scope: statement
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+    #    reflectorFactory: com.example.demo.reflect.TaskInfoReflectorFactory
+    reflectorFactory: taskInfoReflectorFactory
   mapperLocations: mybatis/mapper/*
+  configuration-properties:
+    reflector-factory: com.example.demo.reflect.TaskInfoReflectorFactory

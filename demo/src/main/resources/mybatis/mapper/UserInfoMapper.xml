@@ -24,15 +24,28 @@
     </insert>
 
     <select id="selectByName" resultMap="BaseResult" parameterType="string">
-        SELECT <include refid="allColumn" /> FROM user_info WHERE user_name=#{name}
+        SELECT
+        <include refid="allColumn"/>
+        FROM user_info WHERE user_name=#{name}
     </select>
 
     <select id="selectByAge" resultMap="BaseResult" parameterType="integer">
-        SELECT <include refid="allColumn" /> FROM user_info WHERE user_age=#{age}
+        SELECT
+        <include refid="allColumn"/>
+        FROM user_info WHERE user_age=#{age}
     </select>
 
     <select id="selectViewsById" resultMap="FriendResult" parameterType="long">
-        SELECT * FROM user_info WHERE id=#{id}
+        SELECT *
+        FROM user_info
+        WHERE id = #{id}
+    </select>
+
+    <select id="selectByType" parameterType="com.example.demo.entity.TaskInfo" resultMap="BaseResult">
+        SELECT *
+        FROM user_info
+        WHERE id = #{param.userId}
+          AND user_name = #{param.userName}
     </select>
 
     <resultMap id="BaseResult" type="com.example.demo.entity.UserInfo">
