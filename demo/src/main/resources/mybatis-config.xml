@@ -16,14 +16,16 @@
         <setting name="mapUnderscoreToCamelCase" value="true"/>
     </settings>
 
+    <reflectorFactory type="com.example.demo.reflect.TaskInfoReflectorFactory"/>
+
     <!--<typeAliases>
         <package name="vo"/>
     </typeAliases>-->
 
     <plugins>
-        <plugin interceptor="com.example.demo.plugin.BackupPlugin" />
-        <plugin interceptor="com.example.demo.plugin.ParamFieldPlugin" />
-        <plugin interceptor="com.example.demo.plugin.BackUpInfoReadPlugin" />
+        <plugin interceptor="com.example.demo.plugin.BackupPlugin"/>
+        <plugin interceptor="com.example.demo.plugin.ParamFieldPlugin"/>
+        <plugin interceptor="com.example.demo.plugin.BackUpInfoReadPlugin"/>
     </plugins>
 
     <!-- 不同开发环境对应的配置，默认为 dev 的配置 -->

@@ -54,10 +54,10 @@ public class MyBatisTool {
                 SqlSession sqlSession = openSqlSession()
         ) {
             UserInfoMapper mapper = sqlSession.getMapper(UserInfoMapper.class);
-            UserInfo param = new UserInfo();
-            param.setName("xhl");
-            param.setAge(22);
-            System.out.println(mapper.selectByParam(param));
+            UserInfo info = new UserInfo();
+            info.setId(1L);
+            info.setName("xhliu");
+            System.out.println(mapper.selectByType(info));
         }
     }
 }

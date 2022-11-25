@@ -6,7 +6,9 @@ import java.util.Objects;
  * @author lxh
  * @date 2022/6/6-下午10:09
  */
-public class UserInfo extends AbstractEntity{
+public class UserInfo
+        extends AbstractEntity
+        implements TaskInfo {
     private long id;
 
     private String name;
@@ -35,6 +37,16 @@ public class UserInfo extends AbstractEntity{
 
     public void setAge(int age) {
         this.age = age;
+    }
+
+    @Override
+    public long userId() {
+        return id;
+    }
+
+    @Override
+    public String userName() {
+        return name;
     }
 
     @Override
