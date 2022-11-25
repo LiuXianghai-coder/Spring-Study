@@ -19,4 +19,6 @@ public interface UserInfoMapper {
     List<UserInfoView> selectViewsById(@Param("id") long id);
 
     int insert(UserInfo userInfo);
+
+    List<UserInfo> selectByParam(@Param("param") UserInfo param);
 }

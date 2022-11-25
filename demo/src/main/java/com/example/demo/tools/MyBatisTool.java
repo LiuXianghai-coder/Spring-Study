@@ -1,5 +1,6 @@
 package com.example.demo.tools;
 
+import com.example.demo.entity.UserInfo;
 import com.example.demo.mapper.RateInfoMapper;
 import com.example.demo.mapper.UserInfoMapper;
 import org.apache.ibatis.io.Resources;
@@ -53,7 +54,10 @@ public class MyBatisTool {
                 SqlSession sqlSession = openSqlSession()
         ) {
             UserInfoMapper mapper = sqlSession.getMapper(UserInfoMapper.class);
-            System.out.println(mapper.selectViewsById(1L));
+            UserInfo param = new UserInfo();
+            param.setName("xhl");
+            param.setAge(22);
+            System.out.println(mapper.selectByParam(param));
         }
     }
 }
