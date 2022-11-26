@@ -378,7 +378,11 @@ public class Solution {
     }
 
     public static void main(String[] args) {
-        Solution s = new Solution();
-        System.out.println(s.shortestBridge(new int[][]{{1,1,1,1,1},{1,0,0,0,1},{1,0,1,0,1},{1,0,0,0,1},{1,1,1,1,1}}));
+        Thread[] tasks = new Thread[8];
+        NoFinalFieldEntity obj = null;
+        for (int i = 0; i < tasks.length; i++) {
+            tasks[i] = new Thread(() -> System.out.println(obj.userInfo));
+        }
+        for (Thread task : tasks) task.start();
     }
 }

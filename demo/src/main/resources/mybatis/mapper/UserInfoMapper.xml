@@ -48,6 +48,17 @@
           AND user_name = #{param.userName}
     </select>
 
+    <select id="selectByParam" parameterType="com.example.demo.entity.UserInfo" resultMap="BaseResult">
+        SELECT * FROM user_info
+        WHERE 1=1
+          <if test="param.age != 0">
+              AND user_age=#{param.age}
+          </if>
+        <if test="param.name != null and param.name.length() > 0" >
+            AND user_name LIKE concat('%', #{param.name}, '%')
+        </if>
+    </select>
+
     <resultMap id="BaseResult" type="com.example.demo.entity.UserInfo">
         <id column="id" property="id"/>
         <result column="user_name" property="name"/>
