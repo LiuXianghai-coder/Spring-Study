@@ -26,7 +26,7 @@
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-webflux</artifactId>
+            <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
 
         <dependency>
@@ -115,20 +115,15 @@
 
         <!-- excel 文件处理的依赖 -->
         <dependency>
-            <groupId>com.alibaba</groupId>
-            <artifactId>easyexcel</artifactId>
-            <version>3.1.2</version>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi</artifactId>
+            <version>${poi.version}</version>
         </dependency>
-        <!--        <dependency>-->
-        <!--            <groupId>org.apache.poi</groupId>-->
-        <!--            <artifactId>poi</artifactId>-->
-        <!--            <version>${poi.version}</version>-->
-        <!--        </dependency>-->
-        <!--        <dependency>-->
-        <!--            <groupId>org.apache.poi</groupId>-->
-        <!--            <artifactId>poi-ooxml</artifactId>-->
-        <!--            <version>${poi.version}</version>-->
-        <!--        </dependency>-->
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi-ooxml</artifactId>
+            <version>${poi.version}</version>
+        </dependency>
         <!-- excel 文件处理的依赖结束 -->
     </dependencies>
 

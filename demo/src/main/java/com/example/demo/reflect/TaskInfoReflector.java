@@ -35,7 +35,8 @@ public class TaskInfoReflector
             Method method = entry.getValue();
             int ps = method.getParameterCount();
             if (ps > 0) continue;
-            if (propName.equals(name) && String.class == method.getReturnType()) {
+            if (propName.equals(name) && (String.class == method.getReturnType()
+                    || method.getReturnType().isPrimitive())) {
                 return new MethodInvoker(method);
             }
         }
