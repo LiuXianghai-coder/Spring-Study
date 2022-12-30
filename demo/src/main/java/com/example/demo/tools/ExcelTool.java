@@ -2,7 +2,7 @@ package com.example.demo.tools;
 
 import com.example.demo.app.CellProps;
 import com.example.demo.app.RowProps;
-import com.example.demo.entity.ExcelData;
+import com.example.demo.entity.SheetData;
 import com.example.demo.interfaces.CellTypeConvert;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -94,12 +94,12 @@ public class ExcelTool  {
         }
     }
 
-    public ByteArrayInputStream convertToByteArrayStream(ExcelData<?> excelData) {
+    public ByteArrayInputStream convertToByteArrayStream(SheetData<?> sheetData) {
         try (
                 Workbook workbook = new XSSFWorkbook();
                 ByteArrayOutputStream out = new ByteArrayOutputStream();
         ) {
-            List<?> data = excelData.data();
+            List<?> data = sheetData.data();
             if (data == null || data.isEmpty()) {
                 return new ByteArrayInputStream(out.toByteArray());
             }

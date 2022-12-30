@@ -1,27 +1,32 @@
 package com.example.demo.config;
 
-import com.example.demo.reflect.TaskInfoReflectorFactory;
 import org.apache.ibatis.reflection.ReflectorFactory;
 import org.springframework.boot.context.properties.ConfigurationPropertiesBinding;
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.convert.converter.Converter;
+import org.springframework.stereotype.Component;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Resource;
+import java.lang.reflect.Constructor;
 
 /**
  * @author xhliu
  */
-@Configuration
+@Configuration(proxyBeanMethods = false)
 @ConfigurationPropertiesBinding
 public class StringToReflectFactoryConvert
         implements Converter<String, ReflectorFactory> {
 
-    @Resource
-    private ApplicationContext context;
-
-    public ReflectorFactory convert(@Nonnull String beanName) {
-        return new TaskInfoReflectorFactory();
+    public ReflectorFactory convert(@Nonnull String source) {
+        try {
+            Class<?> clazz = Class.forName(source);
+            if (!ReflectorFactory.class.isAssignableFrom(clazz)) {
+                throw new IllegalArgumentException("非法的反射工厂类型: " + clazz.getName());
+            }
+            Constructor<?> constructor = clazz.getConstructor();
+            return (ReflectorFactory) constructor.newInstance();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 }

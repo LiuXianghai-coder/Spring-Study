@@ -9,13 +9,16 @@ spring:
     username: root
     password: 17358870357yi
 
+user:
+  name: xhliu
+  age: 22
+  plugin: com.example.demo.plugin.BackupInfoPlugin
+
 mybatis:
   configuration:
     cache-enabled: true
     local-cache-scope: statement
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
-    reflectorFactory: taskInfoReflectorFactory
+    reflectorFactory: com.example.demo.reflect.TaskInfoReflectorFactory
     # reflectorFactory: taskInfoReflectorFactory
   mapperLocations: mybatis/mapper/*
-  configuration-properties:
-    reflector-factory: com.example.demo.reflect.TaskInfoReflectorFactory

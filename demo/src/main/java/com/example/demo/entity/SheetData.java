@@ -5,6 +5,6 @@ import java.util.List;
 /**
  * @author lxh
  */
-public interface ExcelData<T> {
+public interface SheetData<T> {
     List<T> data();
 }
