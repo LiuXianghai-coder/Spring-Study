@@ -6,13 +6,14 @@ import com.example.demo.entity.UserInfoView;
 import com.example.demo.plugin.ConfigMapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.SelectProvider;
+import tk.mybatis.mapper.common.Mapper;
 
 import java.util.List;
 
 /**
  * @author lxh
  */
-public interface UserInfoMapper {
+public interface UserInfoMapper extends Mapper<UserInfo> {
     UserInfo getUserById(@Param("id") long id);
 
     List<UserInfo> selectByName(@Param("name") String name);

@@ -1,6 +1,7 @@
 package com.example.demo.tools;
 
 import com.example.demo.entity.UserInfo;
+import com.example.demo.entity.UserInfoView;
 import com.example.demo.mapper.RateInfoMapper;
 import com.example.demo.mapper.UserInfoMapper;
 import org.apache.ibatis.io.Resources;
@@ -10,6 +11,8 @@ import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Proxy;
 
 /**
  * @author lxh
@@ -54,10 +57,9 @@ public class MyBatisTool {
                 SqlSession sqlSession = openSqlSession()
         ) {
             UserInfoMapper mapper = sqlSession.getMapper(UserInfoMapper.class);
-            UserInfo info = new UserInfo();
-            info.setId(1L);
-            info.setName("xhliu");
-            System.out.println(mapper.selectByType(info));
+            UserInfo userInfo = new UserInfo();
+            userInfo.setId(1L);
+            mapper.selectOne(userInfo);
         }
     }
 }

@@ -182,7 +182,7 @@ public class Application {
         if (exp.charAt(0) != '-') exp = "+" + exp;
         char[] arr = exp.toCharArray();
         int n = arr.length;
-        for (int i = 0; i < n;) {
+        for (int i = 0; i < n; ) {
             int flag = arr[i] == '-' ? -1 : 1;
             int j = i + 1;
             while (j < n && arr[j] != '+' && arr[j] != '-') ++j;
@@ -194,11 +194,12 @@ public class Application {
 
         while (!deque.isEmpty()) {
             int[] val = deque.poll();
-            long a1 = ans[1]*ans[0], b1 = ans[2];
+            long a1 = ans[1] * ans[0], b1 = ans[2];
             long a2 = (long) val[1] * val[0], b2 = val[2];
-            a1 *= b2; a2 *= b1;
+            a1 *= b2;
+            a2 *= b1;
 
-            long up = a1 + a2, down = b1*b2;
+            long up = a1 + a2, down = b1 * b2;
             ans[1] = up;
             ans[2] = down;
         }
@@ -253,12 +254,31 @@ public class Application {
         return ans;
     }
 
+    public int maxValue(int n, int index, int maxSum) {
+        int lo = 1, hi = (int) 1e9 + 1;
+        while (lo <= hi) {
+            int mid = lo + ((hi - lo) >> 1);
+            System.out.println("lo=" + lo + "\thi=" + hi + "\tmid=" + mid);
+            if (check(n, index, maxSum, mid)) {
+                lo = mid + 1;
+            } else {
+                hi = mid - 1;
+            }
+        }
+        return hi;
+    }
+
+    boolean check(int n, int index, int maxSum, int x) {
+        long left = x > index ? (long) (x - index + x) * (index + 1) / 2 : index - x + 1 + (long) (1 + x) * x / 2;
+        int r = n - index;
+        long right = x >= r ? (long) (x - r + 1 + x) * r / 2 : r - x + (long) (1 + x) * x / 2;
+        long sum = left + right - x;
+        return sum <= maxSum;
+    }
+
     public static void main(String[] args) throws NoSuchMethodException {
-        Class<?> clazz = UserInfo.class;
-        Method em = clazz.getMethod("equals", Object.class);
-        Method aem = AbstractEntity.class.getDeclaredMethod("equals", Object.class);
-        Method oem = Object.class.getDeclaredMethod("equals", Object.class);
-        System.out.println(em.equals(oem));
-        System.out.println(em.equals(aem));
+        Application app = new Application();
+        System.out.println(app.maxValue(9, 5, 24));
+//        System.out.println(app.check(9, 5, 24, 5));
     }
 }

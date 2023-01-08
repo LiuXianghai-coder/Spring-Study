@@ -83,7 +83,14 @@
         <dependency>
             <groupId>org.redisson</groupId>
             <artifactId>redisson-mybatis</artifactId>
-            <version>3.17.7</version>
+            <version>3.19.0</version>
+        </dependency>
+
+        <!-- 通用 Mapper 相关的依赖 -->
+        <dependency>
+            <groupId>tk.mybatis</groupId>
+            <artifactId>mapper-spring-boot-starter</artifactId>
+            <version>4.2.2</version>
         </dependency>
         <!-- MyBatis 相关的依赖结束 -->
 
