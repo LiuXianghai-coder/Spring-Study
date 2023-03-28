@@ -72,7 +72,9 @@ public class WordFilter {
     }
 
     public static void main(String[] args) {
-        WordFilter wf = new WordFilter(new String[]{"c", "i"});
-        System.out.println(wf.query("c", "c"));
+        int[] arr = new int[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+        int i = 4, t = 0;
+        int sum = (i - t - 1) * (i - t) / 2;
+        System.out.println("sum=" + sum);
     }
 }

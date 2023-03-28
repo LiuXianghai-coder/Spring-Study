@@ -1,7 +1,11 @@
 package com.example.demo.tools;
 
+import com.example.demo.entity.OaPenetrateData;
+import com.example.demo.entity.OaPenetrateTask;
 import com.example.demo.entity.UserInfo;
 import com.example.demo.entity.UserInfoView;
+import com.example.demo.mapper.OaPenetrateDataMapper;
+import com.example.demo.mapper.OaPenetrateTaskMapper;
 import com.example.demo.mapper.RateInfoMapper;
 import com.example.demo.mapper.UserInfoMapper;
 import org.apache.ibatis.io.Resources;
@@ -13,6 +17,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Proxy;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * @author lxh
@@ -57,9 +64,11 @@ public class MyBatisTool {
                 SqlSession sqlSession = openSqlSession()
         ) {
             UserInfoMapper mapper = sqlSession.getMapper(UserInfoMapper.class);
-            UserInfo userInfo = new UserInfo();
-            userInfo.setId(1L);
-            mapper.selectOne(userInfo);
+            List<UserInfoView> views = mapper.selectViewsById(1L);
+            for (UserInfoView view : views) {
+                System.out.println(view.getFriends());
+            }
+
         }
     }
 }

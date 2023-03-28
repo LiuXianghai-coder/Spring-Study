@@ -14,6 +14,9 @@
         <setting name="autoMappingBehavior" value="PARTIAL"/>
         <!-- 将下划线自动映射为陀峰 -->
         <setting name="mapUnderscoreToCamelCase" value="true"/>
+
+        <setting name="lazyLoadingEnabled" value="true" />
+        <setting name="aggressiveLazyLoading" value="false"/>
     </settings>
 
     <reflectorFactory type="com.example.demo.reflect.TaskInfoReflectorFactory"/>
@@ -50,5 +53,7 @@
     <mappers>
         <mapper resource="mybatis/mapper/UserInfoMapper.xml"/>
         <mapper resource="mybatis/mapper/RateInfoMapper.xml"/>
+        <mapper resource="mybatis/mapper/OaPenetrateDataMapper.xml"/>
+        <mapper resource="mybatis/mapper/OaPenetrateTaskMapper.xml"/>
     </mappers>
 </configuration>

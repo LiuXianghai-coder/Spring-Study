@@ -1,6 +1,8 @@
 package com.example.demo;
 
+import com.example.demo.config.StringToReflectFactoryConvert;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.annotation.AnnotationUtils;
 
 import java.util.*;
 
@@ -1209,11 +1211,5 @@ public class DemoApplicationTests {
     }
 
     public static void main(String[] args) {
-        int[] tmp = new int[]{1, 2, 3, 4, 5, 6};
-        int last = tmp[tmp.length - 1];
-        System.out.println(Arrays.toString(tmp));
-        System.arraycopy(tmp, 0, tmp, 1, tmp.length - 1);
-        tmp[0] = last;
-        System.out.println(Arrays.toString(tmp));
     }
 }

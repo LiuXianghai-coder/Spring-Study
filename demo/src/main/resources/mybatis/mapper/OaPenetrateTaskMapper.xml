@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.example.demo.mapper.OaPenetrateTaskMapper">
+    <resultMap id="BaseResult" type="com.example.demo.entity.OaPenetrateTask">
+        <result column="id" jdbcType="VARCHAR" property="id" />
+        <result column="vc_security_pool_id" jdbcType="VARCHAR" property="vcSecurityPoolId" />
+        <result column="vc_penetrated" jdbcType="CHAR" property="vcPenetrated" />
+        <result column="vc_task_type" jdbcType="CHAR" property="vcTaskType" />
+        <result column="vc_alloc_state" jdbcType="CHAR" property="vcAllocState" />
+        <result column="vc_task_state" jdbcType="CHAR" property="vcTaskState" />
+    </resultMap>
+    
+    <insert id="insertRows" parameterType="java.util.List">
+        INSERT INTO oa_penetrate_task(id, vc_security_pool_id, vc_penetrated, vc_task_type, vc_alloc_state, vc_task_state)
+        VALUES
+            <foreach collection="rows" separator="," open=" " close=" " item="item">
+                (#{item.id}, #{item.vcSecurityPoolId}, #{item.vcPenetrated},
+                #{item.vcTaskType}, #{item.vcAllocState}, #{item.vcTaskState})
+            </foreach>
+    </insert>
+</mapper>

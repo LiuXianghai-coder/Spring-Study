@@ -5,7 +5,7 @@
 <!-- namespace 对应相关的 DAO 接口，Mybatis 会根据这个接口通过代理的方式生成对应的数据访问对象 -->
 <mapper namespace="com.example.demo.mapper.UserInfoMapper">
     <sql id="allColumn">
-        id, user_name, user_age, created_time, created_user, updated_user, updated_time
+        user_id, user_name, user_age, created_time, created_user, updated_user, updated_time
     </sql>
 
     <!-- 一个简单的查询，这里没有配置 ORM 关系，因此会直接将列名映射为对象的属性名 -->
@@ -15,7 +15,7 @@
         FROM
             user_info
         WHERE
-            id=#{id}
+            user_id=#{id}
     </select>
 
     <insert id="insert" parameterType="com.example.demo.entity.UserInfo" >
@@ -36,9 +36,9 @@
     </select>
 
     <select id="selectViewsById" resultMap="FriendResult" parameterType="long">
-        SELECT *
+        SELECT user_id, first_name, last_name
         FROM user_info
-        WHERE id = #{id}
+        WHERE user_id = #{id}
     </select>
 
     <select id="selectByType" parameterType="com.example.demo.entity.TaskInfo" resultMap="BaseResult">
@@ -60,8 +60,8 @@
     </select>
 
     <resultMap id="BaseResult" type="com.example.demo.entity.UserInfo">
-        <id column="id" property="id"/>
-        <result column="user_name" property="name"/>
+        <id column="user_id" property="id"/>
+        <result column="first_name" property="name"/>
         <result column="user_age" property="age"/>
         <result column="created_time" property="createdTime"/>
         <result column="created_user" property="createdUser"/>
@@ -70,10 +70,10 @@
     </resultMap>
 
     <resultMap id="FriendResult" type="com.example.demo.entity.UserInfoView" extends="BaseResult">
-        <collection property="friends" column="id" ofType="string" select="selectFriend" />
+        <collection property="friends" column="user_id" ofType="string" select="selectFriend" />
     </resultMap>
 
     <select id="selectFriend" resultType="string">
-        SELECT fri_id FROM friend_info WHERE user_id=#{id}
+        SELECT id FROM friend_info WHERE fri_id=#{user_id}
     </select>
 </mapper>
