@@ -14,9 +14,9 @@
     <name>gateway-sentinel</name>
     <description>gateway-sentinel</description>
     <properties>
-        <java.version>11</java.version>
-        <maven.compile.version>11</maven.compile.version>
-        <maven.compile.target>11</maven.compile.target>
+        <java.version>8</java.version>
+        <maven.compile.version>8</maven.compile.version>
+        <maven.compile.target>8</maven.compile.target>
         <gateway.version>3.1.1</gateway.version>
         <spring.cloud.version>3.1.1</spring.cloud.version>
         <nacos.version>2.2.7.RELEASE</nacos.version>

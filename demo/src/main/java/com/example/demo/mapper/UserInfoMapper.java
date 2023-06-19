@@ -6,6 +6,7 @@ import com.example.demo.entity.UserInfoView;
 import com.example.demo.plugin.ConfigMapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.SelectProvider;
+import org.apache.ibatis.session.RowBounds;
 import tk.mybatis.mapper.common.Mapper;
 
 import java.util.List;
@@ -23,6 +24,8 @@ public interface UserInfoMapper extends Mapper<UserInfo> {
     List<UserInfo> selectByType(@Param("param") TaskInfo param);
 
     List<UserInfoView> selectViewsById(@Param("id") long id);
+
+    List<UserInfo> selectByRowBound(RowBounds rowBounds);
 
     int insert(UserInfo userInfo);
 

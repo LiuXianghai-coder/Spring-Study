@@ -5,9 +5,12 @@ spring:
   jackson:
     date-format: "yyyy-MM-dd HH:mm:ss"
   datasource:
-    url: jdbc:mysql://39.99.129.90:3306/lxh
+    url: jdbc:mysql://127.0.0.1:3306/lxh_db
     username: root
-    password: 17358870357yi
+    password: 12345678
+  thymeleaf:
+    cache: false
+    mode: LEGACYHTML5
 
 user:
   name: xhliu

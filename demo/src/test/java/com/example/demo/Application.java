@@ -1,7 +1,5 @@
 package com.example.demo;
 
-import com.example.demo.entity.AbstractEntity;
-import com.example.demo.entity.UserInfo;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
@@ -10,7 +8,6 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 
-import java.lang.reflect.Method;
 import java.math.BigInteger;
 import java.net.InetSocketAddress;
 import java.util.*;
@@ -20,11 +17,6 @@ import java.util.*;
  * @create 2021-09-22 16:56
  **/
 public class Application {
-    final Object obj;
-
-    public Application() {
-        this.obj = new Object();
-    }
 
     public int maximumWhiteTiles(int[][] tiles, int len) {
         int n = tiles.length;
@@ -254,31 +246,78 @@ public class Application {
         return ans;
     }
 
-    public int maxValue(int n, int index, int maxSum) {
-        int lo = 1, hi = (int) 1e9 + 1;
-        while (lo <= hi) {
-            int mid = lo + ((hi - lo) >> 1);
-            System.out.println("lo=" + lo + "\thi=" + hi + "\tmid=" + mid);
-            if (check(n, index, maxSum, mid)) {
-                lo = mid + 1;
-            } else {
-                hi = mid - 1;
-            }
-        }
-        return hi;
+    int[] tree;
+
+    void init(int n) {
+        tree = new int[n + 10];
     }
 
-    boolean check(int n, int index, int maxSum, int x) {
-        long left = x > index ? (long) (x - index + x) * (index + 1) / 2 : index - x + 1 + (long) (1 + x) * x / 2;
-        int r = n - index;
-        long right = x >= r ? (long) (x - r + 1 + x) * r / 2 : r - x + (long) (1 + x) * x / 2;
-        long sum = left + right - x;
-        return sum <= maxSum;
+    int lowbit(int x) {
+        return x & (-x);
+    }
+
+    void add(int u, int x) {
+        for (int i = u; i < tree.length; i += lowbit(i)) {
+            tree[i] += x;
+        }
+    }
+
+    int query(int x) {
+        int ans = 0;
+        for (int i = x; i > 0; i -= lowbit(i)) {
+            ans += tree[i];
+        }
+        return ans;
+    }
+
+    public int numTimesAllBlue(int[] flips) {
+        int n = flips.length;
+        init(n);
+        int ans = 0;
+        for (int i = 0; i < n; ++i) {
+            add(flips[i], 1);
+            int sum = query(i) - query(0);
+            System.out.println("sum=" + sum);
+            if (sum == i + 1) ans++;
+        }
+        return ans;
+    }
+
+    public boolean checkValidString(String s) {
+        int n = s.length();
+        boolean[][] dp = new boolean[n + 1][n + 1];
+        dp[0][0] = true;
+        for (int i = 1; i <= n; ++i) {
+            if (s.charAt(i - 1) == '*') {
+                dp[i][i] = true;
+            }
+        }
+        for (int i = n - 1; i >= 1; --i) {
+            char left = s.charAt(i - 1);
+            for (int j = i + 1; j <= n; ++j) {
+                char right = s.charAt(j - 1);
+                if (left != ')' && right != '(') {
+                    if (j - i == 1) {
+                        dp[i][j] = true;
+                    } else {
+                        dp[i][j] = dp[i + 1][j - 1];
+                    }
+                }
+                for (int k = i; k < j; ++k) {
+                    if (dp[i][k] && dp[k + 1][j]) {
+                        dp[i][j] = true;
+                        break;
+                    }
+                }
+            }
+        }
+        return dp[1][n];
     }
 
     public static void main(String[] args) throws NoSuchMethodException {
         Application app = new Application();
-        System.out.println(app.maxValue(9, 5, 24));
-//        System.out.println(app.check(9, 5, 24, 5));
+        System.out.println(app.checkValidString("(*())"));
+        double val = Math.pow(8, 25);
+        System.out.println(val);
     }
 }

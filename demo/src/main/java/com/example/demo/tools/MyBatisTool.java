@@ -9,6 +9,7 @@ import com.example.demo.mapper.OaPenetrateTaskMapper;
 import com.example.demo.mapper.RateInfoMapper;
 import com.example.demo.mapper.UserInfoMapper;
 import org.apache.ibatis.io.Resources;
+import org.apache.ibatis.session.RowBounds;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
@@ -64,11 +65,8 @@ public class MyBatisTool {
                 SqlSession sqlSession = openSqlSession()
         ) {
             UserInfoMapper mapper = sqlSession.getMapper(UserInfoMapper.class);
-            List<UserInfoView> views = mapper.selectViewsById(1L);
-            for (UserInfoView view : views) {
-                System.out.println(view.getFriends());
-            }
-
+            UserInfo user = mapper.getUserById(1L);
+            System.out.println(user);
         }
     }
 }

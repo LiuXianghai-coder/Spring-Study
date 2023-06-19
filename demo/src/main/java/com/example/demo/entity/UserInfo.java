@@ -14,11 +14,17 @@ public class UserInfo
         extends AbstractEntity
         implements TaskInfo {
     @Id
-    @Column(name = "id")
+    @Column(name = "user_id")
     private long id;
 
     @Column(name = "user_name")
     private String name;
+
+    @Column(name = "user_phone")
+    private String phone;
+
+    @Column(name = "user_gender")
+    private String gender;
 
     @Column(name = "user_age")
     private int age;
@@ -57,29 +63,30 @@ public class UserInfo
         return name;
     }
 
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public String getGender() {
+        return gender;
+    }
+
+    public void setGender(String gender) {
+        this.gender = gender;
+    }
+
     @Override
     public String toString() {
         return "UserInfo{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
+                ", phone='" + phone + '\'' +
+                ", gender='" + gender + '\'' +
                 ", age=" + age +
-                ", create_user=" + getCreatedUser() +
-                ", create_time=" + getCreatedTime() +
-                ", update_user=" + getUpdatedUser() +
-                ", update_time=" + getUpdatedTime() +
                 '}';
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        UserInfo userInfo = (UserInfo) o;
-        return id == userInfo.id && age == userInfo.age && Objects.equals(name, userInfo.name);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, name, age);
     }
 }
