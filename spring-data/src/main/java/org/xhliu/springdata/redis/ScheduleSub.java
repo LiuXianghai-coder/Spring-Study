@@ -37,16 +37,9 @@ public class ScheduleSub {
         executor = new ScheduledThreadPoolExecutor(
                 Runtime.getRuntime().availableProcessors() - 1
         );
-        executor.scheduleWithFixedDelay(() -> {
+        executor.submit(() -> {
             Jedis jedis = pool.getResource();
             jedis.subscribe(subscribe, topic.getTopic().getBytes());
-        }, 5, 3, TimeUnit.SECONDS);
-    }
-
-    public void scheduleSub(Topic topic) {
-        executor.scheduleWithFixedDelay(() -> {
-            Jedis jedis = jedisPool.getResource();
-            jedis.subscribe(sub, topic.getTopic().getBytes());
-        }, 10, 10, TimeUnit.SECONDS);
+        });
     }
 }
