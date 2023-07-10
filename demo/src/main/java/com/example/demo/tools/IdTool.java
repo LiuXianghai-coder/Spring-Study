@@ -47,6 +47,7 @@ public class IdTool {
         } else {
             seq.set(0);
             val = seq.getAndIncrement();
+            lastMills = cur;
         }
         ans |= val;
         return ans & (TIME ^ WORKER ^ SEQ);
@@ -68,7 +69,7 @@ public class IdTool {
                 throw new RuntimeException("重复的 id: " + id);
             }
             set.add(id);
-            if (i % 100 == 0) Thread.sleep(1);
+            if (i % 1000 == 0) Thread.sleep(1);
         }
     }
 }
