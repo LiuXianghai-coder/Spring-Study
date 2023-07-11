@@ -8,6 +8,9 @@ import org.xhliu.mybatis.mapper.CourseMapper;
 import org.xhliu.mybatis.vo.Course;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * @author xhliu
