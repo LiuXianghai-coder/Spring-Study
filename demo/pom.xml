@@ -145,6 +145,12 @@
             <artifactId>poi-ooxml</artifactId>
             <version>${poi.version}</version>
         </dependency>
+
+        <dependency>
+            <groupId>org.jxls</groupId>
+            <artifactId>jxls-poi</artifactId>
+            <version>2.12.0</version>
+        </dependency>
         <!-- excel 文件处理的依赖结束 -->
         <dependency>
             <groupId>org.imgscalr</groupId>

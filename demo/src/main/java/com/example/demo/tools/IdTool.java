@@ -31,7 +31,6 @@ public class IdTool {
 
     public static synchronized long snowFlake(long workId) {
         long cur = System.currentTimeMillis();
-        long ans = (cur << TIME_BITS) | (workId << WORK_BITS);
         if (lastMills <= 0) lastMills = cur;
         if (cur < lastMills) {
             throw new RuntimeException("时钟系统被回退");
@@ -49,8 +48,7 @@ public class IdTool {
             val = seq.getAndIncrement();
             lastMills = cur;
         }
-        ans |= val;
-        return ans & (TIME ^ WORKER ^ SEQ);
+        return (lastMills << TIME_BITS) | (workId << WORK_BITS) | val;
     }
 
     private static long waitToNextMills(long lastMills) {
