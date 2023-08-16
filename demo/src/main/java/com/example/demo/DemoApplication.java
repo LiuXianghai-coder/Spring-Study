@@ -28,5 +28,9 @@ public class DemoApplication {
             sqlSession.getMapper(UserInfoMapper.class);
         }
         System.out.println("Take time " + stopwatch.elapsed(TimeUnit.MILLISECONDS) + " ms");
+        Object bean1 = context.getBean("fileTool");
+        Object bean2 = context.getBean("fileTool");
+        System.out.println(bean1);
+        System.out.println(bean2);
     }
 }

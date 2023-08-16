@@ -1,13 +1,23 @@
 package com.example.demo.tools;
 
-import java.util.HashSet;
-import java.util.Set;
+import com.google.common.base.Stopwatch;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * @author lxh
  */
 public class IdTool {
+
+    private final static Logger log = LoggerFactory.getLogger(IdTool.class);
 
     private static final int TIME_BITS = 19; // 时间位需要向左移动的位数
 
@@ -23,13 +33,50 @@ public class IdTool {
 
     private static final int MAX_SEQ = (1 << WORK_BITS) - 1;
 
-    private static final AtomicInteger seq = new AtomicInteger(0);
+    private static final Map<Long, AtomicInteger> cache = new ConcurrentHashMap<>();
+
+    private static final AtomicInteger curSeq = new AtomicInteger(0);
+
+    private static final Lock lock = new ReentrantLock();
 
     public static long snowFlake() {
         return snowFlake(0L);
     }
 
-    public static synchronized long snowFlake(long workId) {
+    public static long singleSnowFlake() {
+        return singleSnowFlake(0L);
+    }
+
+    public static long snowFlake(long workId) {
+        long cur = curTime();
+        if (cache.containsKey(cur)) {
+            AtomicInteger seq = cache.get(cur);
+            int val = seq.getAndIncrement();
+            if (val > MAX_SEQ) {
+                return concurrentGen(workId, cur);
+            }
+            return (cur << TIME_BITS) | (workId << WORK_BITS) | val;
+        }
+        return concurrentGen(workId, cur);
+    }
+
+    private static long concurrentGen(long workId, long cur) {
+        lock.lock();
+        try {
+            while (cache.containsKey(cur) && cache.get(cur).get() > MAX_SEQ) {
+                cache.remove(cur);
+                cur = waitToNextMills(cur);
+            }
+            AtomicInteger seq = cache.containsKey(cur) ? cache.get(cur) : new AtomicInteger(0);
+            int val = seq.getAndIncrement();
+            cache.put(cur, seq);
+            return (cur << TIME_BITS) | (workId << WORK_BITS) | val;
+        } finally {
+            lock.unlock();
+        }
+    }
+
+    public static synchronized long singleSnowFlake(long workId) {
         long cur = System.currentTimeMillis();
         if (lastMills <= 0) lastMills = cur;
         if (cur < lastMills) {
@@ -37,15 +84,15 @@ public class IdTool {
         }
         int val;
         if (cur == lastMills) {
-            val = seq.getAndIncrement();
+            val = curSeq.getAndIncrement();
             if (val > MAX_SEQ) {
                 lastMills = waitToNextMills(lastMills);
-                seq.set(0);
-                val = seq.getAndIncrement();
+                curSeq.set(0);
+                val = curSeq.getAndIncrement();
             }
         } else {
-            seq.set(0);
-            val = seq.getAndIncrement();
+            curSeq.set(0);
+            val = curSeq.getAndIncrement();
             lastMills = cur;
         }
         return (lastMills << TIME_BITS) | (workId << WORK_BITS) | val;
@@ -59,15 +106,43 @@ public class IdTool {
         return cur;
     }
 
+    private static long curTime() {
+        return System.currentTimeMillis();
+    }
+
     public static void main(String[] args) throws InterruptedException {
-        Set<Long> set = new HashSet<>();
-        for (int i = 0; i < 1e7; ++i) {
-            long id = snowFlake();
-            if (set.contains(id)) {
-                throw new RuntimeException("重复的 id: " + id);
-            }
-            set.add(id);
-            if (i % 1000 == 0) Thread.sleep(1);
+        int sz = Runtime.getRuntime().availableProcessors();
+        Thread[] ts = new Thread[sz];
+        Map<Long, Object> map = new ConcurrentHashMap<>();
+        final Object obj = new Object();
+        CountDownLatch start = new CountDownLatch(1);
+        CountDownLatch end = new CountDownLatch(ts.length);
+        for (int i = 0; i < ts.length; ++i) {
+            ts[i] = new Thread(() -> {
+                try {
+                    start.await();
+                    for (int j = 0; j < 1e7; j++) {
+                        long id = IdTool.singleSnowFlake();
+                        log.trace("Gen id: {}", id);
+                        if (map.containsKey(id)) {
+                            log.info("重复的id: {}", id);
+                            return;
+                        }
+                        map.put(id, obj);
+                    }
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                } finally {
+                    end.countDown();
+                }
+            });
         }
+        for (Thread t : ts) {
+            t.start();
+        }
+        start.countDown();
+        Stopwatch stopwatch = Stopwatch.createStarted();
+        end.await();
+        log.info("Take Time {} s", stopwatch.elapsed(TimeUnit.SECONDS));
     }
 }
