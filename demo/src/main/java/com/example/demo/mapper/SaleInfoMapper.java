@@ -1,10 +1,7 @@
 package com.example.demo.mapper;
 
 import com.example.demo.entity.SaleInfo;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.InsertProvider;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.*;
 
 import java.util.List;
 
@@ -23,4 +20,11 @@ public interface SaleInfoMapper {
             "</script>"
     })
     int insertAll(@Param("param") List<SaleInfo> saleInfoList);
+
+    @Select({
+            "<script>",
+            "SELECT * FROM user_info ui JOIN sale_info si ON ui.user_name=si.sale_id",
+            "</script>"
+    })
+    List<SaleInfo> selectSaleInfo();
 }
