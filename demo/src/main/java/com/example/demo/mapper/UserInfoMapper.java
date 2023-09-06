@@ -33,4 +33,6 @@ public interface UserInfoMapper extends Mapper<UserInfo> {
     UserInfo selectByUserId(@Param("userId") String userId);
 
     List<UserInfo> selectByParam(@Param("param") UserInfo param);
+
+    int insertAll(@Param("param") List<UserInfo> data);
 }

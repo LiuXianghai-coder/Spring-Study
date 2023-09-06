@@ -14,9 +14,7 @@ public class NoFinalFieldEntity {
         }
         UserInfo tmp = new UserInfo();
         tmp.initFiled();
-        tmp.setId(1L);
-        tmp.setAge(22);
-        tmp.setName("xhliu2");
+        tmp.setId(1L);tmp.setName("xhliu2");
         this.userInfo = tmp;
     }
 }

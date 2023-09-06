@@ -63,15 +63,5 @@ public class Application {
     }
 
     public static void main(String[] args) {
-        Application app = new Application();
-        for (int i = 0; i < 26; ++i) {
-            app.root.next.computeIfAbsent((char) ('a' + i), v -> new Node());
-        }
-        String[] words = new String[]{"mobile", "mouse", "moneypot", "monitor", "mousepad"};
-        for (String word : words) {
-            app.add(word, 0, app.root.next.get(word.charAt(0)));
-        }
-        String search = "mou";
-        System.out.println(app.query(search, app.root.next.get(search.charAt(0)), new ArrayList<>()));
     }
 }
