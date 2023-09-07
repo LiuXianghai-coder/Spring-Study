@@ -65,6 +65,15 @@
         <if test="param.name != null and param.name.length() > 0" >
             AND user_name LIKE concat('%', #{param.name}, '%')
         </if>
+        ORDER BY
+        <trim prefixOverrides=",">
+            <if test="param.age != 0">
+                ,created_time
+            </if>
+            <if test="param.name">
+                ,updated_time
+            </if>
+        </trim>
     </select>
 
     <select id="selectByRowBound" resultMap="BaseResult">

@@ -8,70 +8,42 @@ import java.util.*;
  **/
 public class Application {
 
-    static class Node {
-        boolean finished = false;
-        TreeMap<Character, Node> next = new TreeMap<>();
+    private final static long UP = (long) 1e6;
+
+    private int total, c1, c2;
+    private final Set<Long> set = new HashSet<>();
+
+    int[] cache;
+
+    public long waysToBuyPensPencils(int _total, int cost1, int cost2) {
+        total = _total;
+        c1 = cost1;
+        c2 = cost2;
+        cache = new int[total + 1];
+        Arrays.fill(cache, -1);
+        return dfs(0, 0, 0);
     }
 
-    void add(String word, int index, Node root) {
-        if (index == word.length()) {
-            root.finished = true;
-            return;
+    int dfs(int cur, int cnt1, int cnt2) {
+        long hash = cnt1 * UP + cnt2;
+        if (set.contains(hash)) {
+            return 0;
         }
-        char ch = word.charAt(index);
-        if (root.next.get(ch) == null) {
-            root.next.put(ch, new Node());
-        }
-        add(word, index + 1, root.next.get(ch));
-    }
-
-    List<String> query(String word, Node root, List<String> list) {
-        char[] arr = new char[2048];
-        for (int i = 0; i < word.length(); ++i) {
-            char ch = word.charAt(i);
-            root = root.next.get(ch);
-            arr[i] = ch;
-            if (root == null) return list;
-        }
-        return query(root, arr, word.length(), list);
-    }
-
-    List<String> query(Node root, char[] arr, int len, List<String> list) {
-        if (root == null) return list;
-        if (list.size() >= 3) return list;
-        if (root.finished) {
-            list.add(new String(arr, 0, len));
-        }
-        if (list.size() >= 3) return list;
-        for (Map.Entry<Character, Node> entry : root.next.entrySet()) {
-            arr[len] = entry.getKey();
-            query(entry.getValue(), arr, len + 1, list);
-        }
-        return list;
-    }
-
-    final Node root = new Node();
-
-    public List<List<String>> suggestedProducts(String[] products, String searchWord) {
-        for (String prod : products) add(prod, 0, root);
-        List<List<String>> ans = new ArrayList<>();
-        for (int i = 0; i < searchWord.length(); ++i) {
-            String sub = searchWord.substring(0, i + 1);
-            ans.add(query(sub, root, new ArrayList<>()));
-        }
+        if (cur > total) return 0;
+        System.out.println("cur=" + cur + "\tcnt1=" + cnt1 + "\tcnt2=" + cnt2);
+        set.add(hash);
+//        if (cache[cur] >= 0) {
+//            return cache[cur];
+//        }
+        int ans = 1; // 两者都不购买
+        ans += dfs(cur + c1, cnt1 + 1, cnt2); // 购买一支钢笔
+        ans += dfs(cur + c2, cnt1, cnt2 + 1); // 购买一支铅笔
+        cache[cur] = ans;
         return ans;
     }
 
     public static void main(String[] args) {
         Application app = new Application();
-        for (int i = 0; i < 26; ++i) {
-            app.root.next.computeIfAbsent((char) ('a' + i), v -> new Node());
-        }
-        String[] words = new String[]{"mobile", "mouse", "moneypot", "monitor", "mousepad"};
-        for (String word : words) {
-            app.add(word, 0, app.root.next.get(word.charAt(0)));
-        }
-        String search = "mou";
-        System.out.println(app.query(search, app.root.next.get(search.charAt(0)), new ArrayList<>()));
+        System.out.println(app.waysToBuyPensPencils(100, 1, 1));
     }
 }

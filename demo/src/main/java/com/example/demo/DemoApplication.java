@@ -1,5 +1,6 @@
 package com.example.demo;
 
+import com.example.demo.entity.UserInfo;
 import com.example.demo.mapper.UserInfoMapper;
 import com.google.common.base.Stopwatch;
 import org.apache.ibatis.session.SqlSession;
@@ -23,14 +24,10 @@ public class DemoApplication {
     public static void main(String[] args) throws IOException {
         ConfigurableApplicationContext context = SpringApplication.run(DemoApplication.class, args);
         SqlSession sqlSession = context.getBean(SqlSession.class);
-        Stopwatch stopwatch = Stopwatch.createStarted();
-        for (int i = 0; i < 1000; ++i) {
-            sqlSession.getMapper(UserInfoMapper.class);
-        }
-        System.out.println("Take time " + stopwatch.elapsed(TimeUnit.MILLISECONDS) + " ms");
-        Object bean1 = context.getBean("fileTool");
-        Object bean2 = context.getBean("fileTool");
-        System.out.println(bean1);
-        System.out.println(bean2);
+        UserInfoMapper mapper = sqlSession.getMapper(UserInfoMapper.class);
+        UserInfo userInfo = new UserInfo();
+        userInfo.setAge(1);
+        userInfo.setName("xhliu");
+        System.out.println(mapper.selectByParam(userInfo));
     }
 }
