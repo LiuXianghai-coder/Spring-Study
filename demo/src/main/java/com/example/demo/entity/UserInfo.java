@@ -20,37 +20,26 @@ public class UserInfo
     @Column(name = "user_name")
     private String name;
 
-    @Column(name = "user_phone")
-    private String phone;
-
     @Column(name = "user_gender")
     private String gender;
 
-    @Column(name = "user_age")
-    private int age;
+    @Column(name = "simple_id")
+    private String simpleId;
 
     public long getId() {
         return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
     }
 
     public String getName() {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public String getGender() {
+        return gender;
     }
 
-    public int getAge() {
-        return age;
-    }
-
-    public void setAge(int age) {
-        this.age = age;
+    public String getSimpleId() {
+        return simpleId;
     }
 
     @Override
@@ -63,30 +52,19 @@ public class UserInfo
         return name;
     }
 
-    public String getPhone() {
-        return phone;
+    public void setId(long id) {
+        this.id = id;
     }
 
-    public void setPhone(String phone) {
-        this.phone = phone;
-    }
-
-    public String getGender() {
-        return gender;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public void setGender(String gender) {
         this.gender = gender;
     }
 
-    @Override
-    public String toString() {
-        return "UserInfo{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", phone='" + phone + '\'' +
-                ", gender='" + gender + '\'' +
-                ", age=" + age +
-                '}';
+    public void setSimpleId(String simpleId) {
+        this.simpleId = simpleId;
     }
 }

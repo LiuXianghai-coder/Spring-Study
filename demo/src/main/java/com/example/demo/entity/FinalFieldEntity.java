@@ -15,7 +15,6 @@ public class FinalFieldEntity {
         UserInfo tmp = new UserInfo();
         tmp.initFiled();
         tmp.setId(1L);
-        tmp.setAge(22);
         tmp.setName("xhliu2");
         this.userInfo = tmp;
     }

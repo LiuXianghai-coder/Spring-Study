@@ -83,8 +83,6 @@
     <resultMap id="BaseResult" type="com.example.demo.entity.UserInfo">
         <id column="user_id" property="id"/>
         <result column="user_name" property="name"/>
-        <result column="user_age" property="age"/>
-        <result column="user_phone" property="phone"/>
         <result column="user_gender" property="gender"/>
         <result column="created_time" property="createdTime"/>
         <result column="created_user" property="createdUser"/>
@@ -99,4 +97,12 @@
     <select id="selectFriend" resultType="string">
         SELECT id FROM friend_info WHERE fri_id=#{user_id}
     </select>
+
+    <insert id="insertAll" parameterType="java.util.List">
+        INSERT INTO user_info(user_id, user_name, user_gender, simple_id)
+        VALUES
+            <foreach collection="param" item="item" open="" close="" separator=",">
+                (#{item.id}, #{item.name}, #{item.gender}, #{item.simpleId})
+            </foreach>
+    </insert>
 </mapper>
