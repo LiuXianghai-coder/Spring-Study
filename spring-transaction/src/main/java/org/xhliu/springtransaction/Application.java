@@ -5,6 +5,8 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
 
+import java.util.concurrent.CountDownLatch;
+
 /**
  *@author lxh
  */
@@ -16,5 +18,9 @@ public class Application {
         ConfigurableApplicationContext context = SpringApplication.run(Application.class);
         MultiThreadTransaction transaction = context.getBean(MultiThreadTransaction.class);
         transaction.bizHandler();
+
+//        // 避免 Reactor 处理直接结束
+//        CountDownLatch latch = new CountDownLatch(1);
+//        latch.await();
     }
 }
