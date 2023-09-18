@@ -1,9 +1,7 @@
 package com.example.demo;
 
 import com.example.demo.entity.BigDto;
-import com.example.demo.entity.UserInfo;
 import com.example.demo.mapper.SaleInfoMapper;
-import com.example.demo.mapper.UserInfoMapper;
 import com.google.common.base.Stopwatch;
 import com.google.common.collect.Lists;
 import org.apache.ibatis.reflection.Reflector;
@@ -38,9 +36,6 @@ public class DemoApplication {
     public static void main(String[] args) throws Throwable {
         ConfigurableApplicationContext context = SpringApplication.run(DemoApplication.class, args);
         SqlSession sqlSession = context.getBean(SqlSession.class);
-        UserInfoMapper infoMapper = sqlSession.getMapper(UserInfoMapper.class);
-        UserInfo userInfo = new UserInfo();userInfo.setName("xhliu");
-        System.out.println(infoMapper.selectByParam(userInfo));
         SaleInfoMapper mapper = context.getBean(SaleInfoMapper.class);
         List<BigDto> data = new ArrayList<>();
         Stopwatch stopwatch = Stopwatch.createStarted();
@@ -56,6 +51,7 @@ public class DemoApplication {
                 TimeUnit.SECONDS,
                 new LinkedBlockingDeque<>()
         );
+
         for (int i = 0; i < 20; ++i) {
             final BigDto bigDto = new BigDto();
             for (Invoker getInvoker : getInvokers) {
@@ -66,6 +62,7 @@ public class DemoApplication {
                         throw new RuntimeException(e);
                     }
                 });
+//                getInvoker.invoke(bigDto, new Object[]{mapper.selectSaleInfo()});
             }
             data.add(bigDto);
         }
