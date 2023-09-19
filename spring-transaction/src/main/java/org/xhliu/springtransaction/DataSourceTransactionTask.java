@@ -69,6 +69,14 @@ public class DataSourceTransactionTask
         return status;
     }
 
+    public Runnable actualRunnable() {
+        return this.runnable;
+    }
+
+    public TransactionDefinition getDefinition() {
+        return definition;
+    }
+
     public static final class Builder {
         private Object resource;
         private DataSourceTransactionManager txManager;

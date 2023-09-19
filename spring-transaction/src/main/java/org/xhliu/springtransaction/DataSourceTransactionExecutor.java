@@ -2,10 +2,14 @@ package org.xhliu.springtransaction;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.jdbc.datasource.ConnectionHolder;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
+import org.springframework.jdbc.datasource.DataSourceUtils;
+import org.springframework.jdbc.datasource.JdbcTransactionObjectSupport;
 import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
+import org.springframework.transaction.support.DefaultTransactionStatus;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 import org.xhliu.springtransaction.tools.ReflectTool;
 import reactor.core.publisher.Flux;
@@ -14,6 +18,7 @@ import reactor.core.scheduler.Scheduler;
 import reactor.core.scheduler.Schedulers;
 import reactor.util.function.Tuples;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.*;
@@ -70,6 +75,8 @@ public class DataSourceTransactionExecutor {
 
     private final ThreadPoolExecutor executor;
 
+    private final TransactionDefinition definition;
+
     public DataSourceTransactionExecutor(int coreSize,
                                          int maxSize,
                                          int keepTime,
@@ -81,6 +88,7 @@ public class DataSourceTransactionExecutor {
                                          TransactionDefinition definition) {
         this.txManager = txManager;
         this.txStatus = txManager.getTransaction(definition);
+        this.definition = definition;
         this.txResource = TransactionSynchronizationManager.getResource(txManager.getResourceFactory());
         executor = new ThreadPoolExecutor(coreSize, maxSize, keepTime,
                 timeUnit, workQueue, threadFactory, rejectHandler);
@@ -116,6 +124,7 @@ public class DataSourceTransactionExecutor {
         );
         this.txManager = txManager;
         this.txStatus = txManager.getTransaction(definition);
+        this.definition = definition;
         this.txResource = TransactionSynchronizationManager.getResource(txManager.getResourceFactory());
     }
 

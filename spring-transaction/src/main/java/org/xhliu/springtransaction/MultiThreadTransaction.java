@@ -2,11 +2,13 @@ package org.xhliu.springtransaction;
 
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
 import org.xhliu.springtransaction.entity.CourseInfo;
 import org.xhliu.springtransaction.mapper.CourseInfoMapper;
 
 import javax.annotation.Resource;
+import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -24,7 +26,8 @@ public class MultiThreadTransaction {
     @Resource
     private DataSourceTransactionManager txManager;
 
-    public void bizHandler() throws InterruptedException {
+    @Transactional
+    public void bizHandler() {
         ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(1, 1, 10,
                 TimeUnit.SECONDS, new LinkedBlockingDeque<>()
         );
@@ -36,7 +39,7 @@ public class MultiThreadTransaction {
         executor.addTask(this::updateCourseType);
         executor.addTask(this::updateCourseTime);
         executor.addTask(this::updateCourseName);
-        executor.execute();
+        executor.asyncExecute();
     }
 
     public void updateCourseTime() {
