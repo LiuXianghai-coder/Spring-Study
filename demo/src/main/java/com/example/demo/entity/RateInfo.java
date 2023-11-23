@@ -2,6 +2,7 @@ package com.example.demo.entity;
 
 import com.example.demo.common.BackupInfo;
 import com.google.common.base.Objects;
+import lombok.Getter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -11,18 +12,18 @@ import java.math.BigDecimal;
 /**
  * @author xhliu
  **/
-public class RateInfo extends AbstractEntity implements BackupInfo, Serializable {
+public class RateInfo
+        extends AbstractEntity
+        implements BackupInfo, Serializable {
 
     private final static Logger log = LoggerFactory.getLogger(RateInfo.class);
 
+    @Getter
     private long id;
     private String rateName;
+    @Getter
     private BigDecimal rateVal;
     private String backUpId;
-
-    public long getId() {
-        return id;
-    }
 
     @Override
     public String getRecordId() {
@@ -43,16 +44,8 @@ public class RateInfo extends AbstractEntity implements BackupInfo, Serializable
         this.id = id;
     }
 
-    public String getRateName() {
-        return rateName;
-    }
-
     public void setRateName(String rateName) {
         this.rateName = rateName;
-    }
-
-    public BigDecimal getRateVal() {
-        return rateVal;
     }
 
     public void setRateVal(BigDecimal rateVal) {

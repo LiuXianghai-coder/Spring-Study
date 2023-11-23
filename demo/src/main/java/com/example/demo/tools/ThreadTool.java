@@ -1,32 +1,35 @@
 package com.example.demo.tools;
 
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ThreadLocalRandom;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.concurrent.*;
 
 /**
  * @author xhliu
  **/
 public class ThreadTool {
-    public static void main(String[] args) throws InterruptedException {
+
+    private final static Logger log = LoggerFactory.getLogger(ThreadTool.class);
+
+    public static void main(String[] args) throws InterruptedException, ExecutionException {
         int sz = Runtime.getRuntime().availableProcessors();
-        CountDownLatch start = new CountDownLatch(1);
-        CountDownLatch end = new CountDownLatch(sz);
-        Thread[] threads = new Thread[sz];
-        for (int i = 0; i < threads.length; i++) {
-            threads[i] = new Thread(() -> {
-                try {
-                    start.await();
-                    System.out.println(Thread.currentThread().getName() + " await......");
-                    Thread.sleep(Math.abs(ThreadLocalRandom.current().nextLong()) % 3000);
-                    end.countDown();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+        ThreadPoolExecutor executor = new ThreadPoolExecutor(sz, sz * 2, 60,
+                TimeUnit.SECONDS, new LinkedBlockingDeque<>(),
+                r -> {
+                    Thread thread = new Thread(r);
+                    thread.setUncaughtExceptionHandler((t, ex) -> {
+                        log.error("thread exception", ex);
+                    });
+                    return thread;
                 }
-                System.out.println(Thread.currentThread().getName() + " finish.....");
-            }, "Thread-" + (i + 1));
-        }
-        for (Thread t : threads) t.start();
-        start.countDown();
-        end.await();
+        );
+        Thread thread = new Thread(() -> {
+            throw new RuntimeException("抛出的异常");
+        });
+        thread.setUncaughtExceptionHandler((t, ex) -> {
+            log.error("thread exception", ex);
+        });
+        thread.start();
     }
 }

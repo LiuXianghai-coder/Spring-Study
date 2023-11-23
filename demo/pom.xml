@@ -158,6 +158,11 @@
         </dependency>
 
         <dependency>
+            <groupId>org.springframework.kafka</groupId>
+            <artifactId>spring-kafka</artifactId>
+        </dependency>
+
+        <dependency>
             <groupId>me.friwi</groupId>
             <artifactId>jcefmaven</artifactId>
             <version>110.0.25</version>

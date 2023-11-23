@@ -1,9 +1,6 @@
 package com.example.demo.tools;
 
-import com.example.demo.entity.OaPenetrateData;
-import com.example.demo.entity.OaPenetrateTask;
-import com.example.demo.entity.UserInfo;
-import com.example.demo.entity.UserInfoView;
+import com.example.demo.entity.*;
 import com.example.demo.mapper.OaPenetrateDataMapper;
 import com.example.demo.mapper.OaPenetrateTaskMapper;
 import com.example.demo.mapper.RateInfoMapper;
@@ -64,9 +61,9 @@ public class MyBatisTool {
         try (
                 SqlSession sqlSession = openSqlSession()
         ) {
-            UserInfoMapper mapper = sqlSession.getMapper(UserInfoMapper.class);
-            UserInfo user = mapper.getUserById(1L);
-            System.out.println(user);
+            RateInfoMapper rateInfoMapper = sqlSession.getMapper(RateInfoMapper.class);
+            RateInfo rateInfo = rateInfoMapper.selectById(1L);
+            System.out.println(rateInfo);
         }
     }
 }
