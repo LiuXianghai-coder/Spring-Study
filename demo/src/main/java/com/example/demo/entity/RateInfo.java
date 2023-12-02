@@ -6,12 +6,15 @@ import lombok.Getter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.persistence.Column;
+import javax.persistence.Table;
 import java.io.Serializable;
 import java.math.BigDecimal;
 
 /**
  * @author xhliu
  **/
+@Table(name = "rate_info")
 public class RateInfo
         extends AbstractEntity
         implements BackupInfo, Serializable {
@@ -19,10 +22,17 @@ public class RateInfo
     private final static Logger log = LoggerFactory.getLogger(RateInfo.class);
 
     @Getter
+    @Column(name = "id")
     private long id;
+
+    @Column(name = "rate_name")
     private String rateName;
+
     @Getter
+    @Column(name = "rate_val")
     private BigDecimal rateVal;
+
+    @Column(name = "backup_id")
     private String backUpId;
 
     @Override

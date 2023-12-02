@@ -1,7 +1,9 @@
 package com.example.demo;
 
 import com.example.demo.entity.BigJson;
+import com.example.demo.entity.RateInfo;
 import com.example.demo.mapper.BigJsonMapper;
+import com.example.demo.mapper.RateInfoMapper;
 import org.mybatis.spring.annotation.MapperScan;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,8 +17,11 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.stream.Stream;
 
 @EnableAsync
 @SpringBootApplication
@@ -29,13 +34,12 @@ public class DemoApplication {
 
     public static void main(String[] args) throws Throwable {
         ConfigurableApplicationContext context = SpringApplication.run(DemoApplication.class, args);
-        BigJsonMapper jsonMapper = context.getBean(BigJsonMapper.class);
-        DataSourceTransactionManager txManager = context.getBean(DataSourceTransactionManager.class);
-        Thread[] ts = new Thread[8];
-        for (int i = 0; i < ts.length; i++) {
-            ts[i] = new Thread(new Task(jsonMapper, txManager));
-        }
-        Arrays.stream(ts).forEach(Thread::start);
+        RateInfoMapper rateInfoMapper = context.getBean(RateInfoMapper.class);
+        List<RateInfo> infos = rateInfoMapper.selectAll();
+        Stream<RateInfo> stream = infos.stream();
+        BigDecimal sum = stream.map(RateInfo::getRateVal)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+        log.info("sum={}", sum);
     }
 
     public static class Task

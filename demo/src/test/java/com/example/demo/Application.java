@@ -1,6 +1,10 @@
 package com.example.demo;
 
 
+import org.apache.ibatis.io.Resources;
+
+import java.io.BufferedReader;
+import java.io.IOException;
 import java.util.*;
 
 /**
@@ -8,30 +12,70 @@ import java.util.*;
  **/
 public class Application {
 
-    static final int mod = (int) 1e9 + 7;
+    static class Node {
+        boolean finished = false;
+        TreeMap<Character, Node> next = new TreeMap<>();
+    }
 
-    public int maximumXorProduct(long a, long b, int n) {
-        long p = a, q = b;
-        for (int i = n - 1; i >= 0; --i) {
-            long c1 = (a >> i) & 1;
-            long c2 = (b >> i) & 1;
-            if (c1 == c2) {
-                p |= 1L << i;
-                q |= 1L << i;
-            } else if (p < q) {
-                p |= 1L << i;
-            } else {
-                q |= 1L << i;
-            }
+    private Node root = new Node();
+
+    public void add(String word) {
+        add(root, word, 0);
+    }
+
+    private void add(Node root, String word, int index) {
+        int n = word.length();
+        if (index == n) {
+            root.finished = true;
+            return;
         }
-        q %= mod;
-        p %= mod;
-        return (int) (p * q) % mod;
+        char ch = word.charAt(index);
+        if (root.next.get(ch) == null) {
+            root.next.put(ch, new Node());
+        }
+        add(root.next.get(ch), word, index + 1);
+    }
+
+    public List<String> search(String keyWord, int len) {
+        List<String> ans = new ArrayList<>();
+        search(root, keyWord, 0, len, ans, new StringBuilder());
+        return ans;
+    }
+
+    private void search(Node root, String keyWord, int index, int len, List<String> container, StringBuilder sb) {
+        if (index >= len) {
+            if (root.finished) container.add(sb.toString());
+            if (container.size() >= 3) return;
+            for (Map.Entry<Character, Node> entry : root.next.entrySet()) {
+                sb.append(entry.getKey());
+                search(entry.getValue(), keyWord, index, len, container, sb);
+                sb.deleteCharAt(sb.length() - 1);
+                if (container.size() >= 3) return;
+            }
+            return;
+        }
+        char ch = keyWord.charAt(index);
+        if (!root.next.containsKey(ch)) return;
+        sb.append(ch);
+        search(root.next.get(ch), keyWord, index + 1, len, container, sb);
+        sb.deleteCharAt(sb.length() - 1);
+    }
+
+    public List<List<String>> suggestedProducts(String[] products, String searchWord) {
+        for (String s : products) add(s);
+        List<List<String>> ans = new ArrayList<>();
+        for (int i = 1; i <= searchWord.length(); ++i) {
+            ans.add(search(searchWord, i));
+        }
+        return ans;
     }
 
     public static void main(String[] args) {
-        System.out.println(UUID.randomUUID().toString().replaceAll("-", ""));
-        System.out.println(UUID.randomUUID().toString().replaceAll("-", ""));
-        System.out.println(UUID.randomUUID().toString().replaceAll("-", ""));
+        Application app = new Application();
+        String[] prods = new String[]{"code", "codephone", "coddle", "coddles", "codes"};
+        List<List<String>> lists = app.suggestedProducts(prods, "coddle");
+        for (List<String> s : lists) {
+            System.out.println(s);
+        }
     }
 }

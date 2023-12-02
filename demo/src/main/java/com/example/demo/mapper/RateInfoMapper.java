@@ -2,14 +2,14 @@ package com.example.demo.mapper;
 
 import com.example.demo.entity.RateInfo;
 import org.apache.ibatis.annotations.Param;
+import tk.mybatis.mapper.common.Mapper;
 
 /**
  * @author xhliu
  **/
-public interface RateInfoMapper {
+public interface RateInfoMapper
+        extends Mapper<RateInfo> {
     RateInfo selectById(@Param("id") long id);
-
-    int insert(RateInfo rateInfo);
 
     int update(RateInfo rateInfo);
 }
