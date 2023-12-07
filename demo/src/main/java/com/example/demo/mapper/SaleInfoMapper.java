@@ -6,7 +6,7 @@ import org.apache.ibatis.annotations.*;
 import java.util.List;
 
 /**
- *@author lxh
+ * @author lxh
  */
 @Mapper
 public interface SaleInfoMapper extends tk.mybatis.mapper.common.Mapper<SaleInfo> {
@@ -30,7 +30,7 @@ public interface SaleInfoMapper extends tk.mybatis.mapper.common.Mapper<SaleInfo
 
     @Select({
             "<script>",
-            "SELECT * FROM sale_info si WHERE sale_id BETWEEN 100 AND 2000",
+            "SELECT * FROM sale_info si WHERE sale_id BETWEEN 100 AND 10010",
             "</script>"
     })
     List<SaleInfo> sampleInfo();
@@ -44,4 +44,10 @@ public interface SaleInfoMapper extends tk.mybatis.mapper.common.Mapper<SaleInfo
             "</script>"
     })
     int updateAll(@Param("data") List<? extends SaleInfo> data);
+
+    @Update({
+            "UPDATE sale_info SET id=#{item.id}, amount=#{item.amount}, " +
+                    "year=#{item.year} WHERE id=#{item.id}",
+    })
+    int update(@Param("item") SaleInfo saleInfo);
 }

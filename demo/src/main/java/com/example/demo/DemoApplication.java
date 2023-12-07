@@ -2,8 +2,17 @@ package com.example.demo;
 
 import com.example.demo.entity.BigJson;
 import com.example.demo.entity.RateInfo;
+import com.example.demo.entity.SaleInfo;
+import com.example.demo.entity.UserInfo;
 import com.example.demo.mapper.BigJsonMapper;
 import com.example.demo.mapper.RateInfoMapper;
+import com.example.demo.mapper.SaleInfoMapper;
+import com.example.demo.mapper.UserInfoMapper;
+import com.google.common.collect.Lists;
+import org.apache.ibatis.session.ExecutorType;
+import org.apache.ibatis.session.SqlSession;
+import org.apache.ibatis.session.SqlSessionFactory;
+import org.mybatis.spring.SqlSessionFactoryBean;
 import org.mybatis.spring.annotation.MapperScan;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,6 +27,7 @@ import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
@@ -34,47 +44,18 @@ public class DemoApplication {
 
     public static void main(String[] args) throws Throwable {
         ConfigurableApplicationContext context = SpringApplication.run(DemoApplication.class, args);
-        RateInfoMapper rateInfoMapper = context.getBean(RateInfoMapper.class);
-        List<RateInfo> infos = rateInfoMapper.selectAll();
-        Stream<RateInfo> stream = infos.stream();
-        BigDecimal sum = stream.map(RateInfo::getRateVal)
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
-        log.info("sum={}", sum);
-    }
+        SaleInfoMapper mapper = context.getBean(SaleInfoMapper.class);
+        List<SaleInfo> saleInfoList = mapper.sampleInfo();
+        saleInfoList.forEach(v -> v.setAmount(10110));
 
-    public static class Task
-            implements Runnable {
-
-        private final BigJsonMapper jsonMapper;
-
-        private final PlatformTransactionManager txManager;
-
-        public Task(BigJsonMapper jsonMapper,
-                    PlatformTransactionManager txManager) {
-            this.jsonMapper = jsonMapper;
-            this.txManager = txManager;
-        }
-
-        @Override
-        public void run() {
-            TransactionStatus status = txManager.getTransaction(new DefaultTransactionDefinition());
-            try {
-                jsonMapper.insertSelective(BigJson.example());
-                txManager.commit(status);
-            } catch (Throwable t) {
-                txManager.rollback(status);
-                throw t;
+        SqlSessionFactory sqlSessionFactory = context.getBean(SqlSessionFactory.class);
+        try (SqlSession sqlSession = sqlSessionFactory.openSession(ExecutorType.BATCH)) {
+            SaleInfoMapper infoMapper = sqlSession.getMapper(SaleInfoMapper.class);
+            for (SaleInfo saleInfo : saleInfoList) {
+                infoMapper.update(saleInfo);
             }
+            sqlSession.flushStatements();
+            sqlSession.commit();
         }
-    }
-
-    static String randomName(ThreadLocalRandom random) {
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < 10; ++i) {
-            int r = random.nextInt(0, 26);
-            sb.append((char) ('a' + r));
-            if (r > 20 && sb.length() > 3) break;
-        }
-        return sb.toString();
     }
 }
