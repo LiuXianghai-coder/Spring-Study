@@ -2,6 +2,7 @@ package com.example.demo.entity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.Id;
 import javax.persistence.Table;
 import java.time.OffsetDateTime;
 
@@ -11,6 +12,7 @@ import java.time.OffsetDateTime;
 @Table(name = "sale_info")
 public class SaleInfo {
 
+    @Id
     @Column(name = "id")
     private Long id;
 

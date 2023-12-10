@@ -9,7 +9,7 @@ import java.util.List;
  * @author lxh
  */
 @Mapper
-public interface SaleInfoMapper extends tk.mybatis.mapper.common.Mapper<SaleInfo> {
+public interface SaleInfoMapper extends ExtendsMapper<SaleInfo> {
 
     @Insert({
             "<script>",
