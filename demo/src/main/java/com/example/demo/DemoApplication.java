@@ -1,34 +1,31 @@
 package com.example.demo;
 
-import com.example.demo.entity.BigDto;
+import com.example.demo.entity.SaleInfo;
 import com.example.demo.mapper.SaleInfoMapper;
-import com.google.common.base.Stopwatch;
-import com.google.common.collect.Lists;
-import org.apache.ibatis.reflection.Reflector;
-import org.apache.ibatis.reflection.invoker.Invoker;
+import com.example.demo.transaction.DataSourceHolder;
 import org.apache.ibatis.session.SqlSession;
 import org.mybatis.spring.annotation.MapperScan;
+import org.mybatis.spring.boot.autoconfigure.MybatisAutoConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
+import org.springframework.context.annotation.Import;
 import org.springframework.scheduling.annotation.EnableAsync;
+import tk.mybatis.mapper.entity.Example;
+import tk.mybatis.mapper.util.Sqls;
 
-import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.ThreadLocalRandom;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
 
 @EnableAsync
 @SpringBootApplication
 @MapperScan(value = {"com.example.demo.mapper"})
 @tk.mybatis.spring.annotation.MapperScan(value = {"com.example.demo.mapper"})
 @EnableAspectJAutoProxy(proxyTargetClass = true)
+@Import({MybatisAutoConfiguration.class})
 public class DemoApplication {
 
     private final static Logger log = LoggerFactory.getLogger(DemoApplication.class);
@@ -37,40 +34,16 @@ public class DemoApplication {
         ConfigurableApplicationContext context = SpringApplication.run(DemoApplication.class, args);
         SqlSession sqlSession = context.getBean(SqlSession.class);
         SaleInfoMapper mapper = context.getBean(SaleInfoMapper.class);
-        List<BigDto> data = new ArrayList<>();
-        Stopwatch stopwatch = Stopwatch.createStarted();
-        Reflector reflector = new Reflector(BigDto.class);
-        List<Invoker> getInvokers = Lists.newArrayList();
-        for (int i = 1; i <= 9; ++i) {
-            getInvokers.add(reflector.getSetInvoker("obj" + i));
-        }
-        int sz = Runtime.getRuntime().availableProcessors();
-        ThreadPoolExecutor executor = new ThreadPoolExecutor(sz,
-                Integer.MAX_VALUE,
-                300,
-                TimeUnit.SECONDS,
-                new LinkedBlockingDeque<>()
-        );
+        Example example = Example.builder(SaleInfo.class)
+                .andWhere(Sqls.custom().andBetween("id", 50001L, 50009L))
+                .build();
+        DataSourceHolder.setCurDataSource("mysql");
+        List<SaleInfo> data = mapper.selectByExample(example);
+        mapper.mysqlUpdateAll(data);
 
-        for (int i = 0; i < 20; ++i) {
-            final BigDto bigDto = new BigDto();
-            for (Invoker getInvoker : getInvokers) {
-                executor.submit(() -> {
-                    try {
-                        getInvoker.invoke(bigDto, new Object[]{mapper.selectSaleInfo()});
-                    } catch (IllegalAccessException | InvocationTargetException e) {
-                        throw new RuntimeException(e);
-                    }
-                });
-//                getInvoker.invoke(bigDto, new Object[]{mapper.selectSaleInfo()});
-            }
-            data.add(bigDto);
-        }
-        System.out.println(data);
-        executor.shutdown();
-        executor.awaitTermination(Integer.MAX_VALUE, TimeUnit.SECONDS);
-        log.info("Take time {} s", stopwatch.elapsed(TimeUnit.SECONDS));
-        System.exit(0);
+        DataSourceHolder.setCurDataSource("postgresql");
+        data = mapper.selectByExample(example);
+        mapper.psqlUpdateAll(data);
     }
 
     static String randomName(ThreadLocalRandom random) {

@@ -9,6 +9,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -39,6 +41,11 @@ public class ViewController {
     @ResponseBody
     public HttpStatus dom(@RequestBody DomData data) {
         log.info(data.getData());
+        return HttpStatus.OK;
+    }
+
+    @PostMapping(path = "/download")
+    public HttpStatus download(HttpServletRequest request, HttpServletResponse response) {
         return HttpStatus.OK;
     }
 }

@@ -18,4 +18,7 @@ public interface ExtendsMapper<T>
 
     @InsertProvider(type = ExtendsInsertProvider.class, method = "dynamicSQL")
     int mysqlUpdateAll(List<? extends T> data);
+
+    @InsertProvider(type = ExtendsInsertProvider.class, method = "dynamicSQL")
+    int psqlUpdateAll(List<? extends T> data);
 }

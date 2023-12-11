@@ -31,7 +31,92 @@ public class ExtendsInsertProvider
         Set<EntityColumn> columnList = EntityHelper.getColumns(entityClass);
         EntityColumn logicDeleteColumn = SqlHelper.getLogicDeleteColumn(entityClass);
         sql.append(SqlHelper.insertIntoTable(entityClass, tableName(entityClass)));
+        sql.append(insertColsSql(ms));
+        sql.append(insertDataSql(ms));
+        return sql.toString();
+    }
+
+    public String mysqlUpdateAll(MappedStatement ms) {
+        Class<?> entityClass = getEntityClass(ms);
+        StringBuilder sql = new StringBuilder(saveAll(ms));
+        sql.append(" AS new ON DUPLICATE KEY UPDATE ");
+
+        sql.append("<trim suffixOverrides=\",\">");
+        //获取全部列
+        Set<EntityColumn> columnSet = EntityHelper.getColumns(entityClass);
+        //当某个列有主键策略时，不需要考虑他的属性是否为空，因为如果为空，一定会根据主键策略给他生成一个值
+        for (EntityColumn column : columnSet) {
+            if (!column.isInsertable()) {
+                continue;
+            }
+            if (column.isId()) {
+                continue;
+            }
+            sql.append(column.getColumn()).append("=new.")
+                    .append(column.getColumn())
+                    .append(",");
+        }
+        sql.append("</trim>");
+
+        return sql.toString();
+    }
+
+    public String psqlUpdateAll(MappedStatement ms) {
+        Class<?> entityClass = getEntityClass(ms);
+        StringBuilder sql = new StringBuilder();
+        //获取全部列
+        Set<EntityColumn> columnList = EntityHelper.getColumns(entityClass);
+        sql.append(SqlHelper.insertIntoTable(entityClass, tableName(entityClass)));
+        sql.append(" AS d ").append(insertColsSql(ms))
+                .append(insertDataSql(ms));
+
+        sql.append("ON CONFLICT ");
+        // 何种字段一致时，认为时相同的数据
+        sql.append("<trim prefix=\"(\" suffix=\")\" suffixOverrides=\",\">");
+        Set<EntityColumn> columnSet = EntityHelper.getColumns(entityClass);
+        //当某个列有主键策略时，不需要考虑他的属性是否为空，因为如果为空，一定会根据主键策略给他生成一个值
+        for (EntityColumn column : columnSet) {
+            if (!column.isInsertable()) {
+                continue;
+            }
+            if (!column.isId()) {
+                continue;
+            }
+            sql.append(column.getColumn());
+        }
+        sql.append("</trim>");
+
+        // 对应的更新字段
+        sql.append("DO UPDATE SET ");
+        sql.append("<trim suffixOverrides=\",\">");
+        for (EntityColumn column : columnSet) {
+            if (!column.isInsertable() || column.isId()) {
+                continue;
+            }
+            sql.append(column.getColumn()).append("=d.")
+                    .append(column.getColumn())
+                    .append(",");
+        }
+        sql.append("</trim>");
+
+        return sql.toString();
+    }
+
+    private String insertColsSql(MappedStatement ms) {
+        StringBuilder sql = new StringBuilder();
+
+        Class<?> entityClass = getEntityClass(ms);
         sql.append(SqlHelper.insertColumns(entityClass, false, false, false));
+        return sql.toString();
+    }
+
+    private String insertDataSql(MappedStatement ms) {
+        StringBuilder sql = new StringBuilder();
+
+        Class<?> entityClass = getEntityClass(ms);
+        Set<EntityColumn> columnList = EntityHelper.getColumns(entityClass);
+        EntityColumn logicDeleteColumn = SqlHelper.getLogicDeleteColumn(entityClass);
+
         sql.append("<trim prefix=\"VALUES \" suffixOverrides=\",\">");
         sql.append("<foreach collection=\"collection\" item=\"item\" separator=\",\" >");
         processKey(sql, entityClass, ms, columnList);
@@ -76,31 +161,6 @@ public class ExtendsInsertProvider
         sql.append("</trim>");
         sql.append("</foreach>");
         sql.append("</trim>");
-        return sql.toString();
-    }
-
-    public String mysqlUpdateAll(MappedStatement ms) {
-        Class<?> entityClass = getEntityClass(ms);
-        StringBuilder sql = new StringBuilder(saveAll(ms));
-        sql.append(" AS new ON DUPLICATE KEY UPDATE ");
-
-        sql.append("<trim suffixOverrides=\",\">");
-        //获取全部列
-        Set<EntityColumn> columnSet = EntityHelper.getColumns(entityClass);
-        //当某个列有主键策略时，不需要考虑他的属性是否为空，因为如果为空，一定会根据主键策略给他生成一个值
-        for (EntityColumn column : columnSet) {
-            if (!column.isInsertable()) {
-                continue;
-            }
-            if (column.isId()) {
-                continue;
-            }
-            sql.append(column.getColumn()).append("=new.")
-                    .append(column.getColumn())
-                    .append(",");
-        }
-        sql.append("</trim>");
-
         return sql.toString();
     }
 

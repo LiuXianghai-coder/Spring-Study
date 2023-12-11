@@ -6,6 +6,7 @@ import com.example.demo.entity.UserInfoView;
 import com.example.demo.plugin.ConfigMapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.SelectProvider;
+import org.apache.ibatis.annotations.Update;
 import org.apache.ibatis.session.RowBounds;
 import tk.mybatis.mapper.common.Mapper;
 
@@ -35,4 +36,13 @@ public interface UserInfoMapper extends Mapper<UserInfo> {
     List<UserInfo> selectByParam(@Param("param") UserInfo param);
 
     int insertAll(@Param("param") List<UserInfo> data);
+
+    @Update(value = {
+            "<script>" +
+                    "<foreach collection=\"param\" item=\"item\" separator=\";\">" +
+                    "UPDATE user_info ui SET simple_id='0x3f3f3f3f' WHERE ui.user_id=#{item.id}" +
+                    "</foreach>" +
+                    "</script>"
+    })
+    int updateAll(@Param("param") List<? extends UserInfo> userInfos);
 }
