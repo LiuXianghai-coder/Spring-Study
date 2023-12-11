@@ -13,7 +13,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class MybatisConfig {
 
-    @Bean(name = "backupInfoPlugin")
+//    @Bean(name = "backupInfoPlugin")
     public Interceptor backupInfoPlugin() {
         return new BackupInfoPlugin();
     }

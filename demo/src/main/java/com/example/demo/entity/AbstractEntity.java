@@ -2,6 +2,7 @@ package com.example.demo.entity;
 
 import com.google.common.base.Objects;
 
+import javax.persistence.Column;
 import java.io.Serializable;
 import java.time.OffsetDateTime;
 
@@ -10,15 +11,23 @@ import java.time.OffsetDateTime;
  */
 public abstract class AbstractEntity implements Serializable {
 
+    @Column(name = "delete_flag")
+    private String deleteFlag;
+
+    @Column(name = "created_user")
     private String createdUser;
 
+    @Column(name = "created_time")
     private OffsetDateTime createdTime;
 
+    @Column(name = "updated_user")
     private String updatedUser;
 
+    @Column(name = "updated_time")
     private OffsetDateTime updatedTime;
 
     public void initFiled() {
+        setDeleteFlag("0");
         setCreatedTime(OffsetDateTime.now());
         setUpdatedTime(OffsetDateTime.now());
         setUpdatedUser("xhliu");
@@ -56,6 +65,14 @@ public abstract class AbstractEntity implements Serializable {
 
     public OffsetDateTime getUpdatedTime() {
         return updatedTime;
+    }
+
+    public String getDeleteFlag() {
+        return deleteFlag;
+    }
+
+    public void setDeleteFlag(String deleteFlag) {
+        this.deleteFlag = deleteFlag;
     }
 
     public void setUpdatedTime(OffsetDateTime updatedTime) {

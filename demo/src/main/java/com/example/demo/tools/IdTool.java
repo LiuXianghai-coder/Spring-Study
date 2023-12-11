@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.Lock;
@@ -108,6 +109,26 @@ public class IdTool {
 
     private static long curTime() {
         return System.currentTimeMillis();
+    }
+
+    public static String randomName(ThreadLocalRandom random) {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < 10; ++i) {
+            int r = random.nextInt(0, 26);
+            sb.append((char) ('a' + r));
+            if (r > 20 && sb.length() > 3) break;
+        }
+        return sb.toString();
+    }
+
+    public static String randomName(ThreadLocalRandom random, int len) {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < len; ++i) {
+            int r = random.nextInt(0, 26);
+            sb.append((char) ('a' + r));
+            if (r > 20 && sb.length() > 3) break;
+        }
+        return sb.toString();
     }
 
     public static void main(String[] args) throws InterruptedException {

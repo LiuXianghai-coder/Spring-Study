@@ -6,10 +6,10 @@ import org.apache.ibatis.annotations.*;
 import java.util.List;
 
 /**
- *@author lxh
+ * @author lxh
  */
 @Mapper
-public interface SaleInfoMapper {
+public interface SaleInfoMapper extends ExtendsMapper<SaleInfo> {
 
     @Insert({
             "<script>",
@@ -27,4 +27,27 @@ public interface SaleInfoMapper {
             "</script>"
     })
     List<SaleInfo> selectSaleInfo();
+
+    @Select({
+            "<script>",
+            "SELECT * FROM sale_info si WHERE sale_id BETWEEN 100 AND 10010",
+            "</script>"
+    })
+    List<SaleInfo> sampleInfo();
+
+    @Update({
+            "<script>",
+            "<foreach collection=\"data\" item=\"item\" separator=\";\">",
+            "UPDATE sale_info SET id=#{item.id}, amount=#{item.amount}, " +
+                    "year=#{item.year} WHERE id=#{item.id}",
+            "</foreach>",
+            "</script>"
+    })
+    int updateAll(@Param("data") List<? extends SaleInfo> data);
+
+    @Update({
+            "UPDATE sale_info SET id=#{item.id}, amount=#{item.amount}, " +
+                    "year=#{item.year} WHERE id=#{item.id}",
+    })
+    int update(@Param("item") SaleInfo saleInfo);
 }

@@ -7,11 +7,6 @@
 
     <cache />
 
-    <insert id="insert" parameterType="com.example.demo.entity.RateInfo" >
-        INSERT INTO rate_info(<include refid="allCols" />)
-        VALUES (#{id}, #{rateName}, #{rateVal}, #{backUpId}, #{createdTime}, #{createdUser}, #{updatedUser}, #{updatedTime})
-    </insert>
-
     <sql id="allCols">
         id, rate_name, rate_val, backup_id, created_time, created_user, updated_user, updated_time
     </sql>

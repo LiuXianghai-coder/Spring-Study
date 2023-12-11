@@ -1,0 +1,13 @@
+spring:
+  datasource:
+    url: jdbc:mysql://127.0.0.1:3306/lxh_db
+    username: root
+    password: 18373796017;Liu
+
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+logging:
+  level:
+    root: info

@@ -2,27 +2,38 @@ package com.example.demo.entity;
 
 import com.example.demo.common.BackupInfo;
 import com.google.common.base.Objects;
+import lombok.Getter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.persistence.Column;
+import javax.persistence.Table;
 import java.io.Serializable;
 import java.math.BigDecimal;
 
 /**
  * @author xhliu
  **/
-public class RateInfo extends AbstractEntity implements BackupInfo, Serializable {
+@Table(name = "rate_info")
+public class RateInfo
+        extends AbstractEntity
+        implements BackupInfo, Serializable {
 
     private final static Logger log = LoggerFactory.getLogger(RateInfo.class);
 
+    @Getter
+    @Column(name = "id")
     private long id;
-    private String rateName;
-    private BigDecimal rateVal;
-    private String backUpId;
 
-    public long getId() {
-        return id;
-    }
+    @Column(name = "rate_name")
+    private String rateName;
+
+    @Getter
+    @Column(name = "rate_val")
+    private BigDecimal rateVal;
+
+    @Column(name = "backup_id")
+    private String backUpId;
 
     @Override
     public String getRecordId() {
@@ -43,16 +54,8 @@ public class RateInfo extends AbstractEntity implements BackupInfo, Serializable
         this.id = id;
     }
 
-    public String getRateName() {
-        return rateName;
-    }
-
     public void setRateName(String rateName) {
         this.rateName = rateName;
-    }
-
-    public BigDecimal getRateVal() {
-        return rateVal;
     }
 
     public void setRateVal(BigDecimal rateVal) {
