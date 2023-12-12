@@ -14,16 +14,13 @@
 
     <!-- 一个简单的查询，这里没有配置 ORM 关系，因此会直接将列名映射为对象的属性名 -->
     <select id="getUserById" parameterType="long" resultMap="BaseResult">
-        SELECT
-            u.user_id,
-            u.user_name,
-            u.user_gender,
-            u.user_phone,
-            u.user_age
-        FROM
-            user_info u
-        WHERE
-            user_id=#{id}
+        SELECT u.user_id,
+               u.user_name,
+               u.user_gender,
+               u.simple_id,
+               u.backup_id
+        FROM user_info u
+        WHERE user_id = #{id}
     </select>
 
     <insert id="insert" parameterType="com.example.demo.entity.UserInfo" >
@@ -65,6 +62,15 @@
         <if test="param.name != null and param.name.length() > 0" >
             AND user_name LIKE concat('%', #{param.name}, '%')
         </if>
+        ORDER BY
+        <trim prefixOverrides=",">
+            <if test="param.age != 0">
+                ,created_time
+            </if>
+            <if test="param.name">
+                ,updated_time
+            </if>
+        </trim>
     </select>
 
     <select id="selectByRowBound" resultMap="BaseResult">

@@ -2,20 +2,13 @@ server:
   port: 8080
 
 spring:
+  autoconfigure:
+    exclude: org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
   jackson:
     date-format: "yyyy-MM-dd HH:mm:ss"
-  datasource:
-    url: jdbc:mysql://127.0.0.1:3306/lxh_db
-    username: root
-    password: 18373796017;Liu
   thymeleaf:
     cache: false
     mode: LEGACYHTML5
-
-user:
-  name: xhliu
-  age: 22
-  plugin: com.example.demo.plugin.BackupInfoPlugin
 
 mybatis:
   configuration:
