@@ -16,6 +16,7 @@ import org.springframework.util.CollectionUtils;
 import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -35,8 +36,10 @@ public class BatchUpdateTest {
     void loadData() {
         SaleInfoMapper mapper = context.getBean(SaleInfoMapper.class);
         List<SaleInfo> saleInfos = mapper.sampleInfo();
+        ThreadLocalRandom random = ThreadLocalRandom.current();
+        int amount = random.nextInt(1, 1000000);
         if (!CollectionUtils.isEmpty(saleInfos)) {
-            saleInfos.forEach(v -> v.setAmount(31415926));
+            saleInfos.forEach(v -> v.setAmount(amount));
             data.addAll(saleInfos);
         }
     }
@@ -57,16 +60,16 @@ public class BatchUpdateTest {
         Stopwatch stopwatch = Stopwatch.createStarted();
         try (SqlSession sqlSession = sqlSessionFactory.openSession(ExecutorType.BATCH)) {
             SaleInfoMapper infoMapper = sqlSession.getMapper(SaleInfoMapper.class);
-            List<SaleInfo> aux = new ArrayList<>();
+            int cnt = 0;
             for (SaleInfo saleInfo : data) {
-                aux.add(saleInfo);
+                cnt++;
                 infoMapper.update(saleInfo);
-                if (aux.size() >= 500) {
+                if (cnt >= 500) {
                     sqlSession.flushStatements();
-                    aux.clear();
+                    cnt = 0;
                 }
             }
-            if (!aux.isEmpty()) sqlSession.flushStatements();
+            sqlSession.flushStatements();
             log.info("batchUpdateTest take {} ms", stopwatch.elapsed(TimeUnit.MILLISECONDS));
         }
     }
