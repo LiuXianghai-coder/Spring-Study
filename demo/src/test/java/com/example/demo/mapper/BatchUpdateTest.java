@@ -46,10 +46,13 @@ public class BatchUpdateTest {
 
     @Test
     public void simpleUpdateTest() {
-        SaleInfoMapper mapper = context.getBean(SaleInfoMapper.class);
+        SqlSessionFactory sqlSessionFactory = context.getBean(SqlSessionFactory.class);
         Stopwatch stopwatch = Stopwatch.createStarted();
-        for (SaleInfo saleInfo : data) {
-            mapper.update(saleInfo);
+        try (SqlSession sqlSession = sqlSessionFactory.openSession(ExecutorType.SIMPLE)) {
+            SaleInfoMapper mapper = sqlSession.getMapper(SaleInfoMapper.class);
+            for (SaleInfo saleInfo : data) {
+                mapper.update(saleInfo);
+            }
         }
         log.info("simpleUpdateTest take {} ms", stopwatch.elapsed(TimeUnit.MILLISECONDS));
     }
