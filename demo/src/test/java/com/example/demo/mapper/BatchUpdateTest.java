@@ -46,12 +46,57 @@ public class BatchUpdateTest {
 
     @Test
     public void simpleUpdateTest() {
-        SaleInfoMapper mapper = context.getBean(SaleInfoMapper.class);
+        SqlSessionFactory sqlSessionFactory = context.getBean(SqlSessionFactory.class);
         Stopwatch stopwatch = Stopwatch.createStarted();
-        for (SaleInfo saleInfo : data) {
-            mapper.update(saleInfo);
+        try (SqlSession sqlSession = sqlSessionFactory.openSession(ExecutorType.SIMPLE)) {
+            SaleInfoMapper infoMapper = sqlSession.getMapper(SaleInfoMapper.class);
+            for (SaleInfo saleInfo : data) {
+                infoMapper.update(saleInfo);
+            }
         }
         log.info("simpleUpdateTest take {} ms", stopwatch.elapsed(TimeUnit.MILLISECONDS));
+    }
+
+    @Test
+    public void multipleQueriesUpdate() {
+        SqlSessionFactory sqlSessionFactory = context.getBean(SqlSessionFactory.class);
+        Stopwatch stopwatch = Stopwatch.createStarted();
+        try (SqlSession sqlSession = sqlSessionFactory.openSession(ExecutorType.SIMPLE)) {
+            SaleInfoMapper infoMapper = sqlSession.getMapper(SaleInfoMapper.class);
+            List<SaleInfo> aux = new ArrayList<>();
+            for (SaleInfo saleInfo : data) {
+                aux.add(saleInfo);
+                if (aux.size() >= 500) {
+                    infoMapper.updateAll(aux);
+                    aux.clear();
+                }
+            }
+            if (!aux.isEmpty()) {
+                infoMapper.updateAll(aux);
+            }
+        }
+        log.info("multipleQueriesUpdate take {} ms", stopwatch.elapsed(TimeUnit.MILLISECONDS));
+    }
+
+    @Test
+    public void insertUpdate() {
+        SqlSessionFactory sqlSessionFactory = context.getBean(SqlSessionFactory.class);
+        Stopwatch stopwatch = Stopwatch.createStarted();
+        try (SqlSession sqlSession = sqlSessionFactory.openSession(ExecutorType.SIMPLE)) {
+            SaleInfoMapper infoMapper = sqlSession.getMapper(SaleInfoMapper.class);
+            List<SaleInfo> aux = new ArrayList<>();
+            for (SaleInfo saleInfo : data) {
+                aux.add(saleInfo);
+                if (aux.size() >= 500) {
+                    infoMapper.mysqlUpdateAll(aux);
+                    aux.clear();
+                }
+            }
+            if (!aux.isEmpty()) {
+                infoMapper.mysqlUpdateAll(aux);
+            }
+        }
+        log.info("insertUpdate take {} ms", stopwatch.elapsed(TimeUnit.MILLISECONDS));
     }
 
     @Test
@@ -64,7 +109,7 @@ public class BatchUpdateTest {
             for (SaleInfo saleInfo : data) {
                 cnt++;
                 infoMapper.update(saleInfo);
-                if (cnt >= 500) {
+                if (cnt >= 100) {
                     sqlSession.flushStatements();
                     cnt = 0;
                 }
