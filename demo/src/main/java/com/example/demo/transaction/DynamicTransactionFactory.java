@@ -1,5 +1,6 @@
 package com.example.demo.transaction;
 
+import com.example.demo.config.MybatisConfig;
 import org.apache.ibatis.session.TransactionIsolationLevel;
 import org.apache.ibatis.transaction.Transaction;
 import org.mybatis.spring.transaction.SpringManagedTransactionFactory;
@@ -13,6 +14,6 @@ public class DynamicTransactionFactory
     public Transaction newTransaction(DataSource dataSource,
                                       TransactionIsolationLevel level,
                                       boolean autoCommit) {
-        return new DynamicTransaction(dataSource);
+        return new DynamicTransaction((MybatisConfig.DynamicDataSource) dataSource);
     }
 }

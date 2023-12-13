@@ -1,9 +1,9 @@
 package com.example.demo.transaction;
 
+import com.example.demo.config.MybatisConfig;
 import org.apache.ibatis.transaction.Transaction;
 import org.mybatis.spring.transaction.SpringManagedTransaction;
 
-import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Map;
@@ -14,9 +14,9 @@ public class DynamicTransaction
 
     private final Map<String, Transaction> txMap = new ConcurrentHashMap<>();
 
-    private final DataSource dataSource;
+    private final MybatisConfig.DynamicDataSource dataSource;
 
-    public DynamicTransaction(DataSource dataSource) {
+    public DynamicTransaction(MybatisConfig.DynamicDataSource dataSource) {
         super(dataSource);
         this.dataSource = dataSource;
     }
@@ -30,7 +30,7 @@ public class DynamicTransaction
         if (txMap.containsKey(curDataSource)) {
             return txMap.get(curDataSource).getConnection();
         }
-        txMap.put(curDataSource, new SpringManagedTransaction(dataSource));
+        txMap.put(curDataSource, new SpringManagedTransaction(dataSource.getResolvedDataSources().get(curDataSource)));
         return txMap.get(curDataSource).getConnection();
     }
 

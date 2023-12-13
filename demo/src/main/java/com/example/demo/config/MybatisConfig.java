@@ -1,5 +1,6 @@
 package com.example.demo.config;
 
+import com.alibaba.druid.pool.DruidDataSource;
 import com.example.demo.plugin.BackUpInfoReadPlugin;
 import com.example.demo.plugin.BackupInfoPlugin;
 import com.example.demo.plugin.TransactionConfigurationCustomizer;
@@ -7,7 +8,6 @@ import com.example.demo.plugin.TransactionSqlSessionFactoryBeanCustomizer;
 import com.example.demo.reflect.TaskInfoReflectorFactory;
 import com.example.demo.transaction.DataSourceHolder;
 import com.example.demo.transaction.DynamicTransactionFactory;
-import com.zaxxer.hikari.HikariDataSource;
 import org.apache.ibatis.plugin.Interceptor;
 import org.apache.ibatis.transaction.TransactionFactory;
 import org.mybatis.spring.boot.autoconfigure.SqlSessionFactoryBeanCustomizer;
@@ -35,7 +35,7 @@ public class MybatisConfig {
         return DataSourceBuilder.create()
                 .url("jdbc:mysql://127.0.0.1:3306/lxh_db")
                 .username("root")
-                .type(HikariDataSource.class)
+                .type(DruidDataSource.class)
                 .password("12345678")
                 .build();
     }
@@ -45,7 +45,7 @@ public class MybatisConfig {
                 .url("jdbc:postgresql://127.0.0.1:5432/lxh_db")
                 .username("postgres")
                 .password("17358870357yi")
-                .type(HikariDataSource.class)
+                .type(DruidDataSource.class)
                 .build();
     }
 
