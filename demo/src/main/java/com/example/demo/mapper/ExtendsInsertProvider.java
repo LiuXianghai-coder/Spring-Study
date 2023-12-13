@@ -36,31 +36,6 @@ public class ExtendsInsertProvider
         return sql.toString();
     }
 
-    public String mysqlUpdateAll(MappedStatement ms) {
-        Class<?> entityClass = getEntityClass(ms);
-        StringBuilder sql = new StringBuilder(saveAll(ms));
-        sql.append(" AS new ON DUPLICATE KEY UPDATE ");
-
-        sql.append("<trim suffixOverrides=\",\">");
-        //获取全部列
-        Set<EntityColumn> columnSet = EntityHelper.getColumns(entityClass);
-        //当某个列有主键策略时，不需要考虑他的属性是否为空，因为如果为空，一定会根据主键策略给他生成一个值
-        for (EntityColumn column : columnSet) {
-            if (!column.isInsertable()) {
-                continue;
-            }
-            if (column.isId()) {
-                continue;
-            }
-            sql.append(column.getColumn()).append("=new.")
-                    .append(column.getColumn())
-                    .append(",");
-        }
-        sql.append("</trim>");
-
-        return sql.toString();
-    }
-
     public String psqlUpdateAll(MappedStatement ms) {
         Class<?> entityClass = getEntityClass(ms);
         StringBuilder sql = new StringBuilder();
@@ -161,6 +136,34 @@ public class ExtendsInsertProvider
         sql.append("</trim>");
         sql.append("</foreach>");
         sql.append("</trim>");
+        return sql.toString();
+    }
+
+    public String mysqlUpdateAll(MappedStatement ms) {
+        Class<?> entityClass = getEntityClass(ms);
+        StringBuilder sql = new StringBuilder(saveAll(ms));
+        sql.append(" AS new ON DUPLICATE KEY UPDATE ");
+
+        sql.append("<trim suffixOverrides=\",\">");
+        //获取全部列
+        String tableName = tableName(entityClass);
+        Set<EntityColumn> columnSet = EntityHelper.getColumns(entityClass);
+        //当某个列有主键策略时，不需要考虑他的属性是否为空，因为如果为空，一定会根据主键策略给他生成一个值
+        for (EntityColumn column : columnSet) {
+            if (!column.isInsertable()) {
+                continue;
+            }
+            if (column.isId()) {
+                continue;
+            }
+            String colName = column.getColumn();
+            sql.append(colName).append("=IF(").append("new.").append(colName)
+                    .append(" IS NULL, ").append(tableName).append(".").append(colName)
+                    .append(", ").append("new.").append(colName).append(")")
+                    .append(",");
+        }
+        sql.append("</trim>");
+
         return sql.toString();
     }
 
