@@ -4,23 +4,23 @@ import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
+import org.xhliu.springtransaction.entity.CourseInfo;
+import org.xhliu.springtransaction.service.CourseInfoService;
 
 import java.util.concurrent.CountDownLatch;
 
 /**
- *@author lxh
+ * @author lxh
  */
 @SpringBootApplication
 @MapperScan(basePackages = {"org.xhliu.springtransaction.mapper"})
 public class Application {
 
-    public static void main(String[] args) throws Throwable {
+    public static void main(String[] args) {
         ConfigurableApplicationContext context = SpringApplication.run(Application.class);
-        MultiThreadTransaction transaction = context.getBean(MultiThreadTransaction.class);
-        transaction.bizHandler();
-
-//        // 避免 Reactor 处理直接结束
-//        CountDownLatch latch = new CountDownLatch(1);
-//        latch.await();
+        CourseInfoService service = context.getBean(CourseInfoService.class);
+        CourseInfo courseInfo = new CourseInfo();
+        courseInfo.setCourseId("1");
+        System.out.println(service.updateCourseInfo(courseInfo));
     }
 }
