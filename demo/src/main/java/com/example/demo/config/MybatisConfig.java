@@ -1,5 +1,6 @@
 package com.example.demo.config;
 
+import com.alibaba.druid.pool.DruidAbstractDataSource;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.example.demo.plugin.BackUpInfoReadPlugin;
 import com.example.demo.plugin.BackupInfoPlugin;
@@ -33,7 +34,7 @@ public class MybatisConfig {
 
     public DataSource mysqlDataSource() {
         return DataSourceBuilder.create()
-                .url("jdbc:mysql://127.0.0.1:3306/lxh_db")
+                .url("jdbc:mysql://127.0.0.1:3306/lxh_db?allowMultiQueries=true")
                 .username("root")
                 .type(DruidDataSource.class)
                 .password("12345678")
@@ -44,7 +45,7 @@ public class MybatisConfig {
         return DataSourceBuilder.create()
                 .url("jdbc:postgresql://127.0.0.1:5432/lxh_db")
                 .username("postgres")
-                .password("17358870357yi")
+                .password("12345678")
                 .type(DruidDataSource.class)
                 .build();
     }
@@ -53,6 +54,7 @@ public class MybatisConfig {
     public DataSource dynamicDataSource() {
         Map<Object, Object> dataSourceMap = new HashMap<>();
         DataSource mysqlDataSource = mysqlDataSource();
+        ((DruidAbstractDataSource) mysqlDataSource).setDefaultAutoCommit(false);
         dataSourceMap.put("mysql", mysqlDataSource);
         dataSourceMap.put("postgresql", postgresqlDataSource());
         DynamicDataSource dataSource = new DynamicDataSource();
