@@ -32,9 +32,12 @@ public class CourseInfoService {
         log.trace("save course info {}", courseInfo);
         int ans = 0;
         courseInfo = courseInfoMapper.selectById(1);
+        log.info("query course info = {}", courseInfo);
         courseInfo.setUpdateTime(LocalDateTime.now());
         ans += courseInfoMapper.updateById(courseInfo);
-        ans += useInfoService.updateUserInfo();
+        log.info("updated course info.....");
+//        ans += useInfoService.updateUserInfo();
+//        log.info("finished update user info......");
         return ans;
     }
 }

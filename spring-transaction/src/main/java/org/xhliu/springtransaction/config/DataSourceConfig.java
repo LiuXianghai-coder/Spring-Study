@@ -2,6 +2,7 @@ package org.xhliu.springtransaction.config;
 
 import com.alibaba.druid.pool.DruidDataSource;
 import com.google.common.collect.ImmutableMap;
+import com.zaxxer.hikari.HikariDataSource;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
@@ -22,17 +23,17 @@ public class DataSourceConfig {
     @Bean(name = "mysqlDataSource")
     public DataSource mysqlDataSource() {
         return DataSourceBuilder.create()
-                .url("jdbc:mysql://127.0.0.1:3306/lxh_db?autoCommit=false")
+                .url("jdbc:mysql://127.0.0.1:3306/lxh_db")
                 .username("root")
                 .password("18373796017;Liu")
-                .type(DruidDataSource.class)
+                .type(HikariDataSource.class)
                 .build();
     }
 
     @Bean(name = "psqlDataSource")
     public DataSource psqlDataSource() {
         return DataSourceBuilder.create()
-                .url("jdbc:postgresql://127.0.0.1:5432/lxh_db?autoCommit=false")
+                .url("jdbc:postgresql://127.0.0.1:5432/lxh_db")
                 .username("postgres")
                 .password("12345678")
                 .type(DruidDataSource.class)

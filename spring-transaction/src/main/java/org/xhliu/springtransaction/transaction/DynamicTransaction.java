@@ -1,6 +1,7 @@
 package org.xhliu.springtransaction.transaction;
 
 import org.apache.ibatis.transaction.Transaction;
+import org.apache.ibatis.transaction.TransactionFactory;
 import org.jetbrains.annotations.NotNull;
 import org.mybatis.spring.transaction.SpringManagedTransaction;
 import org.springframework.jdbc.datasource.DataSourceUtils;
@@ -25,9 +26,18 @@ public class DynamicTransaction
 
     private final DataSource dataSource;
 
-    public DynamicTransaction(DataSource dataSource) {
+    // 这个属性的目的是为了提供事务上下文中，访问当前事务对象的 key
+    private final TransactionFactory txFactory;
+
+    public DynamicTransaction(DataSource dataSource,
+                              TransactionFactory txFactory) {
         super(dataSource);
         this.dataSource = dataSource;
+        this.txFactory = txFactory;
+    }
+
+    public TransactionFactory getTxFactory() {
+        return txFactory;
     }
 
     @Override

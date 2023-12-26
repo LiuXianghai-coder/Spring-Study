@@ -16,6 +16,6 @@ public class DynamicTransactionFactory
     public Transaction newTransaction(DataSource dataSource,
                                       TransactionIsolationLevel level,
                                       boolean autoCommit) {
-        return new DynamicTransaction(dataSource);
+        return DynamicDataSourceUtils.getDynamicTransaction(this, dataSource);
     }
 }
