@@ -25,22 +25,26 @@ public class CourseInfoService {
     private CourseInfoMapper courseInfoMapper;
 
     @Resource
-    private UseInfoService useInfoService;
+    private UserInfoService useInfoService;
 
     public int updateCourseInfo(CourseInfo courseInfo) {
         DataSourceHolder.setCurDataSource(DataSourceType.MYSQL);
         log.trace("save course info {}", courseInfo);
+
         int ans = 0;
         courseInfo = courseInfoMapper.selectById(1);
         log.info("query course info = {}", courseInfo);
+
         courseInfo.setUpdateTime(LocalDateTime.now());
         ans += courseInfoMapper.updateById(courseInfo);
         log.info("updated course info.....");
+
         ans += courseInfoMapper.insert(CourseInfo.newRow());
         log.info("inserted row ={}", courseInfoMapper.selectById("8"));
         ans += courseInfoMapper.deleteById("8");
-//        ans += useInfoService.updateUserInfo();
-//        log.info("finished update user info......");
+
+        ans += useInfoService.updateUserInfo();
+        log.info("finished update user info......");
         return ans;
     }
 }
