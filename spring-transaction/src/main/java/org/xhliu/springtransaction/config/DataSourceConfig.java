@@ -26,7 +26,7 @@ public class DataSourceConfig {
                 .url("jdbc:mysql://127.0.0.1:3306/lxh_db")
                 .username("root")
                 .password("18373796017;Liu")
-                .type(HikariDataSource.class)
+                .type(DruidDataSource.class)
                 .build();
     }
 

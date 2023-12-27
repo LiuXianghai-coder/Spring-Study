@@ -5,6 +5,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.xhliu.springtransaction.entity.CourseInfo;
+import org.xhliu.springtransaction.service.ApplicationService;
 import org.xhliu.springtransaction.service.CourseInfoService;
 
 import java.util.concurrent.CountDownLatch;
@@ -18,9 +19,7 @@ public class Application {
 
     public static void main(String[] args) {
         ConfigurableApplicationContext context = SpringApplication.run(Application.class);
-        CourseInfoService service = context.getBean(CourseInfoService.class);
-        CourseInfo courseInfo = new CourseInfo();
-        courseInfo.setCourseId("1");
-        System.out.println(service.updateCourseInfo(courseInfo));
+        ApplicationService service = context.getBean(ApplicationService.class);
+        service.bizHandler();
     }
 }

@@ -25,7 +25,7 @@ public class CourseInfoService {
     private CourseInfoMapper courseInfoMapper;
 
     @Resource
-    private UseInfoService useInfoService;
+    private UserInfoService useInfoService;
 
     public int updateCourseInfo(CourseInfo courseInfo) {
         DataSourceHolder.setCurDataSource(DataSourceType.MYSQL);
@@ -36,8 +36,8 @@ public class CourseInfoService {
         courseInfo.setUpdateTime(LocalDateTime.now());
         ans += courseInfoMapper.updateById(courseInfo);
         log.info("updated course info.....");
-//        ans += useInfoService.updateUserInfo();
-//        log.info("finished update user info......");
+        ans += useInfoService.updateUserInfo();
+        log.info("finished update user info......");
         return ans;
     }
 }

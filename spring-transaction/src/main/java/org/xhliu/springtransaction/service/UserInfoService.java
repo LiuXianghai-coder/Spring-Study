@@ -17,9 +17,9 @@ import java.util.concurrent.ThreadLocalRandom;
  */
 @Service
 @Transactional
-public class UseInfoService {
+public class UserInfoService {
 
-    private final static Logger log = LoggerFactory.getLogger(UseInfoService.class);
+    private final static Logger log = LoggerFactory.getLogger(UserInfoService.class);
 
     @Resource
     private UserInfoMapper userInfoMapper;
@@ -34,5 +34,25 @@ public class UseInfoService {
         obj.setUserId("100");
         obj.setBackUpId(s);
         return userInfoMapper.updateById(obj);
+    }
+
+    public int addUserInfo() {
+        DataSourceHolder.setCurDataSource(DataSourceType.MYSQL);
+        UserInfo userInfo = new UserInfo();
+        userInfo.setUserId("100001010");
+        userInfo.setUserGender("Male");
+        userInfo.setUserName("XXX");
+        userInfo.setSimpleId("0x3f3f3f");
+        return userInfoMapper.insert(userInfo);
+    }
+
+    public int delUserInfo() {
+        DataSourceHolder.setCurDataSource(DataSourceType.MYSQL);
+        return userInfoMapper.deleteById("100001010");
+    }
+
+    public UserInfo sampleUserInfo() {
+        DataSourceHolder.setCurDataSource(DataSourceType.MYSQL);
+        return userInfoMapper.selectById("100001010");
     }
 }
