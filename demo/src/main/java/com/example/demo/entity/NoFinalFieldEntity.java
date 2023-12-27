@@ -13,7 +13,6 @@ public class NoFinalFieldEntity {
             throw new RuntimeException(e);
         }
         UserInfo tmp = new UserInfo();
-        tmp.initFiled();
         tmp.setId(1L);tmp.setName("xhliu2");
         this.userInfo = tmp;
     }

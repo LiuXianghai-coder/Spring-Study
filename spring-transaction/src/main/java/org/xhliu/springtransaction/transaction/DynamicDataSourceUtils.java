@@ -1,10 +1,13 @@
 package org.xhliu.springtransaction.transaction;
 
 import org.apache.ibatis.transaction.TransactionFactory;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 import org.springframework.util.Assert;
+import org.xhliu.springtransaction.datasource.DataSourceHolder;
+import org.xhliu.springtransaction.datasource.DataSourceType;
 
 import javax.sql.DataSource;
 
@@ -64,5 +67,12 @@ public class DynamicDataSourceUtils {
             log.debug("TransactionFactory [{}] was not registered " +
                     "for synchronization because synchronization is not active", txFactory);
         }
+    }
+
+    @NotNull
+    public static DataSourceType determineDataSourceType() {
+        DataSourceType type = DataSourceHolder.getCurDataSource();
+        if (type == null) type = DataSourceType.MYSQL;
+        return type;
     }
 }

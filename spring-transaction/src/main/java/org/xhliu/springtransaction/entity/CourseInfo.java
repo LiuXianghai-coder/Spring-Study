@@ -66,4 +66,13 @@ public class CourseInfo {
                 ", updateTime='" + updateTime + '\'' +
                 '}';
     }
+
+    public static CourseInfo newRow() {
+        CourseInfo courseInfo = new CourseInfo();
+        courseInfo.setCourseId("8");
+        courseInfo.setCourseType("2");
+        courseInfo.setCourseName("物理");
+        courseInfo.setUpdateTime(LocalDateTime.now());
+        return courseInfo;
+    }
 }

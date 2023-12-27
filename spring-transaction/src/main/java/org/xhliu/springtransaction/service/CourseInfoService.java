@@ -36,6 +36,9 @@ public class CourseInfoService {
         courseInfo.setUpdateTime(LocalDateTime.now());
         ans += courseInfoMapper.updateById(courseInfo);
         log.info("updated course info.....");
+        ans += courseInfoMapper.insert(CourseInfo.newRow());
+        log.info("inserted row ={}", courseInfoMapper.selectById("8"));
+        ans += courseInfoMapper.deleteById("8");
 //        ans += useInfoService.updateUserInfo();
 //        log.info("finished update user info......");
         return ans;

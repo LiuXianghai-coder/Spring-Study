@@ -25,7 +25,7 @@ public class DataSourceConfig {
         return DataSourceBuilder.create()
                 .url("jdbc:mysql://127.0.0.1:3306/lxh_db")
                 .username("root")
-                .password("18373796017;Liu")
+                .password("12345678")
                 .type(HikariDataSource.class)
                 .build();
     }

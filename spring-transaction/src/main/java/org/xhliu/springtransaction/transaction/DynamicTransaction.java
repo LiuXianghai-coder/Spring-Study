@@ -42,7 +42,7 @@ public class DynamicTransaction
 
     @Override
     public Connection getConnection() throws SQLException {
-        Connection connection = getConnection(determineDataSourceType());
+        Connection connection = getConnection(DynamicDataSourceUtils.determineDataSourceType());
         connection.setAutoCommit(false);
         return connection;
     }
@@ -67,15 +67,8 @@ public class DynamicTransaction
     public void close() throws SQLException {
         for (Map.Entry<DataSourceType, Transaction> entry : txMap.entrySet()) {
             DataSourceUtils.releaseConnection(entry.getValue().getConnection(),
-                    curDataSource(determineDataSourceType()));
+                    curDataSource(DynamicDataSourceUtils.determineDataSourceType()));
         }
-    }
-
-    @NotNull
-    private static DataSourceType determineDataSourceType() {
-        DataSourceType type = DataSourceHolder.getCurDataSource();
-        if (type == null) type = DataSourceType.MYSQL;
-        return type;
     }
 
     private Connection getConnection(DataSourceType type) throws SQLException {
