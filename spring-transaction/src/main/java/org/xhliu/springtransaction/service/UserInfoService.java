@@ -25,7 +25,6 @@ public class UserInfoService {
     private UserInfoMapper userInfoMapper;
 
     public int updateUserInfo() {
-        DataSourceHolder.setCurDataSource(DataSourceType.POSTGRESQL);
         UserInfo obj = new UserInfo();
         ThreadLocalRandom random = ThreadLocalRandom.current();
         String s = String.valueOf(random.nextLong(0, Long.MAX_VALUE));

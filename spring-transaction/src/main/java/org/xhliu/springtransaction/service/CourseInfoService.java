@@ -43,6 +43,7 @@ public class CourseInfoService {
         log.info("inserted row ={}", courseInfoMapper.selectById("8"));
         ans += courseInfoMapper.deleteById("8");
 
+        DataSourceHolder.setCurDataSource(DataSourceType.POSTGRESQL);
         ans += useInfoService.updateUserInfo();
         log.info("finished update user info......");
         return ans;

@@ -2,7 +2,6 @@ package org.xhliu.springtransaction.config;
 
 import com.alibaba.druid.pool.DruidDataSource;
 import com.google.common.collect.ImmutableMap;
-import com.zaxxer.hikari.HikariDataSource;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
