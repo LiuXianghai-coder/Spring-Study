@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.xhliu.springtransaction.annotation.DataSource;
 import org.xhliu.springtransaction.datasource.DataSourceHolder;
 import org.xhliu.springtransaction.datasource.DataSourceType;
 import org.xhliu.springtransaction.entity.UserInfo;
@@ -24,6 +25,7 @@ public class UserInfoService {
     @Resource
     private UserInfoMapper userInfoMapper;
 
+    @DataSource(DataSourceType.POSTGRESQL)
     public int updateUserInfo() {
         UserInfo obj = new UserInfo();
         ThreadLocalRandom random = ThreadLocalRandom.current();
