@@ -1,13 +1,11 @@
 package org.xhliu.springtransaction.transaction;
 
 import org.apache.ibatis.transaction.Transaction;
-import org.apache.ibatis.transaction.TransactionFactory;
-import org.jetbrains.annotations.NotNull;
 import org.mybatis.spring.transaction.SpringManagedTransaction;
 import org.springframework.jdbc.datasource.DataSourceUtils;
 import org.springframework.jdbc.datasource.DelegatingDataSource;
 import org.springframework.jdbc.datasource.lookup.AbstractRoutingDataSource;
-import org.xhliu.springtransaction.datasource.DataSourceHolder;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
 import org.xhliu.springtransaction.datasource.DataSourceType;
 
 import javax.sql.DataSource;
@@ -17,33 +15,32 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
+ * 用于定义在当前 MyBatis 处理上下文中，正在被使用的事务对象类型，由于现有的 {@link SpringManagedTransaction}
+ * 实现只能绑定到一个数据源，在基于 {@link AbstractRoutingDataSource} 的数据源中，当同属于一个事务时，无法切换到希望的
+ * 数据源，为此，需要定义一个特殊的事务类型来替换现有的事务类型，从而实现在一个事务中能够切换数据源的效果
+ *
  * @author lxh
  */
 public class DynamicTransaction
         extends SpringManagedTransaction {
 
+    // 当前数据源之间的映射关系
     private final Map<DataSourceType, Transaction> txMap = new ConcurrentHashMap<>();
 
+    // 实际当前系统中持有的数据源对象
     private final DataSource dataSource;
 
-    // 这个属性的目的是为了提供事务上下文中，访问当前事务对象的 key
-    private final TransactionFactory txFactory;
-
-    public DynamicTransaction(DataSource dataSource,
-                              TransactionFactory txFactory) {
+    public DynamicTransaction(DataSource dataSource) {
         super(dataSource);
         this.dataSource = dataSource;
-        this.txFactory = txFactory;
-    }
-
-    public TransactionFactory getTxFactory() {
-        return txFactory;
     }
 
     @Override
     public Connection getConnection() throws SQLException {
         Connection connection = getConnection(DynamicDataSourceUtils.determineDataSourceType());
-        connection.setAutoCommit(false);
+        if (TransactionSynchronizationManager.isActualTransactionActive()) {
+            connection.setAutoCommit(false); // 如果当前已经持有了事务，那么获取到的连接应当都是非自动提交的
+        }
         return connection;
     }
 
@@ -58,6 +55,7 @@ public class DynamicTransaction
 
     @Override
     public void rollback() throws SQLException {
+        if (TransactionSynchronizationManager.isActualTransactionActive()) return;
         for (Map.Entry<DataSourceType, Transaction> entry : txMap.entrySet()) {
             entry.getValue().getConnection().rollback();
         }
@@ -65,9 +63,9 @@ public class DynamicTransaction
 
     @Override
     public void close() throws SQLException {
+        if (TransactionSynchronizationManager.isActualTransactionActive()) return;
         for (Map.Entry<DataSourceType, Transaction> entry : txMap.entrySet()) {
-            DataSourceUtils.releaseConnection(entry.getValue().getConnection(),
-                    curDataSource(DynamicDataSourceUtils.determineDataSourceType()));
+            DataSourceUtils.releaseConnection(entry.getValue().getConnection(), curDataSource(entry.getKey()));
         }
     }
 

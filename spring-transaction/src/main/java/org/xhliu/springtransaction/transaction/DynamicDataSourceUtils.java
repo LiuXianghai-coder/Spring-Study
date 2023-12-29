@@ -12,15 +12,29 @@ import org.xhliu.springtransaction.datasource.DataSourceType;
 import javax.sql.DataSource;
 
 /**
+ * 和动态数据源有关的工具类
+ *
  * @author lxh
  */
 public class DynamicDataSourceUtils {
 
     private final static Logger log = LoggerFactory.getLogger(DynamicDataSourceUtils.class);
 
+    /**
+     * 如果当前处理的上下文处于一个事务，那么会检测在事务中是否存在当前事务工厂的资源对象，如果存在，则直接返回当前
+     * 事务持有的对应资源对象，否则，将会创建一个新的事务资源对象，并将其通过 {@link TransactionFactory} 作为 {@code key}
+     * 绑定到一个事务中
+     * 如果当前处理的上下文并不处于同一个事务，那么将会直接创建一个新的 {@link DynamicTransaction} 对象
+     *
+     * @param txFactory 当前系统中，默认的事务工厂
+     * @param dataSource 当前系统中，实际的数据源对象
+     * @return 当前持有的事务对象
+     * @see org.mybatis.spring.SqlSessionUtils
+     * @see TransactionSynchronizationManager
+     */
     public static DynamicTransaction getDynamicTransaction(TransactionFactory txFactory,
                                                            DataSource dataSource) {
-        if (TransactionSynchronizationManager.isActualTransactionActive()) {
+        if (TransactionSynchronizationManager.isActualTransactionActive()) { // 如果当前持有事务
             Assert.notNull(txFactory, "查询的动态数据源的同步 key 不能为 null");
             DynamicDataSourceTransactionHolder holder =
                     (DynamicDataSourceTransactionHolder) TransactionSynchronizationManager.getResource(txFactory);
@@ -30,16 +44,22 @@ public class DynamicDataSourceUtils {
             }
 
             log.debug("Create new DynamicTransaction");
-            transaction = new DynamicTransaction(dataSource, txFactory);
+            transaction = new DynamicTransaction(dataSource);
 
             registerTransactionHolder(txFactory, transaction, dataSource);
 
             return transaction;
         }
 
-        return new DynamicTransaction(dataSource, txFactory);
+        return new DynamicTransaction(dataSource);
     }
 
+    /**
+     * 通过当前持有的动态事务资源对象，获取实际的动态事务对象
+     *
+     * @param holder 当前事务中持有的动态事务资源持有对象
+     * @return 当前事务资源持有的动态事务对象
+     */
     private static DynamicTransaction txHolder(DynamicDataSourceTransactionHolder holder) {
         DynamicTransaction tx = null;
         if (holder != null && holder.isSynchronizedWithTransaction()) {
