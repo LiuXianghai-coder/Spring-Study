@@ -9,7 +9,6 @@ import org.springframework.transaction.support.DefaultTransactionDefinition;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
 
 /**
  * 用于 {@link DataSourceTransactionManager} 事务管理对应的任务线程，这个类的存在是为了使得
