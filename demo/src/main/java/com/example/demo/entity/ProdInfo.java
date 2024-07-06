@@ -2,6 +2,8 @@ package com.example.demo.entity;
 
 import com.example.demo.common.BackupInfo;
 
+import java.math.BigDecimal;
+
 /**
  * @author xhliu
  **/
@@ -11,6 +13,16 @@ public class ProdInfo extends AbstractEntity implements BackupInfo {
     private String prodName;
 
     private String backUpId;
+
+    private BigDecimal rate;
+
+    public BigDecimal getRate() {
+        return rate;
+    }
+
+    public void setRate(BigDecimal rate) {
+        this.rate = rate;
+    }
 
     @Override
     public String getRecordId() {
@@ -49,7 +61,7 @@ public class ProdInfo extends AbstractEntity implements BackupInfo {
                 "id='" + id + '\'' +
                 ", prodName='" + prodName + '\'' +
                 ", backUpId='" + backUpId + '\'' +
-                super.toString() +
+                ", rate=" + rate +
                 '}';
     }
 }

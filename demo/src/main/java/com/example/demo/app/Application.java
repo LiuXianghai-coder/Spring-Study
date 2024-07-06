@@ -1,10 +1,9 @@
 package com.example.demo.app;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-
-import java.lang.reflect.Type;
-import java.util.Arrays;
-import java.util.List;
+import java.math.BigInteger;
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
+import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * @author xhliu2
@@ -12,46 +11,69 @@ import java.util.List;
  **/
 public class Application {
 
-    int[] nums;
-    long[] prefix;
-    int[][] cache;
-
-    int n, k;
-
     public static void main(String[] args) {
-        List<String> list = List.of("1", "2", "3", "4");
-        Type[] types = list.getClass().getGenericInterfaces();
-        new TypeReference<List<String>>() {
-        };
-
+        Application app = new Application();
+        String msg = "abcdefghijklmopqrstuvwxyz";
+        KeyPair pair = app.genKeyPair();
+        System.out.println(new String(msg.getBytes()));
+        byte[] encode = app.encode(msg, pair.getPrivateKey().toByteArray(), pair.getN().toByteArray());
+        System.out.println(Base64.getEncoder().encodeToString(encode));
+        byte[] decode = app.decode(encode, pair.getPublicKey().toByteArray(), pair.getN().toByteArray());
+        System.out.println(new String(decode));
     }
 
-    public int splitArray(int[] nums, int k) {
-        this.nums = nums;
-        this.n = nums.length;
-        this.k = k;
-        this.prefix = new long[n + 1];
-        this.cache = new int[n + 1][k + 1];
-        for (int[] arr : cache) {
-            Arrays.fill(arr, -1);
-        }
-        for (int i = 1; i <= n; ++i) {
-            prefix[i] = prefix[i - 1] + nums[i - 1];
-        }
-        return dfs(n, k);
+    public byte[] encode(String msg, byte[] _e, byte[] _n) {
+        BigInteger m = new BigInteger(msg.getBytes(StandardCharsets.UTF_8));
+        BigInteger n = new BigInteger(_n);
+        BigInteger e = new BigInteger(_e);
+        return m.modPow(e, n).toByteArray();
     }
 
-    int dfs(int i, int j) {
-        if (j == 1) {
-            return (int) prefix[i];
+    public byte[] decode(byte[] content, byte[] _d, byte[] _n) {
+        BigInteger c = new BigInteger(content);
+        BigInteger d = new BigInteger(_d);
+        BigInteger n = new BigInteger(_n);
+        return c.modPow(d, n).toByteArray();
+    }
+
+    public KeyPair genKeyPair() {
+        ThreadLocalRandom random = ThreadLocalRandom.current();
+        BigInteger p = BigInteger.probablePrime(1024, random);
+        BigInteger q = BigInteger.probablePrime(1024, random);
+        BigInteger n = p.multiply(q);
+        while (p.compareTo(q) == 0) {
+            q = BigInteger.probablePrime(1024, random);
         }
-        if (i < 1) return 0;
-        if (cache[i][j] != -1) return cache[i][j];
-        int ans = Integer.MAX_VALUE;
-        for (int m = i - 1; m > 1; --m) {
-            ans = Math.min(ans, Math.max(dfs(m, j - 1), (int) (prefix[i] - prefix[m])));
+        BigInteger phi = p.subtract(BigInteger.ONE).multiply(q.subtract(BigInteger.ONE));
+        BigInteger e = phi.subtract(BigInteger.ONE);
+        while (e.gcd(phi).compareTo(BigInteger.ONE) != 0) {
+            e = e.subtract(BigInteger.ONE);
         }
-        cache[i][j] = ans;
-        return ans;
+        BigInteger d = e.modInverse(phi);
+        return new KeyPair(e, d, n);
+    }
+
+    static class KeyPair {
+        private final BigInteger privateKey;
+        private final BigInteger publicKey;
+        private final BigInteger n;
+
+        KeyPair(BigInteger privateKey, BigInteger publicKey, BigInteger n) {
+            this.privateKey = privateKey;
+            this.publicKey = publicKey;
+            this.n = n;
+        }
+
+        public BigInteger getPrivateKey() {
+            return privateKey;
+        }
+
+        public BigInteger getPublicKey() {
+            return publicKey;
+        }
+
+        public BigInteger getN() {
+            return n;
+        }
     }
 }

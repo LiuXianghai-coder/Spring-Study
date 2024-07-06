@@ -1,13 +1,9 @@
 package com.example.demo.tools;
 
 import com.example.demo.common.IfExtract;
-import com.example.demo.entity.Book;
 
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
-import java.text.Collator;
-import java.util.Comparator;
-import java.util.Locale;
 
 /**
  * @author lxh
@@ -21,11 +17,6 @@ public class CalculateTool {
 
     private long add(int x, int y) {
         return x + y;
-    }
-
-
-    static String parseStr(Book book) {
-        return book.getAuthor();
     }
 
     public static void main(String[] args) {

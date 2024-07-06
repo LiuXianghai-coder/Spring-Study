@@ -1,0 +1,5 @@
+fn add(x, y) {
+    return x + y;
+}
+println(add(1, 2));
+println(add(2, 3));

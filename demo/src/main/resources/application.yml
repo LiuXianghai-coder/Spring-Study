@@ -1,6 +1,21 @@
 server:
   port: 8080
 
+jasypt:
+  encryptor:
+    # 解密时需要用到的对称密码
+    password: 1234567
+    # 解密时使用的解密算法，具体可以查看 com.sun.crypto.provider.PBEKeyFactory 的相关子类
+    algorithm: PBEWithHmacSHA224AndAES_128
+    # 一些通用的配置属性，如过滤字段是否需要解密、需要解密的字段的格式等
+    property:
+      # 如果字段需要解密，则这个字段的值的开始前缀
+      prefix: ENC[
+      # 如果字段需要解密，则这个字段的值的后缀
+      suffix: ]
+    # 加密时的重 Hash 次数
+    key-obtention-iterations: 1000
+
 spring:
   datasource:
     druid:
