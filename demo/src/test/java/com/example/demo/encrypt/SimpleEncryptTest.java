@@ -3,7 +3,7 @@ package com.example.demo.encrypt;
 import com.example.demo.DemoApplication;
 import org.jasypt.encryption.pbe.StandardPBEStringEncryptor;
 import org.jasypt.encryption.pbe.config.EnvironmentStringPBEConfig;
-import org.jasypt.iv.RandomIvGenerator;
+import org.jasypt.iv.StringFixedIvGenerator;
 import org.jasypt.salt.StringFixedSaltGenerator;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -23,7 +23,7 @@ public class SimpleEncryptTest {
     private static EnvironmentStringPBEConfig pbeConfig() {
         String password = "1234567";
         String salt = "我能够吞下玻璃而不伤身体";
-        String iv = "这是一个向量文本";
+        String iv = "这是一个向量生成器";
 
         final EnvironmentStringPBEConfig config =
                 new EnvironmentStringPBEConfig();
@@ -33,7 +33,7 @@ public class SimpleEncryptTest {
         /*
             具体对称加密算法，目前系统提供了 com.sun.crypto.provider.PBEKeyFactory 子类相关的算法
          */
-        config.setAlgorithm("PBEWITHHMACSHA1ANDAES_128");
+        config.setAlgorithm("PBEWITHHMACSHA512ANDAES_256");
 
         /*
             迭代计算次数，通过增加这个值可以提高加密效果的强度
@@ -50,7 +50,7 @@ public class SimpleEncryptTest {
 
         config.setStringOutputType("Base64"); // 处理时的字节表示形式
 
-        config.setIvGenerator(new RandomIvGenerator()); // 某些算法可能需要使用到的初始向量生成器
+        config.setIvGenerator(new StringFixedIvGenerator(iv)); // 某些算法可能需要使用到的初始向量生成器
         return config;
     }
 
@@ -71,7 +71,7 @@ public class SimpleEncryptTest {
 
     @Test
     public void encryptTest() {
-        String message = "Hello World";
+        String message = "123";
 
         final EnvironmentStringPBEConfig config = pbeConfig();
 

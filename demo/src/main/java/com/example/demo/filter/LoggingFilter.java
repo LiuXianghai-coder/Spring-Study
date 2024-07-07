@@ -22,10 +22,6 @@ public class LoggingFilter implements Filter {
         String uri = httpServletRequest.getRequestURI();
         log.info("addr={}, port={}", request.getRemoteAddr(), request.getRemotePort());
         Enumeration<String> names = httpServletRequest.getHeaderNames();
-        while (names.hasMoreElements()) {
-            String element = names.nextElement();
-            log.info("{}:{}", element, httpServletRequest.getHeader(element));
-        }
         chain.doFilter(request, response);
     }
 }

@@ -10,11 +10,17 @@ jasypt:
     # 一些通用的配置属性，如过滤字段是否需要解密、需要解密的字段的格式等
     property:
       # 如果字段需要解密，则这个字段的值的开始前缀
-      prefix: ENC[
+      prefix: ENC(
       # 如果字段需要解密，则这个字段的值的后缀
-      suffix: ]
+      suffix: )
+      filter:
+        exclude-names: [ "mybatis" ]
+      filter-bean: jasyptPropertiesFilter
+      detector-bean: jasyptPropertiesDetector
+      resolver-bean: jasyptPropertiesPropertyResolver
     # 加密时的重 Hash 次数
     key-obtention-iterations: 1000
+    bean: jasyptPropertiesStringEncryptor
 
 spring:
   datasource:
@@ -22,7 +28,7 @@ spring:
       stat-view-servlet:
         enabled: true
         login-username: admin
-        login-password: 123
+        login-password: ENC(m/Eh24bOsMvWYlnDwAbdrQ==)
   autoconfigure:
     exclude: org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
   jackson:
