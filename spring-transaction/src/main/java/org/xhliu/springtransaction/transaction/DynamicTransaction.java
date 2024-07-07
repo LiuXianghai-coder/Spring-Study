@@ -74,18 +74,7 @@ public class DynamicTransaction
             return txMap.get(type).getConnection();
         }
 
-        DataSource curDS = dataSource;
-        while (curDS instanceof DelegatingDataSource) {
-            curDS = ((DelegatingDataSource) curDS).getTargetDataSource();
-        }
-        if (curDS instanceof AbstractRoutingDataSource) {
-            Map<Object, DataSource> dss = ((AbstractRoutingDataSource) curDS).getResolvedDataSources();
-            DataSource actualDS = dss.getOrDefault(type, ((AbstractRoutingDataSource) curDS).getResolvedDefaultDataSource());
-            txMap.put(type, new SpringManagedTransaction(actualDS));
-            return txMap.get(type).getConnection();
-        }
-
-        txMap.put(type, new SpringManagedTransaction(curDS));
+        txMap.put(type, new SpringManagedTransaction(curDataSource(type)));
         return txMap.get(type).getConnection();
     }
 
