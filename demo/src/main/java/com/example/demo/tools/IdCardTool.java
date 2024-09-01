@@ -14,6 +14,8 @@ import java.util.concurrent.ThreadLocalRandom;
  */
 public class IdCardTool {
 
+    private static final int[] POWER = {7, 9, 10, 5, 8, 4, 2, 1, 6, 3, 7, 9, 10, 5, 8, 4, 2};
+
     private final static TreeMap<String, String> AREA_MAP = new TreeMap<>();
 
     static {
@@ -67,19 +69,49 @@ public class IdCardTool {
         return sb.toString();
     }
 
-    protected static int calCheckSum(String s) {
+    protected static char calCheckSum(String s) {
         int sum = 0;
         for (int i = 0; i < 17; ++i) {
-            sum = ((int) Math.pow(2, 17 - i) % 11) * (s.charAt(i) - '0');
+            sum += (POWER[i]) * (s.charAt(i) - '0');
         }
-        int num = (12 - (sum % 11)) % 11;
-        if (num < 10) return s.charAt(16) - '0';
-        return 'X';
+        switch (sum % 11) {
+            case 10:
+                return '2';
+            case 9:
+                return '3';
+            case 8:
+                return '4';
+            case 7:
+                return '5';
+            case 6:
+                return '6';
+            case 5:
+                return '7';
+            case 4:
+                return '8';
+            case 3:
+                return '9';
+            case 2:
+                return 'X';
+            case 1:
+                return '0';
+            case 0:
+                return '1';
+            default:
+                throw new RuntimeException("非法的运行参数");
+        }
     }
 
     public static void main(String[] args) {
-        String id1 = genIdCardNumber(19700805);
-        System.out.println(id1);
-        System.out.println(IdcardUtil.isValidCard(id1));;
+        ThreadLocalRandom random = ThreadLocalRandom.current();
+        for (int i = 0; i < 10000; ++i) {
+            int year = random.nextInt(1970, 2024);
+            int month = random.nextInt(1, 13);
+            int day = random.nextInt(1, 29);
+            String id = genIdCardNumber(year * 10000 + month * 100 + day);
+            if (!IdcardUtil.isValidCard(id)) {
+                System.out.println(id);
+            }
+        }
     }
 }
