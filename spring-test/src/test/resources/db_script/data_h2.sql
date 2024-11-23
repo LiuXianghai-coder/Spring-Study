@@ -1,0 +1,1 @@
+INSERT INTO order_info(id, user_id, goods_id, goods_cnt, created_tme) VALUES ( 1, 2, 1, 2, '2023-01-01 00:00:00' );

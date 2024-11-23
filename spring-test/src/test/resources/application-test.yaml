@@ -1,0 +1,11 @@
+spring:
+  sql:
+    init:
+      schema-locations: db_script/schema_h2.sql
+      data-locations: db_script/data_h2.sql
+      mode: always
+  datasource:
+    url: jdbc:h2:mem:db_test
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
