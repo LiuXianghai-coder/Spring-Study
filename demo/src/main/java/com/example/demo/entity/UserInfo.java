@@ -10,9 +10,7 @@ import java.util.Objects;
  * @date 2022/6/6-下午10:09
  */
 @Table(name = "user_info")
-public class UserInfo
-        extends AbstractEntity
-        implements TaskInfo {
+public class UserInfo {
     @Id
     @Column(name = "user_id")
     private long id;
@@ -42,15 +40,6 @@ public class UserInfo
         return simpleId;
     }
 
-    @Override
-    public long userId() {
-        return id;
-    }
-
-    @Override
-    public String userName() {
-        return name;
-    }
 
     public void setId(long id) {
         this.id = id;

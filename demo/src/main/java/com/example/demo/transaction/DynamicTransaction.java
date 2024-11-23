@@ -1,5 +1,6 @@
 package com.example.demo.transaction;
 
+import com.example.demo.common.DynamicDataSource;
 import com.example.demo.config.MybatisConfig;
 import org.apache.ibatis.transaction.Transaction;
 import org.mybatis.spring.transaction.SpringManagedTransaction;
@@ -14,9 +15,9 @@ public class DynamicTransaction
 
     private final Map<String, Transaction> txMap = new ConcurrentHashMap<>();
 
-    private final MybatisConfig.DynamicDataSource dataSource;
+    private final DynamicDataSource dataSource;
 
-    public DynamicTransaction(MybatisConfig.DynamicDataSource dataSource) {
+    public DynamicTransaction(DynamicDataSource dataSource) {
         super(dataSource);
         this.dataSource = dataSource;
     }

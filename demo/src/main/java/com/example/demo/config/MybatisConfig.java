@@ -2,46 +2,43 @@ package com.example.demo.config;
 
 import com.alibaba.druid.pool.DruidAbstractDataSource;
 import com.alibaba.druid.pool.DruidDataSource;
+import com.example.demo.common.DynamicDataSource;
 import com.example.demo.plugin.BackUpInfoReadPlugin;
 import com.example.demo.plugin.BackupInfoPlugin;
 import com.example.demo.plugin.TransactionConfigurationCustomizer;
 import com.example.demo.plugin.TransactionSqlSessionFactoryBeanCustomizer;
 import com.example.demo.reflect.TaskInfoReflectorFactory;
-import com.example.demo.transaction.DataSourceHolder;
 import com.example.demo.transaction.DynamicTransactionFactory;
 import org.apache.ibatis.plugin.Interceptor;
 import org.apache.ibatis.transaction.TransactionFactory;
 import org.mybatis.spring.boot.autoconfigure.SqlSessionFactoryBeanCustomizer;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.jdbc.datasource.lookup.AbstractRoutingDataSource;
+import org.springframework.context.annotation.Profile;
 import tk.mybatis.mapper.autoconfigure.ConfigurationCustomizer;
 
 import javax.sql.DataSource;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 
 /**
  * @author lxh
  */
-@EnableConfigurationProperties
 @Configuration
 public class MybatisConfig {
 
-    public DataSource mysqlDataSource() {
+    private DataSource mysqlDataSource() {
         return DataSourceBuilder.create()
                 .url("jdbc:mysql://127.0.0.1:3306/lxh_db?allowMultiQueries=true")
                 .username("root")
                 .type(DruidDataSource.class)
-                .password("12345678")
+                .password("18373796017;Liu")
                 .build();
     }
 
-    public DataSource postgresqlDataSource() {
+    private DataSource postgresqlDataSource() {
         return DataSourceBuilder.create()
                 .url("jdbc:postgresql://127.0.0.1:5432/lxh_db")
                 .username("postgres")
@@ -51,6 +48,7 @@ public class MybatisConfig {
     }
 
     @Bean(name = "dynamicDataSource")
+    @Profile({"default", "prod", "dev"})
     public DataSource dynamicDataSource() {
         Map<Object, Object> dataSourceMap = new HashMap<>();
         DataSource mysqlDataSource = mysqlDataSource();
@@ -94,14 +92,5 @@ public class MybatisConfig {
     configurationCustomizer(@Qualifier("dynamicTransactionFactory") TransactionFactory txFactory,
                             DataSource dataSource) {
         return new TransactionConfigurationCustomizer(txFactory, dataSource);
-    }
-
-    public static class DynamicDataSource extends AbstractRoutingDataSource {
-
-        @Override
-        protected Object determineCurrentLookupKey() {
-            String curDataSource = DataSourceHolder.getCurDataSource();
-            return Objects.requireNonNullElse(curDataSource, "mysql");
-        }
     }
 }

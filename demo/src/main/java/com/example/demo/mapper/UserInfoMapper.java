@@ -4,18 +4,19 @@ import com.example.demo.entity.TaskInfo;
 import com.example.demo.entity.UserInfo;
 import com.example.demo.entity.UserInfoView;
 import com.example.demo.plugin.ConfigMapper;
+import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.SelectProvider;
 import org.apache.ibatis.annotations.Update;
 import org.apache.ibatis.session.RowBounds;
-import tk.mybatis.mapper.common.Mapper;
 
 import java.util.List;
 
 /**
  * @author lxh
  */
-public interface UserInfoMapper extends Mapper<UserInfo> {
+@Mapper
+public interface UserInfoMapper extends ExtendsMapper<UserInfo> {
     UserInfo getUserById(@Param("id") long id);
 
     List<UserInfo> selectByName(@Param("name") String name);

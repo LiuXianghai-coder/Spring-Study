@@ -17,6 +17,7 @@ import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
+import java.util.Objects;
 import java.util.Optional;
 
 @Component("jasyptPropertiesPropertyResolver")
@@ -45,7 +46,15 @@ public class PropertiesPropertyResolver
         // 复用原有 Jasypt 的配置属性
         JasyptEncryptorConfigurationProperties props = JasyptEncryptorConfigurationProperties.bindConfigProps(env);
         String password = props.getPassword();
+        if (Objects.isNull(password) || password.trim().isEmpty()) {
+            return;
+        }
 
+        SimpleStringPBEConfig config = getSimpleStringPBEConfig(password);
+        this.encryptor.setConfig(config);
+    }
+
+    private static SimpleStringPBEConfig getSimpleStringPBEConfig(String password) {
         SimpleStringPBEConfig config = new SimpleStringPBEConfig();
         config.setPasswordCharArray(password.toCharArray());
         config.setAlgorithm("PBEWITHHMACSHA512ANDAES_256");
@@ -55,7 +64,7 @@ public class PropertiesPropertyResolver
         config.setSaltGenerator(new StringFixedSaltGenerator(SALT_TEXT)); // 替换默认的盐值生成器
         config.setIvGenerator(new StringFixedIvGenerator(IV_GEN_TEXT)); // 替换默认的向量生成器
         config.setStringOutputType("base64");
-        this.encryptor.setConfig(config);
+        return config;
     }
 
     @Override

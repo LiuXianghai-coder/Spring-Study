@@ -1,0 +1,21 @@
+server:
+  port: 0
+
+spring:
+  sql:
+    init:
+      schema-locations: db_script/schema_h2.sql
+      data-locations: db_script/data_h2.sql
+      mode: always
+  datasource:
+    url: jdbc:h2:mem:dcbapp
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+
+mybatis:
+  configuration:
+    cache-enabled: false
+    local-cache-scope: statement
+    log-impl: org.apache.ibatis.logging.slf4j.Slf4jImpl
+  mapperLocations: mybatis/mapper/*

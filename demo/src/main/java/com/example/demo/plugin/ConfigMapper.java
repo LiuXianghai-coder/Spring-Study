@@ -5,6 +5,6 @@ package com.example.demo.plugin;
  */
 public class ConfigMapper {
     public String selectByUserId(String userId) {
-        return "SELECT * FROM user_info WHERE id=" + userId;
+        return "SELECT * FROM user_info WHERE user_id=" + userId;
     }
 }
