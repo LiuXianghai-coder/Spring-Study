@@ -1,4 +1,8 @@
 spring:
+  cache:
+    type: caffeine
+    caffeine:
+      spec: initialCapacity=256,maximumSize=2048,expireAfterAccess=5s,expireAfterWrite=5s,recordStats
   sql:
     init:
       schema-locations: db_script/schema_h2.sql
@@ -9,3 +13,9 @@ spring:
     driver-class-name: org.h2.Driver
     username: sa
     password:
+
+mybatis:
+  configuration:
+    cache-enabled: false
+    local-cache-scope: statement
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl

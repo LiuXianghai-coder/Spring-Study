@@ -19,12 +19,9 @@ import java.util.UUID;
 public class OrderService {
 
     private final static Logger log = LoggerFactory.getLogger(OrderService.class);
-
     @Resource
     private OrderMapper orderMapper;
-
     private GoodsService goodsService;
-
     @Transactional
     public boolean createOrder(OrderInfo orderInfo) {
         log.info("准备创建订单，对应的订单信息=[{}]", orderInfo);
@@ -51,7 +48,6 @@ public class OrderService {
         }).start();
         return Boolean.TRUE;
     }
-
     @Resource
     public void setGoodsService(GoodsService goodsService) {
         this.goodsService = goodsService;

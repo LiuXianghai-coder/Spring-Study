@@ -1,1 +1,2 @@
 INSERT INTO order_info(id, user_id, goods_id, goods_cnt, created_tme) VALUES ( 1, 2, 1, 2, '2023-01-01 00:00:00' );
+INSERT INTO user_info (user_id, user_name, user_gender, simple_id, backup_id) VALUES (2, 'xhliu2', 'male', '0x3f3f', '135794');
