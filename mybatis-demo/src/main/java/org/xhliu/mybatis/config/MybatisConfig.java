@@ -24,15 +24,8 @@ public class MybatisConfig {
         dataSource.setUsername("root");
         dataSource.setPassword("12345678");
         dataSource.setMaximumPoolSize(10);
-        dataSource.setJdbcUrl("jdbc:mysql://127.0.0.1:3306/mybatis");
+        dataSource.setJdbcUrl("jdbc:mysql://127.0.0.1:3306/lxh_db");
         dataSource.setDriverClassName("com.mysql.cj.jdbc.Driver");
         return dataSource;
-    }
-
-    @Bean
-    public SqlSessionFactory sqlSessionFactory() throws Exception {
-        SqlSessionFactoryBean factoryBean = new SqlSessionFactoryBean();
-        factoryBean.setDataSource(dataSource());
-        return factoryBean.getObject();
     }
 }

@@ -1,5 +1,6 @@
 package org.xhliu.mybatis.mapper;
 
+import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.xhliu.mybatis.vo.User;
 
@@ -9,6 +10,7 @@ import org.xhliu.mybatis.vo.User;
  */
 
 // 只需要定义方法，别的交给 Mybatis
+@Mapper
 public interface UserMapper {
     User getUserById(@Param("id") Long userId);
 }
