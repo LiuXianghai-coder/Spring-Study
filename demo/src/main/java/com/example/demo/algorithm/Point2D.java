@@ -34,11 +34,6 @@ public class Point2D
     }
 
     @Override
-    public void draw() {
-        StdDraw.point(x, y);
-    }
-
-    @Override
     public double distanceSquaredTo(Point point) {
         if (!(point instanceof Point2D)) {
             throw new IllegalArgumentException();
