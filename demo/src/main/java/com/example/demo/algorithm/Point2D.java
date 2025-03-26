@@ -1,7 +1,5 @@
 package com.example.demo.algorithm;
 
-import edu.princeton.cs.algs4.StdDraw;
-
 /**
  * 二维平面的点的类型
  *

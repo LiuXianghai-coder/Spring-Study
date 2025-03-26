@@ -3,10 +3,7 @@ package com.example.demo.config;
 import com.alibaba.druid.pool.DruidAbstractDataSource;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.example.demo.common.DynamicDataSource;
-import com.example.demo.plugin.BackUpInfoReadPlugin;
-import com.example.demo.plugin.BackupInfoPlugin;
-import com.example.demo.plugin.TransactionConfigurationCustomizer;
-import com.example.demo.plugin.TransactionSqlSessionFactoryBeanCustomizer;
+import com.example.demo.plugin.*;
 import com.example.demo.reflect.TaskInfoReflectorFactory;
 import com.example.demo.transaction.DynamicTransactionFactory;
 import org.apache.ibatis.plugin.Interceptor;
@@ -69,6 +66,11 @@ public class MybatisConfig {
     @Bean(name = "backUpInfoReadPlugin")
     public Interceptor backUpInfoReadPlugin() {
         return new BackUpInfoReadPlugin();
+    }
+
+    @Bean(name = "splitQuarterPlugin")
+    public Interceptor splitQuarterPlugin() {
+        return new OaStatisticSplitPlugin();
     }
 
     @Bean(name = "taskInfoReflectorFactory")
