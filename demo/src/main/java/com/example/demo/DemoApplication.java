@@ -1,5 +1,6 @@
 package com.example.demo;
 
+import cn.hutool.core.lang.Snowflake;
 import com.example.demo.entity.OaStatistic;
 import com.example.demo.mapper.OaStatisticMapper;
 import com.google.common.collect.ImmutableMap;
@@ -42,8 +43,10 @@ public class DemoApplication {
                     1, secondQuarter, 2, thirdQuarter);
 
             ThreadLocalRandom random = ThreadLocalRandom.current();
+            Snowflake snowflake = new Snowflake(0, 0);
             for (int i = 0; i < 1000; i++) {
                 OaStatistic statistic = new OaStatistic();
+                statistic.setId(snowflake.nextId());
                 statistic.setStatisticContent("0x3f3f");
                 statistic.setCreatedId("xhliu");
                 statistic.setCreatedTime(mod2Quarter.get(random.nextInt(0, 100) % 3).plusDays(random.nextInt(0, 88)));

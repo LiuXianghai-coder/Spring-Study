@@ -34,6 +34,8 @@ public class OaStatisticSplitPlugin
 
     static final Map<LocalDateTime, String> TIME_TO_TABLE = new TreeMap<>();
 
+    static final Map<Integer, String> HASH_TO_TABLE = new TreeMap<>();
+
     static final Map<LocalDateTime, Integer> ID_CENTER_MAP = new HashMap<>();
 
     static {
@@ -44,6 +46,10 @@ public class OaStatisticSplitPlugin
         TIME_TO_TABLE.put(firstQuarter, "oa_statistic_2025_a");
         TIME_TO_TABLE.put(secondQuarter, "oa_statistic_2025_b");
         TIME_TO_TABLE.put(thirdQuarter, "oa_statistic_2025_c");
+
+        HASH_TO_TABLE.put(0, "oa_statistic_2025_a");
+        HASH_TO_TABLE.put(1, "oa_statistic_2025_b");
+        HASH_TO_TABLE.put(2, "oa_statistic_2025_c");
 
         ID_CENTER_MAP.put(firstQuarter, 1);
         ID_CENTER_MAP.put(secondQuarter, 2);
@@ -61,7 +67,9 @@ public class OaStatisticSplitPlugin
         LocalDateTime quarter = determineQuarter(param.getCreatedTime());
         String tableName = TIME_TO_TABLE.get(quarter);
         param.setTableName(tableName);
-        if (Objects.isNull(param.getId())) {
+        if (!Objects.isNull(param.getId())) {
+            param.setTableName(HASH_TO_TABLE.get((int) (param.getId() % 3)));
+        } else {
             param.setId(IdTool.snowFlake(ID_CENTER_MAP.get(quarter)));
         }
         return invocation.proceed();
