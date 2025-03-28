@@ -1,0 +1,5 @@
+mybatis:
+  configuration:
+    cache-enabled: true
+    local-cache-scope: statement
+  mapperLocations: mapper/*

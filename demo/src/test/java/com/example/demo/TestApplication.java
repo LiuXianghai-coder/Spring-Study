@@ -19,24 +19,6 @@ import java.util.Map;
 @MapperScan(value = {"com.example.demo.mapper"}, lazyInitialization = "true")
 public class TestApplication {
 
-    static class TestDynamicDataSource extends DynamicDataSource {
-
-        @Override
-        protected Object determineCurrentLookupKey() {
-            return "h2";
-        }
-    }
-
-    @Bean("dynamicDataSource")
-    @Profile("test")
-    public DynamicDataSource dynamicDataSource(DataSource dataSource) {
-        Map<Object, Object> dataSourceMap = new HashMap<>();
-        dataSourceMap.put("h2", dataSource);
-        DynamicDataSource dynamicDataSource = new TestDynamicDataSource();
-        dynamicDataSource.setTargetDataSources(dataSourceMap);
-        return dynamicDataSource;
-    }
-
     public static void main(String[] args) {
         SpringApplication.run(TestApplication.class, args);
     }

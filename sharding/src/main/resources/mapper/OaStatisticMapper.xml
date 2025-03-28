@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.xhliu.sharding.mapper.OaStatisticMapper">
+
+    <resultMap id="splitStatisticDtoResultMap" type="org.xhliu.sharding.dto.SplitStatisticDto">
+        <result column="table_name" jdbcType="VARCHAR" property="tableName"/>
+        <result column="id" jdbcType="BIGINT" property="id"/>
+        <result column="created_time" jdbcType="DATETIMEOFFSET" property="createdTime"/>
+    </resultMap>
+
+    <select id="unionAllPageSearch" resultMap="splitStatisticDtoResultMap"
+            parameterType="org.xhliu.sharding.rpo.SplitStatisticRpo">
+        SELECT *
+        FROM (SELECT *
+              FROM (SELECT 'oa_statistic_2025_a' AS table_name, a.id, a.created_time
+                    FROM oa_statistic_2025_a a
+                    ORDER BY created_time) AS a
+              UNION ALL
+              SELECT *
+              FROM (SELECT 'oa_statistic_2025_b' AS table_name, b.id, b.created_time
+                    FROM oa_statistic_2025_b b
+                    ORDER BY created_time) AS b
+              UNION ALL
+              SELECT *
+              FROM (SELECT 'oa_statistic_2025_c' AS table_name, c.id, c.created_time
+                    FROM oa_statistic_2025_c c
+                    ORDER BY created_time) AS c) AS t
+        ORDER BY created_time
+    </select>
+
+    <select id="firstPageSearch" resultMap="splitStatisticDtoResultMap"
+            parameterType="org.xhliu.sharding.rpo.SplitStatisticRpo">
+        SELECT #{param.tableName} AS table_name, t.id, t.created_time
+        FROM ${param.tableName} t
+        ORDER BY t.created_time
+        LIMIT #{param.pageSize} OFFSET #{param.offset}
+    </select>
+
+    <select id="countFirstPageSearch" resultType="java.lang.Long"
+            parameterType="org.xhliu.sharding.rpo.SplitStatisticRpo">
+        SELECT COUNT(*)
+        FROM ${param.tableName} t
+    </select>
+
+    <select id="secondPageSearch" resultMap="splitStatisticDtoResultMap"
+            parameterType="org.xhliu.sharding.rpo.SplitStatisticRpo">
+        SELECT #{param.tableName} AS table_name, t.id, t.created_time
+        FROM ${param.tableName} t
+        WHERE ${param.condition}
+        ORDER BY t.created_time
+        <if test="param.maxLimit != null">
+            LIMIT #{param.maxLimit}
+        </if>
+    </select>
+</mapper>

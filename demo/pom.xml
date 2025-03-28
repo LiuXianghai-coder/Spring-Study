@@ -146,6 +146,11 @@
             <artifactId>mapper-spring-boot-starter</artifactId>
             <version>4.2.2</version>
         </dependency>
+        <dependency>
+            <groupId>com.github.pagehelper</groupId>
+            <artifactId>pagehelper</artifactId>
+            <version>5.3.2</version>
+        </dependency>
         <!-- MyBatis 相关的依赖结束 -->
 
         <dependency>

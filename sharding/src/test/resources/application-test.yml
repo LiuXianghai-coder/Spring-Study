@@ -21,7 +21,7 @@ mybatis:
     cache-enabled: false
     local-cache-scope: statement
     log-impl: org.apache.ibatis.logging.slf4j.Slf4jImpl
-  mapperLocations: mybatis/mapper/*
+  mapperLocations: mapper/*
 logging:
   level:
     root: info

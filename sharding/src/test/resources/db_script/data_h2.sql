@@ -1,5 +1,3 @@
-INSERT INTO user_info (user_id, user_name, user_gender, simple_id, backup_id) VALUES (2, 'xhliu2', 'male', '0x3f3f', '135794');
-
 INSERT INTO oa_statistic_2025_a (id, statistic_content, created_id, created_time) VALUES (1904828639984222208, '0x3f3f', 'xhliu', '2025-08-08 04:02:25');
 INSERT INTO oa_statistic_2025_a (id, statistic_content, created_id, created_time) VALUES (1904828640009388032, '0x3f3f', 'xhliu', '2025-05-04 14:35:04');
 INSERT INTO oa_statistic_2025_a (id, statistic_content, created_id, created_time) VALUES (1904828640021970944, '0x3f3f', 'xhliu', '2025-06-12 00:25:48');

@@ -6,6 +6,7 @@ import com.example.demo.common.DynamicDataSource;
 import com.example.demo.plugin.*;
 import com.example.demo.reflect.TaskInfoReflectorFactory;
 import com.example.demo.transaction.DynamicTransactionFactory;
+import com.github.pagehelper.PageInterceptor;
 import org.apache.ibatis.plugin.Interceptor;
 import org.apache.ibatis.transaction.TransactionFactory;
 import org.mybatis.spring.boot.autoconfigure.SqlSessionFactoryBeanCustomizer;
@@ -71,6 +72,11 @@ public class MybatisConfig {
     @Bean(name = "splitQuarterPlugin")
     public Interceptor splitQuarterPlugin() {
         return new OaStatisticSplitPlugin();
+    }
+
+    @Bean(name = "pageHelpPlugin")
+    public Interceptor pageHelpPlugin() {
+        return new PageInterceptor();
     }
 
     @Bean(name = "taskInfoReflectorFactory")

@@ -1,11 +1,11 @@
-package com.example.demo.mapper;
+package org.xhliu.sharding.mapper;
 
-import com.example.demo.dto.SplitStatisticDto;
-import com.example.demo.entity.OaStatistic;
-import com.example.demo.rpo.SplitStatisticRpo;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
+import org.xhliu.sharding.dto.SplitStatisticDto;
+import org.xhliu.sharding.entity.OaStatistic;
+import org.xhliu.sharding.rpo.SplitStatisticRpo;
 
 import java.util.List;
 

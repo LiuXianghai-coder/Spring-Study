@@ -49,7 +49,10 @@ public class DemoApplication {
                 statistic.setId(snowflake.nextId());
                 statistic.setStatisticContent("0x3f3f");
                 statistic.setCreatedId("xhliu");
-                statistic.setCreatedTime(mod2Quarter.get(random.nextInt(0, 100) % 3).plusDays(random.nextInt(0, 88)));
+                LocalDateTime createdTime = mod2Quarter.get(random.nextInt(0, 100) % 3)
+                        .plusDays(random.nextInt(0, 88));
+                statistic.setCreatedTime(LocalDateTime.of(createdTime.toLocalDate(), LocalTime.of(random.nextInt(0, 23),
+                        random.nextInt(0, 60), random.nextInt(0, 60))));
                 statisticMapper.insertStatisticContent(statistic);
             }
             txManager.commit(status);
