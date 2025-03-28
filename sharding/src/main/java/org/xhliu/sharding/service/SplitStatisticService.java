@@ -56,8 +56,8 @@ public class SplitStatisticService {
         int allOffset = (pageNo - 1) * pageSize;
         List<String> tableNames = currSplitTableNames();
         int offset = allOffset / tableNames.size();
-        int limit = pageSize + (allOffset - tableNames.size() * offset);
-        int maxLimit = pageSize * tableNames.size();
+        int limit = pageSize + (allOffset - tableNames.size() * offset); // 避免整数相除导致的偏移量确实
+        int maxLimit = pageSize * tableNames.size(); // 每个表最多需要查询的数据两
 
         // 首次查询每个子表偏移量分页数据
         Map<String, List<SplitStatisticDto>> firstSubDataMap = Maps.newTreeMap();
@@ -69,6 +69,7 @@ public class SplitStatisticService {
             firstSubDataMap.put(tableName, oaStatisticMapper.firstPageSearch(rpo));
         }
 
+        // 补偿当表中数据不足时的偏移量
         int subCnt = 0;
         for (Map.Entry<String, List<SplitStatisticDto>> entry : firstSubDataMap.entrySet()) {
             if (CollectionUtils.isEmpty(entry.getValue())) {
@@ -139,6 +140,7 @@ public class SplitStatisticService {
             allDataOffset += f;
         }
 
+        // 有可能存在数据倾斜的情况，在这种情况下可以考虑在偏斜的表中多查一些数据
         if (allDataOffset >= pageSize) {
             for (String tableName : tableNames) {
                 List<SplitStatisticDto> firstQuery = firstSubDataMap.get(tableName);
