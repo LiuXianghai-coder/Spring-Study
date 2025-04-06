@@ -21,20 +21,17 @@ public class SpringRedissionApplication {
         ConfigurableApplicationContext context = SpringApplication.run(SpringRedissionApplication.class, args);
         RedissonClient redissonClient = context.getBean(RedissonClient.class);
 
-        log.info("ready to create delay deque");
-
         Stopwatch stopwatch = Stopwatch.createStarted();
         stopwatch.reset();
         stopwatch.start();
+
+        RBlockingDeque<String> chatBlockingDeque = redissonClient.getBlockingDeque("delay-queue");
+        RDelayedQueue<String> delayedQueue = redissonClient.getDelayedQueue(chatBlockingDeque);
         for (int i = 0; i < 5; i++) {
-            RBlockingDeque<String> chatBlockingDeque = redissonClient.getBlockingDeque("delay-queue");
-            RDelayedQueue<String> delayedQueue = redissonClient.getDelayedQueue(chatBlockingDeque);
             delayedQueue.offer("测试延时消息_" + (i + 1), 5, TimeUnit.SECONDS);
         }
 
-        while (true) {
-            RBlockingDeque<String> chatBlockingDeque = redissonClient.getBlockingDeque("delay-queue");
-            RDelayedQueue<String> delayedQueue = redissonClient.getDelayedQueue(chatBlockingDeque);
+        for (int i = 0; i < 5; i++) {
             String msg = chatBlockingDeque.take();
             log.info("{} take {} ms", msg, stopwatch.elapsed(TimeUnit.MILLISECONDS));
         }

@@ -31,6 +31,9 @@ public interface UserInfoMapper extends ExtendsMapper<UserInfo> {
 
     int insert(UserInfo userInfo);
 
+    @Update(value = {"UPDATE tb_user SET age=#{age} WHERE id=#{id}"})
+    int updateUserAge(@Param("age") Integer age, @Param("id") Long id);
+
     @SelectProvider(value = ConfigMapper.class, method = "selectByUserId")
     UserInfo selectByUserId(@Param("userId") String userId);
 
