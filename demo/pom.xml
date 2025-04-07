@@ -140,6 +140,12 @@
             <version>3.19.0</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.redisson</groupId>
+            <artifactId>redisson-spring-boot-starter</artifactId>
+            <version>3.18.0</version>
+        </dependency>
+
         <!-- 通用 Mapper 相关的依赖 -->
         <dependency>
             <groupId>tk.mybatis</groupId>

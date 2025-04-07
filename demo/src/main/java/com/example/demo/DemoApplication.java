@@ -30,36 +30,5 @@ public class DemoApplication {
 
     public static void main(String[] args) throws Throwable {
         ConfigurableApplicationContext context = SpringApplication.run(DemoApplication.class, args);
-
-        OaStatisticMapper statisticMapper = context.getBean(OaStatisticMapper.class);
-        PlatformTransactionManager txManager = context.getBean(PlatformTransactionManager.class);
-        TransactionStatus status = txManager.getTransaction(new DefaultTransactionDefinition());
-        try {
-            LocalDateTime firstQuarter = LocalDateTime.of(LocalDate.of(2025, 1, 1), LocalTime.MIDNIGHT);
-            LocalDateTime secondQuarter = LocalDateTime.of(LocalDate.of(2025, 4, 1), LocalTime.MIDNIGHT);
-            LocalDateTime thirdQuarter = LocalDateTime.of(LocalDate.of(2025, 7, 1), LocalTime.MIDNIGHT);
-
-            Map<Integer, LocalDateTime> mod2Quarter = ImmutableMap.of(0, firstQuarter,
-                    1, secondQuarter, 2, thirdQuarter);
-
-            ThreadLocalRandom random = ThreadLocalRandom.current();
-            Snowflake snowflake = new Snowflake(0, 0);
-            for (int i = 0; i < 1000; i++) {
-                OaStatistic statistic = new OaStatistic();
-                statistic.setId(snowflake.nextId());
-                statistic.setStatisticContent("0x3f3f");
-                statistic.setCreatedId("xhliu");
-                LocalDateTime createdTime = mod2Quarter.get(random.nextInt(0, 100) % 3)
-                        .plusDays(random.nextInt(0, 88));
-                statistic.setCreatedTime(LocalDateTime.of(createdTime.toLocalDate(), LocalTime.of(random.nextInt(0, 23),
-                        random.nextInt(0, 60), random.nextInt(0, 60))));
-                statisticMapper.insertStatisticContent(statistic);
-            }
-            txManager.commit(status);
-            System.exit(0);
-        } catch (Throwable t) {
-            log.error("", t);
-            txManager.rollback(status);
-        }
     }
 }
