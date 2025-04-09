@@ -16,7 +16,7 @@ public class DynamicDataSource
     @Override
     protected Object determineCurrentLookupKey() {
         String curDataSource = DataSourceHolder.getCurDataSource();
-        return Objects.requireNonNullElse(curDataSource, defaultDbType());
+        return Objects.requireNonNull(curDataSource, defaultDbType());
     }
 
     protected String defaultDbType() {
