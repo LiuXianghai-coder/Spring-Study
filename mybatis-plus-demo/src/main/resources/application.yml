@@ -1,0 +1,16 @@
+spring:
+  datasource:
+    dynamic:
+      primary: mysql
+      strict: false
+      datasource:
+        slave:
+          url: jdbc:mysql://127.0.0.1:3306/lxh_db
+          username: root
+          password: 18373796017;Liu
+          driver-class-name: com.mysql.cj.jdbc.Driver
+        master:
+          url: jdbc:postgresql://127.0.0.1:5432/lxh_db
+          username: postgres
+          password: 12345678
+          driver-class-name: org.postgresql.Driver

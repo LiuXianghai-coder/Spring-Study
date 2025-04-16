@@ -1,0 +1,22 @@
+spring:
+  datasource:
+    dynamic:
+      primary: mysql
+      strict: false
+      datasource:
+        master:
+          url: jdbc:h2:mem:master
+          username: sa
+          password:
+          driver-class-name: org.h2.Driver
+          init:
+            schema: db_script/master_init_schema.sql
+            data: db_script/master_init_data.sql
+        slave:
+          url: jdbc:h2:mem:salve
+          username: sa
+          password:
+          driver-class-name: org.h2.Driver
+          init:
+            schema: db_script/slave_init_schema.sql
+            data: db_script/slave_init_data.sql
