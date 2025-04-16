@@ -2,7 +2,6 @@ package com.example.demo;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.Getter;
 import org.apache.kafka.clients.producer.*;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.junit.jupiter.api.BeforeEach;
@@ -53,7 +52,6 @@ public class KafkaTest {
         }
     }
 
-    @Getter
     static class Message {
         private final String index;
 
@@ -64,5 +62,12 @@ public class KafkaTest {
             this.des = des;
         }
 
+        public String getIndex() {
+            return index;
+        }
+
+        public String getDes() {
+            return des;
+        }
     }
 }

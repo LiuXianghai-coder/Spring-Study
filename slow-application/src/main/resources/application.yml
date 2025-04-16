@@ -1,0 +1,20 @@
+spring:
+  sql:
+    init:
+      schema-locations: classpath:db_script/schema_h2.sql
+      data-locations: classpath:db_script/data_h2.sql
+      mode: always
+  datasource:
+    url: jdbc:h2:mem:dcbapp
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+  main:
+    allow-circular-references: true
+
+mybatis:
+  configuration:
+    cache-enabled: true
+    local-cache-scope: statement
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  mapperLocations: mybatis/mapper/*
