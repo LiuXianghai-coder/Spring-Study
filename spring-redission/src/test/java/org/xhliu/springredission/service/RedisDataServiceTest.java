@@ -12,6 +12,7 @@ import org.xhliu.springredission.rpo.RedisDataDeltaRpo;
 import org.xhliu.springredission.service.impl.RedisDataService;
 
 import javax.annotation.Resource;
+import java.util.Comparator;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
@@ -75,6 +76,35 @@ public class RedisDataServiceTest {
         for (String field : deletedFields) {
             Assertions.assertFalse(redisData.containsKey(field));
         }
+    }
 
+    @Test
+    public void incrementUpdateHashCompTest() {
+        String hashKey = "incrementHashKey";
+        final int keySize = 10_000;
+        Map<Object, Object> rawData = Maps.newHashMap();
+        for (int i = 0; i < keySize; i++) {
+            rawData.put("key_" + i, "value_" + i);
+        }
+        redisTemplate.opsForHash().putAll(hashKey, rawData);
+
+
+        Map<String, String> updatedData = Maps.newHashMap();
+        ThreadLocalRandom random = ThreadLocalRandom.current();
+        int updatedStarted = random.nextInt(0, keySize);
+        for (int i = updatedStarted, j = 0; i < keySize && j < 10_000; ++j, i++) {
+            updatedData.put("key_" + i, "value_updated_" + i);
+        }
+        Set<String> deletedFields = Sets.newHashSet();
+        for (int i = 0; i < updatedStarted; i++) {
+            deletedFields.add("key_" + i);
+        }
+
+        RedisDataDeltaRpo<String, String> deltaRpo = RedisDataDeltaRpo.RedisDataDeltaRpoBuilder.
+                aRedisDataDeltaRpo(String.class, String.class)
+                .deltaData(updatedData).hashKey(hashKey)
+                .deletedFields(deletedFields)
+                .build();
+        redisDataService.incrementUpdateHash(deltaRpo, Comparator.comparingInt(String::length));
     }
 }

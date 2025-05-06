@@ -6,8 +6,11 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.redis.core.Cursor;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ScanOptions;
 import org.springframework.data.redis.core.script.DefaultRedisScript;
+import org.springframework.data.redis.serializer.StringRedisSerializer;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
@@ -40,6 +43,18 @@ public class RedisDataService {
 
         deleteFieldKeys(hashKey, deletedFields);
         updateDeltaData(hashKey, deltaData);
+    }
+
+    public <F, V> void incrementUpdateHash(RedisDataDeltaRpo<F, V> deltaRpo, Comparator<F> fieldComp) {
+        Assert.notNull(deltaRpo, "请求参数对象不能为 null");
+        String hashKey = deltaRpo.getHashKey();
+        Assert.notNull(hashKey, "操作 hash 对象时，对应的 hashKey 不能为 null");
+
+        Map<F, V> deltaData = deltaRpo.getDeltaData();
+        Set<F> deletedFields = deltaRpo.getDeletedFields();
+
+        deleteFiledKeysByComp(hashKey, deletedFields, fieldComp);
+        updateDeltaDataByComp(hashKey, deltaData, fieldComp);
     }
 
     private <F, V> void updateDeltaData(String hashKey, Map<F, V> deltaData) {
@@ -115,10 +130,86 @@ public class RedisDataService {
                 deleted, stopwatch.elapsed(TimeUnit.MILLISECONDS));
     }
 
+    private <F, V> void deleteFiledKeysByComp(String hashKey, Set<F> deleteFields, Comparator<F> fieldComp) {
+        if (CollectionUtils.isEmpty(deleteFields)) {
+            return;
+        }
+        Map<F, V> bathSacanMap = batchScanHash(hashKey, BATCH_SIZE);
+        Set<F> deleteAbleFields = Sets.newHashSet();
+        while (!CollectionUtils.isEmpty(bathSacanMap)) {
+            for (Map.Entry<F, V> entry : bathSacanMap.entrySet()) {
+                for (F field : deleteFields) {
+                    if (fieldComp.compare(entry.getKey(), field) == 0) {
+                        deleteAbleFields.add(field);
+                        break;
+                    }
+                }
+            }
+        }
+        deleteFieldKeys(hashKey, deleteAbleFields);
+    }
+
+    private <F, V> void updateDeltaDataByComp(String hashKey, Map<F, V> deltaData, Comparator<F> fieldComp) {
+        if (CollectionUtils.isEmpty(deltaData)) {
+            return;
+        }
+        Map<F, V> bathSacanMap = batchScanHash(hashKey, BATCH_SIZE);
+        Map<F, V> updateData = Maps.newHashMap();
+        while (!CollectionUtils.isEmpty(bathSacanMap)) {
+            for (Map.Entry<F, V> entry : bathSacanMap.entrySet()) {
+                for (Map.Entry<F, V> fvEntry : deltaData.entrySet()) {
+                    if (fieldComp.compare(entry.getKey(), fvEntry.getKey()) == 0) {
+                        updateData.put(entry.getKey(), fvEntry.getValue());
+                    }
+                }
+            }
+        }
+        updateDeltaData(hashKey, updateData);
+    }
+
     private <F> long deleteBatchFieldKeys(String hashKey, Set<F> deleteFields) {
         if (CollectionUtils.isEmpty(deleteFields)) {
             return 0;
         }
         return redisTemplate.opsForHash().delete(hashKey, deleteFields.toArray());
+    }
+
+    @SuppressWarnings("unchecked")
+    protected <HK, HV> Map<HK, HV> batchScanHash(String hashKey, int count) {
+        Map<HK, HV> resultMap = new HashMap<>();
+
+        RedisTemplate<String, Object> fvRedisTemplate = cloneRedisTemplate();
+        ScanOptions.ScanOptionsBuilder optionsBuilder = ScanOptions.scanOptions();
+        optionsBuilder.count(count);
+
+        // 使用 HSCAN 命令进行迭代扫描
+        Cursor<Map.Entry<Object, Object>> cursor = fvRedisTemplate.opsForHash().scan(hashKey, optionsBuilder.build());
+        try {
+            while (cursor.hasNext()) {
+                Map.Entry<Object, Object> entry = cursor.next();
+                resultMap.put((HK) entry.getKey(), (HV) entry.getValue());
+            }
+        } catch (Throwable t) {
+            log.error("", t);
+        } finally {
+            try {
+                cursor.close();
+            } catch (Exception e) {
+                log.error("", e);
+            }
+        }
+        return resultMap;
+    }
+
+    private RedisTemplate<String, Object> cloneRedisTemplate() {
+        RedisTemplate<String, Object> fvRedisTemplate = new RedisTemplate<>();
+        assert redisTemplate.getConnectionFactory() != null;
+        fvRedisTemplate.setConnectionFactory(redisTemplate.getConnectionFactory());
+        fvRedisTemplate.setKeySerializer(redisTemplate.getKeySerializer());
+        fvRedisTemplate.setValueSerializer(redisTemplate.getValueSerializer());
+        fvRedisTemplate.setHashKeySerializer(redisTemplate.getHashKeySerializer());
+        fvRedisTemplate.setHashValueSerializer(redisTemplate.getHashValueSerializer());
+        fvRedisTemplate.afterPropertiesSet();
+        return fvRedisTemplate;
     }
 }
