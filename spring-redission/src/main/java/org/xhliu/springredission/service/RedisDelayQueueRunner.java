@@ -5,6 +5,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.Profile;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Component;
 import org.xhliu.springredission.enums.RedisDelayQueueEnum;
@@ -19,6 +20,7 @@ import java.util.concurrent.TimeUnit;
  *@author lxh
  */
 @Component
+@Profile("!test")
 public class RedisDelayQueueRunner
         implements CommandLineRunner {
 
