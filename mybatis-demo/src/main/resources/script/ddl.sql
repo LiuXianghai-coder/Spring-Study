@@ -53,3 +53,17 @@ CREATE TABLE `tb_message_detail`
 ) ENGINE = InnoDB
   AUTO_INCREMENT = 1
   DEFAULT CHARSET = utf8 COMMENT ='消息表详情表';
+
+
+-- auto-generated definition
+create table store_snapshot
+(
+    id           varchar(32) not null comment '主键',
+    warehouse_id varchar(32) null comment '仓库主键',
+    snap_date    datetime    null comment '快照日期',
+    create_id    varchar(32) null comment '创建人id',
+    created_time datetime    null comment '创建日期',
+    modify_id    varchar(32) null comment '更新人 id',
+    modify_time  datetime    null comment '更新时间'
+)
+    comment '仓库快照';

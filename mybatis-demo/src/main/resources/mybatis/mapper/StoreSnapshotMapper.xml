@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- 命名空间需与对应的 Mapper 接口全路径一致 -->
+<mapper namespace="org.xhliu.mybatis.mapper.StoreSnapshotMapper">
+
+    <!-- 通用结果集映射，可复用 -->
+    <resultMap id="BaseResultMap" type="org.xhliu.mybatis.vo.StoreSnapshot">
+        <id column="id" property="id" jdbcType="VARCHAR"/>
+        <result column="warehouse_id" property="warehouseId" jdbcType="VARCHAR"/>
+        <result column="snap_date" property="snapDate" jdbcType="TIMESTAMP"/>
+        <result column="create_id" property="createId" jdbcType="VARCHAR"/>
+        <result column="created_time" property="createdTime" jdbcType="TIMESTAMP"/>
+        <result column="modify_id" property="modifyId" jdbcType="VARCHAR"/>
+        <result column="modify_time" property="modifyTime" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <!-- 批量插入方法 -->
+    <insert id="batchInsert" parameterType="java.util.List">
+        INSERT INTO store_snapshot (
+        id,
+        warehouse_id,
+        snap_date,
+        create_id,
+        created_time,
+        modify_id,
+        modify_time
+        ) VALUES
+        <foreach collection="list" item="item" separator=",">
+            (
+            #{item.id,jdbcType=VARCHAR},
+            #{item.warehouseId,jdbcType=VARCHAR},
+            #{item.snapDate,jdbcType=TIMESTAMP},
+            #{item.createId,jdbcType=VARCHAR},
+            #{item.createdTime,jdbcType=TIMESTAMP},
+            #{item.modifyId,jdbcType=VARCHAR},
+            #{item.modifyTime,jdbcType=TIMESTAMP}
+            )
+        </foreach>
+    </insert>
+
+</mapper>
