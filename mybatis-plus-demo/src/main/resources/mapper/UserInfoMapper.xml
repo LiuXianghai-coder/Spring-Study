@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!-- namespace 对应相关的 DAO 接口，Mybatis 会根据这个接口通过代理的方式生成对应的数据访问对象 -->
+<mapper namespace="com.example.mybatisplusdemo.mapper.UserInfoMapper">
+    <resultMap id="BaseResultMap" type="com.example.mybatisplusdemo.entity.UserInfo">
+        <id column="user_id" property="userId" jdbcType="VARCHAR" />
+        <id column="user_name" property="userName" jdbcType="VARCHAR" />
+        <id column="user_gender" property="userGender" jdbcType="VARCHAR" />
+        <id column="simple_id" property="simpleId" jdbcType="VARCHAR" />
+        <id column="backup_id" property="backupId" jdbcType="VARCHAR" />
+    </resultMap>
+
+    <select id="selectUserInfo" resultMap="BaseResultMap"
+            parameterType="com.example.mybatisplusdemo.entity.UserInfo">
+        SELECT *
+        FROM user_info u
+        WHERE
+        <trim prefixOverrides="AND">
+            <if test="param.userId != null">
+                AND u.user_id=#{param.userId}
+            </if>
+            <if test="param.userName != null">
+                AND u.user_name LIKE concat('%', #{param.userName}, '%')
+            </if>
+            <if test="param.userGender != null">
+                AND u.user_gender=#{param.userGender}
+            </if>
+        </trim>
+    </select>
+</mapper>

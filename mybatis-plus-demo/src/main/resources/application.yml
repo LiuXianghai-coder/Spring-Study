@@ -1,16 +1,19 @@
 spring:
   datasource:
     dynamic:
-      primary: mysql
+      primary: master
       strict: false
       datasource:
-        slave:
+        master:
           url: jdbc:mysql://127.0.0.1:3306/lxh_db
           username: root
           password: 18373796017;Liu
           driver-class-name: com.mysql.cj.jdbc.Driver
-        master:
+        slave:
           url: jdbc:postgresql://127.0.0.1:5432/lxh_db
           username: postgres
           password: 12345678
           driver-class-name: org.postgresql.Driver
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl

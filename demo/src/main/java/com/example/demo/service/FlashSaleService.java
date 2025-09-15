@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
 import org.springframework.util.Assert;
 
@@ -18,6 +19,7 @@ import java.util.concurrent.atomic.AtomicLong;
  *@author lxh
  */
 @Service
+@Transactional
 public class FlashSaleService {
 
     private final static Logger log = LoggerFactory.getLogger(FlashSaleService.class);

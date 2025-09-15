@@ -1,5 +1,6 @@
 package com.example.demo;
 
+import java.util.PriorityQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.SynchronousQueue;
@@ -46,7 +47,30 @@ public class Application {
         endLatch.await();
     }
 
+    public double maxAverageRatio(int[][] classes, int extraStudents) {
+        PriorityQueue<int[]> pq = new PriorityQueue<>((a, b) -> {
+            double r1 = ((a[0] + 1) * 1.0 / (a[1] + 1)) - (a[0] * 1.0 / a[1]);
+            double r2 = ((b[0] + 1) * 1.0 / (b[1] + 1)) - (b[0] * 1.0 / b[1]);
+            return Double.compare(r2, r1);
+        });
+        for (int[] cc : classes) {
+            pq.offer(new int[]{cc[0], cc[1]});
+        }
+        for (int i = 0; i < extraStudents; ++i) {
+            int[] poll = pq.poll();
+            pq.offer(new int[]{poll[0] + 1, poll[1] + 1});
+        }
+        double sum = 0;
+        while (!pq.isEmpty()) {
+            int[] poll = pq.poll();
+            sum += 1.0 * poll[0] / poll[1];
+        }
+        return sum / classes.length;
+    }
+
     public static void main(String[] args) throws Throwable {
-        blockingQueueTest();
+        Application app = new Application();
+//        System.out.println(app.maxAverageRatio(new int[][]{{1, 2}, {3, 5}, {2, 2}}, 2));
+        System.out.println(app.maxAverageRatio(new int[][]{{2, 4}, {3, 9}, {4, 5}, {2, 10}}, 4));
     }
 }

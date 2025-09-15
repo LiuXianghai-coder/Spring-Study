@@ -5,7 +5,9 @@
 <!-- namespace 对应相关的 DAO 接口，Mybatis 会根据这个接口通过代理的方式生成对应的数据访问对象 -->
 <mapper namespace="com.example.demo.mapper.RateInfoMapper">
 
-    <cache />
+    <cache type="org.redisson.mybatis.RedissonCache">
+        <property name="redissonConfig" value="redisson.yaml"/>
+    </cache>
 
     <sql id="allCols">
         id, rate_name, rate_val, backup_id, created_time, created_user, updated_user, updated_time
