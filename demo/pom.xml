@@ -135,6 +135,11 @@
         </dependency>
 
         <dependency>
+            <groupId>redis.clients</groupId>
+            <artifactId>jedis</artifactId>
+        </dependency>
+
+        <dependency>
             <groupId>org.redisson</groupId>
             <artifactId>redisson-mybatis</artifactId>
             <version>3.19.0</version>
