@@ -8,7 +8,6 @@ import com.alibaba.excel.write.metadata.WriteSheet;
 import com.example.demo.entity.BigColsSchema;
 import com.example.demo.mapper.BigColsSchemaMapper;
 import com.example.demo.service.convert.OffsetTimeConvert;
-import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
@@ -22,14 +21,14 @@ import java.util.List;
 /**
  *@author lxh
  */
-public class SimpleExcelStreamingResponse
+public class SimpleCsvStreamingResponse
         implements StreamingResponseBody {
 
-    private final static Logger logger = LoggerFactory.getLogger(SimpleExcelStreamingResponse.class);
+    private final static Logger logger = LoggerFactory.getLogger(SimpleCsvStreamingResponse.class);
 
     private final ApplicationContext context;
 
-    public SimpleExcelStreamingResponse(ApplicationContext context) {
+    public SimpleCsvStreamingResponse(ApplicationContext context) {
         this.context = context;
     }
 
@@ -40,26 +39,27 @@ public class SimpleExcelStreamingResponse
         BigColsSchemaIterator iterator = new BigColsSchemaIterator(schemaMapper);
         ExcelWriter writer = EasyExcel.write(out, BigColsSchema.class)
                 .registerConverter(new OffsetTimeConvert())
-                .excelType(ExcelTypeEnum.XLSX).inMemory(Boolean.FALSE)
+                .excelType(ExcelTypeEnum.CSV).inMemory(Boolean.FALSE)
                 .autoCloseStream(Boolean.FALSE)
                 .build();
-        SXSSFWorkbook sxssfWorkbook = new SXSSFWorkbook(null, 1, true, false);
-        writer.writeContext().writeWorkbookHolder().setCachedWorkbook(sxssfWorkbook);
-        writer.writeContext().writeWorkbookHolder().setWorkbook(sxssfWorkbook);
 
-        WriteSheet writeSheet = EasyExcel.writerSheet("Big_Cols_Schema")
+        WriteSheet sheet1 = EasyExcel.writerSheet(0, "Sheet_1")
+                .build();
+        WriteSheet sheet2 = EasyExcel.writerSheet(1, "Sheet_2")
                 .build();
         List<BigColsSchema> buffer = new ArrayList<>();
         while (iterator.hasNext()) {
             buffer.add(iterator.next());
             if (buffer.size() >= 1000) {
-                logger.info("Write buffer to excel.....");
-                writer.write(buffer, writeSheet);
+                logger.info("Write buffer to csv.....");
+                writer.write(buffer, sheet1);
+                writer.write(buffer, sheet2);
                 buffer.clear();
             }
         }
         if (!CollUtil.isEmpty(buffer)) {
-            writer.write(buffer, writeSheet);
+            writer.write(buffer, sheet1);
+            writer.write(buffer, sheet2);
             buffer.clear();
         }
         writer.finish();

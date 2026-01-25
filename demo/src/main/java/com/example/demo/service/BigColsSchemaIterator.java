@@ -57,6 +57,7 @@ public class BigColsSchemaIterator
 
     private List<BigColsSchema> queryNextPage() {
         BigColsSchema schema = new BigColsSchema();
+        schema.setSchemaType("5");
         logger.info("============= query page, pageNum: {}, pageSize: {} ==============", pageNum, PAGE_SIZE);
         try (Page<BigColsSchema> page = PageHelper.startPage(pageNum, PAGE_SIZE)) {
             schemaMapper.select(schema);

@@ -1,12 +1,13 @@
 package com.example.demo.entity;
 
+import cn.hutool.core.date.DateTime;
 import com.alibaba.excel.annotation.ExcelProperty;
 import com.alibaba.excel.annotation.format.DateTimeFormat;
 import com.example.demo.tools.IdTool;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
-import java.time.OffsetDateTime;
+import java.util.Date;
 import java.util.Objects;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -52,7 +53,7 @@ public class BigColsSchema
     @Column(name = "schema_rate_work_date")
     @ExcelProperty("SchemaRateWorkDate")
     @DateTimeFormat("yyyy-MM-dd")
-    private OffsetDateTime schemaRateWorkDate;
+    private Date schemaRateWorkDate;
 
     @Basic
     @Column(name = "schema_rate_source")
@@ -68,7 +69,7 @@ public class BigColsSchema
     @Column(name = "schema_author_date")
     @ExcelProperty("SchemaAuthorDate")
     @DateTimeFormat("yyyy-MM-dd")
-    private OffsetDateTime schemaAuthorDate;
+    private Date schemaAuthorDate;
 
     @Basic
     @Column(name = "schema_author_seq")
@@ -94,7 +95,7 @@ public class BigColsSchema
     @Column(name = "schema_repay_date")
     @ExcelProperty("SchemaRepaySum")
     @DateTimeFormat("yyyy-MM-dd")
-    private OffsetDateTime schemaRepayDate;
+    private Date schemaRepayDate;
 
     @Basic
     @Column(name = "schema_expense_type")
@@ -164,14 +165,6 @@ public class BigColsSchema
         this.schemaRate = schemaRate;
     }
 
-    public OffsetDateTime getSchemaRateWorkDate() {
-        return schemaRateWorkDate;
-    }
-
-    public void setSchemaRateWorkDate(OffsetDateTime schemaRateWorkDate) {
-        this.schemaRateWorkDate = schemaRateWorkDate;
-    }
-
     public String getSchemaRateSource() {
         return schemaRateSource;
     }
@@ -186,14 +179,6 @@ public class BigColsSchema
 
     public void setSchemaAuthorType(String schemaAuthorTye) {
         this.schemaAuthorType = schemaAuthorTye;
-    }
-
-    public OffsetDateTime getSchemaAuthorDate() {
-        return schemaAuthorDate;
-    }
-
-    public void setSchemaAuthorDate(OffsetDateTime schemaAuthorDate) {
-        this.schemaAuthorDate = schemaAuthorDate;
     }
 
     public String getSchemaAuthorSeq() {
@@ -228,14 +213,6 @@ public class BigColsSchema
         this.schemaRepaySum = schemaRepaySum;
     }
 
-    public OffsetDateTime getSchemaRepayDate() {
-        return schemaRepayDate;
-    }
-
-    public void setSchemaRepayDate(OffsetDateTime schemaRepayDate) {
-        this.schemaRepayDate = schemaRepayDate;
-    }
-
     public String getSchemaExpenseType() {
         return schemaExpenseType;
     }
@@ -266,6 +243,30 @@ public class BigColsSchema
 
     public void setSchemaExpenseLumpType(String schemaExpenseLumpTyp) {
         this.schemaExpenseLumpType = schemaExpenseLumpTyp;
+    }
+
+    public Date getSchemaRateWorkDate() {
+        return schemaRateWorkDate;
+    }
+
+    public void setSchemaRateWorkDate(Date schemaRateWorkDate) {
+        this.schemaRateWorkDate = schemaRateWorkDate;
+    }
+
+    public Date getSchemaAuthorDate() {
+        return schemaAuthorDate;
+    }
+
+    public void setSchemaAuthorDate(Date schemaAuthorDate) {
+        this.schemaAuthorDate = schemaAuthorDate;
+    }
+
+    public Date getSchemaRepayDate() {
+        return schemaRepayDate;
+    }
+
+    public void setSchemaRepayDate(Date schemaRepayDate) {
+        this.schemaRepayDate = schemaRepayDate;
     }
 
     @Override
@@ -343,18 +344,18 @@ public class BigColsSchema
         schema.setSchemaStatus(String.valueOf(random.nextInt(0, 6)));
         schema.setSchemaType(String.valueOf(random.nextInt(0, 6)));
         schema.setSchemaRate(BigDecimal.valueOf(random.nextDouble(0, 100)));
-        schema.setSchemaRateWorkDate(OffsetDateTime.now());
+        schema.setSchemaRateWorkDate(new DateTime());
         schema.setSchemaRateSource(String.valueOf(random.nextInt(0, 6)));
 
         schema.setSchemaAuthorType(String.valueOf(random.nextInt(0, 6)));
-        schema.setSchemaAuthorDate(OffsetDateTime.now());
+        schema.setSchemaAuthorDate(new DateTime());
         schema.setSchemaAuthorSeq("OP" + String.format("%10s", random.nextInt(1, 1000000))
                 .replaceAll(" ", "0"));
         schema.setSchemaAuthorName(IdTool.randomName(random, 10));
 
         schema.setSchemaRepayType(String.valueOf(random.nextInt(0, 6)));
         schema.setSchemaRepaySum(BigDecimal.valueOf(random.nextDouble(1, 10000000)));
-        schema.setSchemaRepayDate(OffsetDateTime.now());
+        schema.setSchemaRepayDate(new DateTime());
 
         schema.setSchemaExpenseName(IdTool.randomName(random, 16));
         schema.setSchemaExpenseType(String.valueOf(random.nextInt(0, 6)));

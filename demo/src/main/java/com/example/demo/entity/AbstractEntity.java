@@ -1,10 +1,11 @@
 package com.example.demo.entity;
 
+import cn.hutool.core.date.DateTime;
 import com.google.common.base.Objects;
 
 import javax.persistence.Column;
 import java.io.Serializable;
-import java.time.OffsetDateTime;
+import java.util.Date;
 
 /**
  * @author lxh
@@ -18,24 +19,24 @@ public abstract class AbstractEntity implements Serializable {
     private String createdUser;
 
     @Column(name = "created_time")
-    private OffsetDateTime createdTime;
+    private Date createdTime;
 
     @Column(name = "updated_user")
     private String updatedUser;
 
     @Column(name = "updated_time")
-    private OffsetDateTime updatedTime;
+    private Date updatedTime;
 
     public void initFiled() {
         setDeleteFlag("0");
-        setCreatedTime(OffsetDateTime.now());
-        setUpdatedTime(OffsetDateTime.now());
+        setCreatedTime(new DateTime());
+        setUpdatedTime(new DateTime());
         setUpdatedUser("xhliu");
         setCreatedUser("xhliu");
     }
 
     public void initUpdate() {
-        setUpdatedTime(OffsetDateTime.now());
+        setUpdatedTime(new DateTime());
         setUpdatedUser("xhliu");
     }
 
@@ -47,11 +48,11 @@ public abstract class AbstractEntity implements Serializable {
         this.createdUser = createdUser;
     }
 
-    public OffsetDateTime getCreatedTime() {
+    public Date getCreatedTime() {
         return createdTime;
     }
 
-    public void setCreatedTime(OffsetDateTime createdTime) {
+    public void setCreatedTime(Date createdTime) {
         this.createdTime = createdTime;
     }
 
@@ -63,7 +64,7 @@ public abstract class AbstractEntity implements Serializable {
         this.updatedUser = updatedUser;
     }
 
-    public OffsetDateTime getUpdatedTime() {
+    public Date getUpdatedTime() {
         return updatedTime;
     }
 
@@ -75,7 +76,7 @@ public abstract class AbstractEntity implements Serializable {
         this.deleteFlag = deleteFlag;
     }
 
-    public void setUpdatedTime(OffsetDateTime updatedTime) {
+    public void setUpdatedTime(Date updatedTime) {
         this.updatedTime = updatedTime;
     }
 

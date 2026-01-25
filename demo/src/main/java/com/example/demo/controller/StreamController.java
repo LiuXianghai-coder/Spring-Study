@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 
+import com.example.demo.service.SimpleCsvStreamingResponse;
 import com.example.demo.service.SimpleExcelStreamingResponse;
 import org.springframework.context.ApplicationContext;
 import org.springframework.http.HttpHeaders;
@@ -31,5 +32,15 @@ public class StreamController {
                 .contentType(MediaType.parseMediaType(
                         "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"))
                 .body(new SimpleExcelStreamingResponse(context));
+    }
+
+    @PostMapping(path = "/exportBigCsv")
+    public ResponseEntity<StreamingResponseBody> exportBigCsv(HttpServletResponse response) {
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION,
+                        "attachment; filename=big.csv")
+                .contentType(MediaType.parseMediaType(
+                        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"))
+                .body(new SimpleCsvStreamingResponse(context));
     }
 }
