@@ -1,5 +1,7 @@
 package com.example.demo.entity;
 
+import com.alibaba.excel.annotation.ExcelProperty;
+import com.alibaba.excel.annotation.format.DateTimeFormat;
 import com.example.demo.tools.IdTool;
 
 import javax.persistence.*;
@@ -18,60 +20,100 @@ public class BigColsSchema
 
     @Id
     @Column(name = "id")
+    @ExcelProperty("ID")
     private String id;
+
     @Basic
     @Column(name = "scheme_name")
+    @ExcelProperty("SchemaName")
     private String schemeName;
+
     @Basic
     @Column(name = "schema_address")
+    @ExcelProperty("SchemaAddress")
     private String schemaAddress;
+
     @Basic
     @Column(name = "schema_status")
+    @ExcelProperty("SchemaStatus")
     private String schemaStatus;
+
     @Basic
     @Column(name = "schema_type")
+    @ExcelProperty("SchemaType")
     private String schemaType;
+
     @Basic
     @Column(name = "schema_rate")
+    @ExcelProperty("SchemaRate")
     private BigDecimal schemaRate;
+
     @Basic
     @Column(name = "schema_rate_work_date")
+    @ExcelProperty("SchemaRateWorkDate")
+    @DateTimeFormat("yyyy-MM-dd")
     private OffsetDateTime schemaRateWorkDate;
+
     @Basic
     @Column(name = "schema_rate_source")
+    @ExcelProperty("SchemaRateSource")
     private String schemaRateSource;
+
     @Basic
     @Column(name = "schema_author_type")
+    @ExcelProperty("SchemaAuthorType")
     private String schemaAuthorType;
+
     @Basic
     @Column(name = "schema_author_date")
+    @ExcelProperty("SchemaAuthorDate")
+    @DateTimeFormat("yyyy-MM-dd")
     private OffsetDateTime schemaAuthorDate;
+
     @Basic
     @Column(name = "schema_author_seq")
+    @ExcelProperty("SchemaAuthorSeq")
     private String schemaAuthorSeq;
+
     @Basic
     @Column(name = "schema_author_name")
+    @ExcelProperty("SchemaAuthorName")
     private String schemaAuthorName;
+
     @Basic
     @Column(name = "schema_repay_type")
+    @ExcelProperty("SchemaRepayType")
     private String schemaRepayType;
+
     @Basic
     @Column(name = "schema_repay_sum")
+    @ExcelProperty("SchemaRepaySum")
     private BigDecimal schemaRepaySum;
+
     @Basic
     @Column(name = "schema_repay_date")
+    @ExcelProperty("SchemaRepaySum")
+    @DateTimeFormat("yyyy-MM-dd")
     private OffsetDateTime schemaRepayDate;
+
     @Basic
     @Column(name = "schema_expense_type")
+    @ExcelProperty("SchemaExpenseType")
     private String schemaExpenseType;
+
     @Basic
     @Column(name = "schema_expense_val")
+    @ExcelProperty("SchemaExpenseVal")
     private BigDecimal schemaExpenseVal;
+
     @Basic
     @Column(name = "schema_expense_name")
+    @ExcelProperty("SchemaExpenseName")
     private String schemaExpenseName;
+
     @Basic
     @Column(name = "schema_expense_lump_type")
+    @ExcelProperty("SchemaExpenseLumpType")
     private String schemaExpenseLumpType;
 
     public String getId() {
