@@ -13,7 +13,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 
-import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
@@ -33,7 +32,7 @@ public class SimpleCsvStreamingResponse
     }
 
     @Override
-    public void writeTo(OutputStream out) throws IOException {
+    public void writeTo(OutputStream out) {
         BigColsSchemaMapper schemaMapper = context.getBean(BigColsSchemaMapper.class);
 
         BigColsSchemaIterator iterator = new BigColsSchemaIterator(schemaMapper);
