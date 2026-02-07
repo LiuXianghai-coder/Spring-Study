@@ -2,16 +2,26 @@ spring:
   cloud:
     stream:
       bindings:
+        # input 和 output 为消息队列的名称
         input:
           destination: my-topic # 消费的主题名称
-          group: my-consumer-group # 消费者组名称
+          group: my-consumer-group-1 # 消费者组名称
           content-type: application/json # 消息内容类型（例如JSON）
+          consumer:
+            concurrency: 1
         output:
           destination: my-topic # 发送的主题名称
           group: my-producer-group # 发送的主题名称
           content-type: application/json
-
       rocketmq:
+        default:
+          consumer:
+            pullThresholdForQueue: 1
+            pullThresholdSizeForQueue: 1
+            pullBatchSize: 1
+            pull:
+              pullThreadNums: 1
+              pullThresholdForAll: 1
         binder:
           name-server: 127.0.0.1:9876 # RocketMQ NameServer 地址，确保是可用的
           producer-group: my-producer-group # 生产者组名称
@@ -21,3 +31,7 @@ spring:
 
       default:
         content-type: application/json # 默认的消息类型
+      default-binder: kafka
+logging:
+  level:
+    root: info
