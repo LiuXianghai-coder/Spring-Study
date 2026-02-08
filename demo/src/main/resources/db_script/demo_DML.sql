@@ -1,0 +1,2 @@
+INSERT INTO lxh_db.rate_info (id, rate_name, rate_val, backup_id, created_user, created_time, updated_user, updated_time) VALUES (1, '浮动利率', 23.99974000, '1', 'admin', '2023-10-26 20:45:48', 'admin', '2023-11-26 20:45:53');
+INSERT INTO lxh_db.rate_info (id, rate_name, rate_val, backup_id, created_user, created_time, updated_user, updated_time) VALUES (2, '浮动利率', 26.99994100, '1', 'admin', '2023-10-26 20:45:48', 'admin', '2023-11-26 20:45:53');
